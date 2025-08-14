@@ -1,9 +1,9 @@
 import {View, Text} from "react-native";
 
-export default function Splash() {
+export default function PreferencesScreen() {
     return (
         <View>
-            <Text>Splash</Text>
+            <Text>Create Preferences</Text>
         </View>
     )
 }
