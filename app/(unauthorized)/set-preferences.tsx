@@ -57,7 +57,6 @@ export default function PreferencesScreen() {
         <SafeAreaView className="flex-1 bg-white">
             <ScrollView contentContainerStyle={{padding: 20, flexGrow: 1}}>
                 <View className={'flex-1'}>
-                    {/* Gender */}
                     <Text className="font-semibold mb-2">Gender</Text>
                     <Controller
                         control={control}
@@ -71,7 +70,6 @@ export default function PreferencesScreen() {
                         )}
                     />
 
-                    {/* Looking For */}
                     <Text className="font-semibold mb-2">Looking For</Text>
                     <Controller
                         control={control}
@@ -85,7 +83,6 @@ export default function PreferencesScreen() {
                         )}
                     />
 
-                    {/* Looking For */}
                     <Text className="font-semibold mb-2">Tell others what you’re looking for</Text>
                     <Controller
                         control={control}
