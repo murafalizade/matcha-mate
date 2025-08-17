@@ -5,26 +5,21 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as ImagePicker from "expo-image-picker";
 import {router} from "expo-router";
+import {User} from "@/utils/models";
 
-interface FormData {
-    name: string;
-    surname: string;
-    age: number;
-    gender: "male" | "female";
-    termsAccepted: boolean;
-}
+type FormData = Omit<User, "preferences" | "id">;
 
 const schema = yup.object({
-    name: yup.string().required("Name is required"),
-    surname: yup.string().required("Surname is required"),
+    firstName: yup.string().required("firstName is required"),
+    lastName: yup.string().required("Surname is required"),
+    email: yup.string().required("Email is required"),
+    password: yup.string().required("Surname is required"),
     age: yup
         .number()
         .typeError("Age must be a number")
         .required("Age is required")
         .min(1, "Age must be at least 1")
         .max(120, "Age must be realistic"),
-    termsAccepted: yup.boolean().oneOf([true], "You must agree to the terms of service").required("You must agree to the terms of service"),
-    gender: yup.string().oneOf(["male", "female"], "Select gender").required("Gender is required"),
 });
 
 export default function CreateProfileScreen() {
@@ -70,34 +65,71 @@ export default function CreateProfileScreen() {
 
                 <Controller
                     control={control}
-                    name="name"
+                    name="firstName"
                     render={({ field: { onChange, onBlur, value } }) => (
                         <View className="mb-3">
-                            <Text className="mb-1 font-semibold">Name</Text>
+                            <Text className="mb-1 font-semibold">First name</Text>
                             <TextInput
                                 className="border border-gray-300 rounded-lg px-3 py-2"
                                 onBlur={onBlur}
                                 onChangeText={onChange}
                                 value={value}
                             />
-                            {errors.name && <Text className="text-red-500 mt-1">{errors.name.message}</Text>}
+                            {errors.firstName && <Text className="text-red-500 mt-1">{errors.firstName.message}</Text>}
                         </View>
                     )}
                 />
 
                 <Controller
                     control={control}
-                    name="surname"
+                    name="lastName"
                     render={({ field: { onChange, onBlur, value } }) => (
                         <View className="mb-3">
-                            <Text className="mb-1 font-semibold">Surname</Text>
+                            <Text className="mb-1 font-semibold">Last name</Text>
                             <TextInput
                                 className="border border-gray-300 rounded-lg px-3 py-2"
                                 onBlur={onBlur}
                                 onChangeText={onChange}
                                 value={value}
                             />
-                            {errors.surname && <Text className="text-red-500 mt-1">{errors.surname.message}</Text>}
+                            {errors.lastName && <Text className="text-red-500 mt-1">{errors.lastName.message}</Text>}
+                        </View>
+                    )}
+                />
+
+                <Controller
+                    control={control}
+                    name="email"
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <View className="mb-3">
+                            <Text className="mb-1 font-semibold">Email</Text>
+                            <TextInput
+                                className="border border-gray-300 rounded-lg px-3 py-2"
+                                onBlur={onBlur}
+                                onChangeText={onChange}
+                                value={value?.toString()}
+                                textContentType={'emailAddress'}
+                                keyboardType="email-address"
+                            />
+                            {errors.email && <Text className="text-red-500 mt-1">{errors.email.message}</Text>}
+                        </View>
+                    )}
+                />
+
+                <Controller
+                    control={control}
+                    name="password"
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <View className="mb-3">
+                            <Text className="mb-1 font-semibold">Password</Text>
+                            <TextInput
+                                className="border border-gray-300 rounded-lg px-3 py-2"
+                                onBlur={onBlur}
+                                onChangeText={onChange}
+                                value={value?.toString()}
+                                textContentType={'password'}
+                            />
+                            {errors.password && <Text className="text-red-500 mt-1">{errors.password.message}</Text>}
                         </View>
                     )}
                 />
@@ -120,48 +152,16 @@ export default function CreateProfileScreen() {
                     )}
                 />
 
-                <Controller
-                    control={control}
-                    name="gender"
-                    render={({ field: { onChange, value } }) => (
-                        <View className="mb-6">
-                            <Text className="mb-1 font-semibold">Gender</Text>
-                            <View className="flex-row space-x-4">
-                                {["male", "female"].map((g) => (
-                                    <TouchableOpacity
-                                        key={g}
-                                        className={`px-4 py-2 border rounded-lg ${value === g ? "bg-[#F58C26] border-[#F58C26]" : "border-gray-300"}`}
-                                        onPress={() => onChange(g)}
-                                    >
-                                        <Text className={`${value === g ? "text-white" : "text-gray-700"}`}>{g.charAt(0).toUpperCase() + g.slice(1)}</Text>
-                                    </TouchableOpacity>
-                                ))}
-                            </View>
-                            {errors.gender && <Text className="text-red-500 mt-1">{errors.gender.message}</Text>}
-                        </View>
-                    )}
-                />
-
-                {/* Checkbox */}
-                <Controller
-                    control={control}
-                    name="termsAccepted"
-                    render={({ field: { onChange, value } }) => (
                         <TouchableOpacity
                             className="flex-row items-center mb-4"
-                            onPress={() => onChange(!value)}
                         >
                             <View
-                                className={`w-5 h-5 border rounded-sm mr-2 items-center justify-center ${
-                                    value ? "bg-[#F58C26] border-[#F58C26]" : "border-gray-400"
-                                }`}
+                                className={`w-5 h-5 border rounded-sm mr-2 items-center justify-center`}
                             >
-                                {value && <View className="w-3 h-3 bg-white" />}
                             </View>
                             <Text className="text-gray-700">I agree to the Terms of Service</Text>
                         </TouchableOpacity>
-                    )}
-                />
+
 
                 <TouchableOpacity
                     className="bg-[#F58C26] rounded-xl py-4 mt-auto"
