@@ -1,35 +1,39 @@
 import React from 'react';
+import { Tabs } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import {Link, Tabs} from 'expo-router';
-import {Pressable} from 'react-native';
 
-import Colors from '@/constants/Colors';
-import {useColorScheme} from '@/components/useColorScheme';
-import {useClientOnlyValue} from '@/components/useClientOnlyValue';
-
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-    name: React.ComponentProps<typeof FontAwesome>['name'];
-    color: string;
-}) {
-    return <FontAwesome size={28} style={{marginBottom: -3}} {...props} />;
+function TabBarIcon({ name, color, focused }: { name: string; color: string; focused: boolean }) {
+    return <FontAwesome name={name} size={focused ? 28 : 24} color={color} />;
 }
 
 export default function TabLayout() {
-    const colorScheme = useColorScheme();
-
     return (
         <Tabs
             screenOptions={{
-                tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-                // Disable the static render of the header on web
-                // to prevent a hydration error in React Navigation v6.
-            }}>
+                tabBarShowLabel: false,
+                tabBarStyle: {
+                    position: 'absolute',
+                    bottom: 16,
+                    left: 16,
+                    right: 16,
+                    height: 70,
+                    borderRadius: 35,
+                    backgroundColor: '#fff',
+                    shadowColor: '#000',
+                    shadowOpacity: 0.1,
+                    shadowOffset: { width: 0, height: 5 },
+                    shadowRadius: 10,
+                    elevation: 10,
+                },
+                headerTitleAlign: 'center',
+                tabBarActiveTintColor: '#F58C26',
+                tabBarInactiveTintColor: '#A0A0A0',
+            }}
+        >
             <Tabs.Screen
                 name="index"
                 options={{
-                    tabBarShowLabel: false,
-                    tabBarIcon: ({color}) => <TabBarIcon name="home" color={color}/>,
+                    tabBarIcon: ({ color, focused }) => <TabBarIcon name="home" color={color} focused={focused} />,
                     headerShown: true,
                     title: 'Home',
                 }}
@@ -37,16 +41,14 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="(chats)"
                 options={{
-                    tabBarShowLabel: false,
-                    tabBarIcon: ({color}) => <TabBarIcon name="wechat" color={color} />,
-                    headerShown: true,
+                    tabBarIcon: ({ color, focused }) => <TabBarIcon name="wechat" color={color} focused={focused} />,
+                    headerShown: false,
                 }}
             />
             <Tabs.Screen
                 name="profile"
                 options={{
-                    tabBarShowLabel: false,
-                    tabBarIcon: ({color}) => <TabBarIcon name="code" color={color}/>,
+                    tabBarIcon: ({ color, focused }) => <TabBarIcon name="user" color={color} focused={focused} />,
                     headerShown: true,
                     title: 'Profile',
                 }}
