@@ -1,32 +1,18 @@
 import React, { useState } from "react";
-import { View, Text, Image, Dimensions, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity, Dimensions } from "react-native";
 import Swiper from "react-native-deck-swiper";
-import { LinearGradient } from "expo-linear-gradient";
 
 const { width, height } = Dimensions.get("window");
 
+// Import local images
+const aliceImg = require("../../assets/images/test.jpeg");
+const markImg = require("../../assets/images/test.jpeg");
+const sophiaImg = require("../../assets/images/test.jpeg");
+
 const users = [
-    {
-        id: "1",
-        name: "Alice",
-        age: 25,
-        bio: "Loves coffee & coding ☕💻",
-        avatar: "https://i.pravatar.cc/400?img=1",
-    },
-    {
-        id: "2",
-        name: "Mark",
-        age: 28,
-        bio: "Traveler & foodie 🌎🍣",
-        avatar: "https://i.pravatar.cc/400?img=2",
-    },
-    {
-        id: "3",
-        name: "Sophia",
-        age: 22,
-        bio: "Music enthusiast 🎶",
-        avatar: "https://i.pravatar.cc/400?img=3",
-    },
+    { id: "1", name: "Alice", age: 25, bio: "Loves coffee & coding ☕💻", avatar: aliceImg },
+    { id: "2", name: "Mark", age: 28, bio: "Traveler & foodie 🌎🍣", avatar: markImg },
+    { id: "3", name: "Sophia", age: 22, bio: "Music enthusiast 🎶", avatar: sophiaImg },
 ];
 
 export default function HomeScreen() {
@@ -37,7 +23,7 @@ export default function HomeScreen() {
     };
 
     return (
-        <View className="flex-1 bg-white items-center justify-center">
+        <View className="flex-1 bg-white">
             <Swiper
                 cards={cards}
                 cardIndex={0}
@@ -65,28 +51,20 @@ export default function HomeScreen() {
                     },
                 }}
                 renderCard={(card) => (
-                    <View className="bg-white rounded-3xl overflow-hidden shadow-lg w-[90%] h-[75%]">
-                        <Image
-                            source={{ uri: card.avatar }}
-                            className="w-full h-full absolute"
-                        />
-                        <LinearGradient
-                            colors={["transparent", "rgba(0,0,0,0.6)"]}
-                            className="absolute bottom-0 w-full p-4 rounded-b-3xl"
-                        >
-                            <Text className="text-white text-2xl font-bold">
+                    <View style={{ height, borderRadius: 20, borderStyle: 'solid', borderColor: 'gray' }}>
+                        <Image source={card.avatar} style={{ width: '100%', height: '50%' }} />
+                            <Text className="text-3xl font-bold">
                                 {card.name}, {card.age}
                             </Text>
-                            <Text className="text-white text-sm mt-1">{card.bio}</Text>
-                        </LinearGradient>
+                            <Text className=" text-base mt-1">{card.bio}</Text>
                     </View>
                 )}
             />
 
             {/* Manual Swipe Buttons */}
-            <View className="flex-row mt-6 space-x-6">
+            <View className="absolute bottom-6 w-full flex-row justify-center space-x-24">
                 <TouchableOpacity
-                    className="bg-white w-20 h-20 rounded-full items-center justify-center shadow-lg"
+                    className="bg-white w-20 h-20 rounded-full items-center justify-center shadow-lg mr-5"
                     onPress={() => console.log("Dislike")}
                 >
                     <Text className="text-red-500 text-3xl font-bold">✖</Text>

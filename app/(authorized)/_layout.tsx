@@ -3,7 +3,7 @@ import { Tabs } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 function TabBarIcon({ name, color, focused }: { name: string; color: string; focused: boolean }) {
-    return <FontAwesome name={name} size={focused ? 28 : 24} color={color} />;
+    return <FontAwesome name={name} size={focused ? 30 : 26} color={color} />;
 }
 
 export default function TabLayout() {
@@ -12,20 +12,13 @@ export default function TabLayout() {
             screenOptions={{
                 tabBarShowLabel: false,
                 tabBarStyle: {
-                    position: 'absolute',
-                    bottom: 16,
-                    left: 16,
-                    right: 16,
-                    height: 70,
-                    borderRadius: 35,
-                    backgroundColor: '#fff',
-                    shadowColor: '#000',
-                    shadowOpacity: 0.1,
-                    shadowOffset: { width: 0, height: 5 },
-                    shadowRadius: 10,
-                    elevation: 10,
+                    paddingTop: 8,
                 },
                 headerTitleAlign: 'center',
+                tabBarIconStyle: {
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                },
                 tabBarActiveTintColor: '#F58C26',
                 tabBarInactiveTintColor: '#A0A0A0',
             }}
@@ -41,7 +34,7 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="(chats)"
                 options={{
-                    tabBarIcon: ({ color, focused }) => <TabBarIcon name="wechat" color={color} focused={focused} />,
+                    tabBarIcon: ({ color, focused }) => <TabBarIcon name="comments" color={color} focused={focused} />,
                     headerShown: false,
                 }}
             />

@@ -6,6 +6,8 @@ export default function ProfileScreen() {
         name: "John Doe",
         email: "johndoe@example.com",
         age: 28,
+        sex: "Male",
+        preference: "Female",
         avatar: "https://i.pravatar.cc/100?img=12",
     };
 
@@ -25,6 +27,12 @@ export default function ProfileScreen() {
             <View className="bg-gray-100 rounded-xl p-4 mb-4">
                 <Text className="text-gray-500 mb-1">Age</Text>
                 <Text className="font-semibold text-lg">{user.age}</Text>
+            </View>
+
+            <View className="bg-gray-100 rounded-xl p-4 mb-4">
+                <Text className="text-gray-500 mb-1">Sex</Text>
+                <Text className="font-semibold text-lg">{user.sex}</Text>
+                <Text className="text-gray-400 mt-1">Preference: {user.preference}</Text>
             </View>
 
             {/* Action Buttons */}

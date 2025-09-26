@@ -28,12 +28,6 @@ const chats = [
 export default function ChatsScreen() {
     return (
         <View className="flex-1 bg-white">
-            {/* Header */}
-            <View className="px-4 py-5 bg-[#F58C26]">
-                <Text className="text-xl font-bold text-white">Chats</Text>
-            </View>
-
-            {/* Chat List */}
             <FlatList
                 data={chats}
                 keyExtractor={(item) => item.id}
