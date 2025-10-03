@@ -7,7 +7,7 @@ export default function RootScreen() {
     const [isAuth] = useState(false);
 
     if (isAuth) {
-        return <Redirect href="/(authorized)" />;
+        return <Redirect href="/(unauthorized)/launch" />;
     }
     return <Redirect href="/(unauthorized)" />;
 }

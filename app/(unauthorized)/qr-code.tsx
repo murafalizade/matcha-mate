@@ -82,7 +82,7 @@ export default function QrCodeScanScreen() {
             <Modal
                 animationType="slide"
                 transparent={true}
-                visible={modalVisible}
+                visible={false}
                 onRequestClose={() => setModalVisible(false)}
             >
                 <View className="flex-1 justify-center items-center bg-black/50">
