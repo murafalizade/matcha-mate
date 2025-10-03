@@ -8,12 +8,14 @@ export interface User {
     lastName: string;
     email: string;
     password: string;
-    age: number;
+    gender: Gender;
     preferences: Preference;
+    birthdate: Date;
+    interests: string;
+    bio: string;
 }
 
 export interface Preference {
-    gender: Gender;
     preferredGender: Gender;
     lookingFor: LookingFor;
     description: string;
