@@ -4,6 +4,7 @@ type LookingFor = "relations" | "friendship" | "study mate";
 
 export interface User {
     id: string;
+    pictureUrl: string;
     firstName: string;
     lastName: string;
     email: string;

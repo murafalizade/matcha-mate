@@ -1,6 +1,7 @@
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import { router } from "expo-router";
-import { User, Preference, Gender, LookingFor } from "@/utils/models"; // assuming your models are here
+import { User } from "@/utils/models"; // assuming your models are here
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileScreen() {
     // Mock user
@@ -32,6 +33,7 @@ export default function ProfileScreen() {
 
     return (
         <ScrollView className="flex-1 bg-white p-6">
+            <SafeAreaView>
             <View className="items-center mb-6">
                 <Image
                     source={{ uri: "https://i.pravatar.cc/100?img=12" }}
@@ -91,6 +93,7 @@ export default function ProfileScreen() {
                     Settings
                 </Text>
             </TouchableOpacity>
+            </SafeAreaView>
         </ScrollView>
     );
 }

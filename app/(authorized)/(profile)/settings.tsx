@@ -1,9 +1,11 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { router } from "expo-router";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 export default function SettingsScreen() {
     return (
         <ScrollView className="flex-1 bg-white p-6">
+            <SafeAreaView>
             <Text className="text-2xl font-bold mb-6 text-center">Settings</Text>
 
             {/* Account Section */}
@@ -49,6 +51,7 @@ export default function SettingsScreen() {
                     Log Out
                 </Text>
             </TouchableOpacity>
+            </SafeAreaView>
         </ScrollView>
     );
 }
