@@ -8,32 +8,66 @@ import {
     Image,
     ScrollView,
     Alert,
+    ActivityIndicator,
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as ImagePicker from "expo-image-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { router } from "expo-router";
-import { User } from "@/utils/models";
+import { useAuth } from "@/hooks/useAuth";
+import { ApiError } from "@/utils/api";
 
-type FormData = Omit<User, "preferences" | "id">;
+// Mirrors the backend's password/name/bio rules (see auth/constants/validation)
+// so the client rejects the same input the server would, instead of a round-trip 400.
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+const NAME_REGEX = /^[a-zA-Z\s'-]+$/;
+
+interface FormData {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    birthDate: Date;
+    gender: "MALE" | "FEMALE" | "OTHER";
+    bio: string;
+}
 
 const schema = yup.object({
-    firstName: yup.string().required("First name is required"),
-    lastName: yup.string().required("Last name is required"),
-    email: yup.string().email("Invalid email").required("Email is required"),
-    password: yup.string().min(6, "Min 6 characters").required("Password is required"),
-    birthdate: yup.date().required("Birthdate is required"),
-    gender: yup.string().oneOf(["male", "female", "other"]).required(),
-    interests: yup.string().required("Interests are required"),
-    bio: yup.string().max(200, "Max 200 characters").required("Bio is required"),
+    firstName: yup
+        .string()
+        .trim()
+        .min(2, "Min 2 characters")
+        .max(50, "Max 50 characters")
+        .matches(NAME_REGEX, "Letters, spaces, ' and - only")
+        .required("First name is required"),
+    lastName: yup
+        .string()
+        .trim()
+        .min(2, "Min 2 characters")
+        .max(50, "Max 50 characters")
+        .matches(NAME_REGEX, "Letters, spaces, ' and - only")
+        .required("Last name is required"),
+    email: yup.string().email("Invalid email").max(255).required("Email is required"),
+    password: yup
+        .string()
+        .matches(PASSWORD_REGEX, "Needs upper, lower, number & special character (@$!%*?&)")
+        .required("Password is required"),
+    birthDate: yup.date().required("Birthdate is required"),
+    gender: yup.string().oneOf(["MALE", "FEMALE", "OTHER"]).required(),
+    bio: yup
+        .string()
+        .min(10, "Min 10 characters")
+        .max(500, "Max 500 characters")
+        .required("Bio is required"),
 });
 
 export default function CreateProfileScreen() {
+    const { register: registerUser } = useAuth();
     const [imageUri, setImageUri] = useState<string | null>(null);
     const [agree, setAgree] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
 
     const {
         control,
@@ -58,6 +92,7 @@ export default function CreateProfileScreen() {
     const radioButton = (
         value: string,
         selected: string,
+        label: string,
         onPress: () => void
     ) => (
         <TouchableOpacity
@@ -68,23 +103,39 @@ export default function CreateProfileScreen() {
                     : "border-gray-300"
             }`}
         >
-            <Text
-                className={`${
-                    selected === value ? "text-white" : "text-gray-700"
-                }`}
-            >
-                {value.charAt(0).toUpperCase() + value.slice(1)}
+            <Text className={`${selected === value ? "text-white" : "text-gray-700"}`}>
+                {label}
             </Text>
         </TouchableOpacity>
     );
 
-    const onSubmit = (data: FormData) => {
+    const onSubmit = async (data: FormData) => {
         if (!agree) {
             Alert.alert("Agreement Required", "You must agree to the Terms of Service.");
             return;
         }
-        Alert.alert("Profile Created", JSON.stringify({ ...data, imageUri }, null, 2));
-        router.push("/(unauthorized)/qr-code");
+
+        setSubmitting(true);
+        try {
+            await registerUser({
+                firstName: data.firstName.trim(),
+                lastName: data.lastName.trim(),
+                email: data.email,
+                password: data.password,
+                birthDate: data.birthDate.toISOString().slice(0, 10),
+                gender: data.gender,
+                bio: data.bio,
+            });
+            // Profile picture upload happens separately via POST /profiles/me/image
+            // once the profile screen is wired up — not part of registration itself.
+            // Successful registration flips `isAuth`; the root layout's route guard
+            // handles navigating away from this screen.
+        } catch (err) {
+            const message = err instanceof ApiError ? err.message : "Something went wrong";
+            Alert.alert("Registration failed", message);
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -104,16 +155,18 @@ export default function CreateProfileScreen() {
                 </TouchableOpacity>
 
                 {/* First/Last/Email/Password */}
-                {[
-                    { name: "firstName", label: "First Name" },
-                    { name: "lastName", label: "Last Name" },
-                    { name: "email", label: "Email", keyboardType: "email-address" },
-                    { name: "password", label: "Password", secureTextEntry: true },
-                ].map(({ name, label, ...rest }) => (
+                {(
+                    [
+                        { name: "firstName", label: "First Name" },
+                        { name: "lastName", label: "Last Name" },
+                        { name: "email", label: "Email", keyboardType: "email-address" },
+                        { name: "password", label: "Password", secureTextEntry: true },
+                    ] as const
+                ).map(({ name, label, ...rest }) => (
                     <Controller
                         key={name}
                         control={control}
-                        name={name as keyof FormData}
+                        name={name}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <View className="mb-4">
                                 <Text className="mb-1 font-semibold">{label}</Text>
@@ -122,11 +175,12 @@ export default function CreateProfileScreen() {
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value?.toString()}
+                                    autoCapitalize={name === "email" ? "none" : "sentences"}
                                     {...rest}
                                 />
-                                {errors[name as keyof FormData] && (
+                                {errors[name] && (
                                     <Text className="text-red-500 mt-1">
-                                        {errors[name as keyof FormData]?.message as string}
+                                        {errors[name]?.message as string}
                                     </Text>
                                 )}
                             </View>
@@ -137,7 +191,7 @@ export default function CreateProfileScreen() {
                 {/* Birthdate */}
                 <Controller
                     control={control}
-                    name="birthdate"
+                    name="birthDate"
                     render={({ field: { value, onChange } }) => (
                         <View className="mb-4">
                             <Text className="mb-1 font-semibold">Birthdate</Text>
@@ -158,8 +212,8 @@ export default function CreateProfileScreen() {
                                     }}
                                 />
                             )}
-                            {errors.birthdate && (
-                                <Text className="text-red-500 mt-1">{errors.birthdate.message}</Text>
+                            {errors.birthDate && (
+                                <Text className="text-red-500 mt-1">{errors.birthDate.message}</Text>
                             )}
                         </View>
                     )}
@@ -170,11 +224,11 @@ export default function CreateProfileScreen() {
                 <Controller
                     control={control}
                     name="gender"
-                    render={({field: {onChange, value}}) => (
+                    render={({ field: { onChange, value } }) => (
                         <View className="flex-row space-x-4 mb-4">
-                            {["male", "female", "other"].map((g) =>
-                                radioButton(g, value, () => onChange(g as any))
-                            )}
+                            {radioButton("MALE", value, "Male", () => onChange("MALE"))}
+                            {radioButton("FEMALE", value, "Female", () => onChange("FEMALE"))}
+                            {radioButton("OTHER", value, "Other", () => onChange("OTHER"))}
                         </View>
                     )}
                 />
@@ -183,27 +237,6 @@ export default function CreateProfileScreen() {
                         {errors.gender.message}
                     </Text>
                 )}
-
-
-                {/* Interests */}
-                <Controller
-                    control={control}
-                    name="interests"
-                    render={({ field: { onChange, value } }) => (
-                        <View className="mb-4">
-                            <Text className="mb-1 font-semibold">Interests</Text>
-                            <TextInput
-                                className="border border-gray-300 rounded-lg px-3 py-2"
-                                placeholder="Your interests, separated by commas"
-                                onChangeText={onChange}
-                                value={value}
-                            />
-                            {errors.interests && (
-                                <Text className="text-red-500 mt-1">{errors.interests.message}</Text>
-                            )}
-                        </View>
-                    )}
-                />
 
                 {/* Bio */}
                 <Controller
@@ -214,7 +247,7 @@ export default function CreateProfileScreen() {
                             <Text className="mb-1 font-semibold">Bio</Text>
                             <TextInput
                                 className="border border-gray-300 rounded-lg px-3 py-2 h-24"
-                                placeholder="Tell us about yourself"
+                                placeholder="Tell us about yourself (min 10 characters)"
                                 multiline
                                 onChangeText={onChange}
                                 value={value}
@@ -245,10 +278,15 @@ export default function CreateProfileScreen() {
                 <TouchableOpacity
                     className="bg-[#F58C26] rounded-xl py-4"
                     onPress={handleSubmit(onSubmit)}
+                    disabled={submitting}
                 >
-                    <Text className="text-white text-center font-semibold text-lg">
-                        Create Profile
-                    </Text>
+                    {submitting ? (
+                        <ActivityIndicator color="white" />
+                    ) : (
+                        <Text className="text-white text-center font-semibold text-lg">
+                            Create Profile
+                        </Text>
+                    )}
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

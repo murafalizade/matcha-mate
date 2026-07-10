@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     SafeAreaView,
     Text,
@@ -6,11 +6,14 @@ import {
     View,
     TouchableOpacity,
     ScrollView,
+    ActivityIndicator,
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { router } from "expo-router";
+import { useAuth } from "@/hooks/useAuth";
+import { ApiError } from "@/utils/api";
 
 interface LoginData {
     email: string;
@@ -23,6 +26,10 @@ const schema = yup.object({
 });
 
 export default function LoginScreen() {
+    const { login } = useAuth();
+    const [submitting, setSubmitting] = useState(false);
+    const [serverError, setServerError] = useState<string | null>(null);
+
     const {
         control,
         handleSubmit,
@@ -30,11 +37,21 @@ export default function LoginScreen() {
     } = useForm<LoginData>({
         resolver: yupResolver(schema),
         reValidateMode: "onChange",
+        defaultValues: { email: "", password: "" },
     });
 
-    const onSubmit = (data: LoginData) => {
-        console.log("Login:", data);
-        router.push("/(unauthorized)/qr-code");
+    const onSubmit = async (data: LoginData) => {
+        setServerError(null);
+        setSubmitting(true);
+        try {
+            await login(data);
+            // Successful login flips `isAuth`; the root layout's route guard
+            // handles navigating away from this screen.
+        } catch (err) {
+            setServerError(err instanceof ApiError ? err.message : "Something went wrong");
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -115,14 +132,23 @@ export default function LoginScreen() {
                     </Text>
                 </TouchableOpacity>
 
+                {serverError && (
+                    <Text className="text-red-500 text-center mb-4">{serverError}</Text>
+                )}
+
                 {/* Login button */}
                 <TouchableOpacity
                     className="bg-[#F58C26] rounded-xl py-4"
                     onPress={handleSubmit(onSubmit)}
+                    disabled={submitting}
                 >
-                    <Text className="text-white text-center font-semibold text-lg">
-                        Log In
-                    </Text>
+                    {submitting ? (
+                        <ActivityIndicator color="white" />
+                    ) : (
+                        <Text className="text-white text-center font-semibold text-lg">
+                            Log In
+                        </Text>
+                    )}
                 </TouchableOpacity>
 
                 {/* Register link */}

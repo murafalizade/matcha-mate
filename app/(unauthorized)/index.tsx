@@ -18,7 +18,7 @@ export default function WelcomeScreen() {
             <View className="px-6 pb-8">
                 <TouchableOpacity
                     className="bg-[#F58C26] rounded-xl py-4 mb-4"
-                    onPress={() => router.push("/(authorized)")}
+                    onPress={() => router.push("/(unauthorized)/create-profile")}
                 >
                     <Text className="text-white text-center font-semibold text-lg">
                         Create Account
