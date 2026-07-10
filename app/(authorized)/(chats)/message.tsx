@@ -8,45 +8,63 @@ import {
     Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useEffect, useState } from "react";
-import { router } from "expo-router";
+import { useEffect, useRef, useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { ExpireModal } from "@/components/ExpireModal";
+import { useAuth } from "@/hooks/useAuth";
+import { useChatSession } from "@/hooks/useChatSession";
 
-const mockMessages = [
-    { id: "1", text: "Hey, how are you?", sender: "other" },
-    { id: "2", text: "I’m good! Just chilling at the café ☕", sender: "me" },
-    { id: "3", text: "Nice! Which café?", sender: "other" },
-    { id: "4", text: "Downtown, Macha Mate!", sender: "me" },
-];
+function formatTime(seconds: number): string {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s < 10 ? "0" : ""}${s}`;
+}
 
 export default function MessageScreen() {
-    const [messages, setMessages] = useState(mockMessages);
+    const { id: chatSessionId } = useLocalSearchParams<{ id: string }>();
+    const { user } = useAuth();
+    const {
+        session,
+        messages,
+        partnerTyping,
+        error,
+        endedReason,
+        sendMessage,
+        setTyping,
+        endChat,
+    } = useChatSession(chatSessionId ?? null);
+
     const [input, setInput] = useState("");
-    const [timeLeft, setTimeLeft] = useState(100);
-    const [showModal, setShowModal] = useState(false);
+    const [timeLeft, setTimeLeft] = useState<number | null>(null);
+    const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+    // The countdown is derived from the session's own expiresAt rather than a
+    // local fixed timer — it needs to reflect the server's clock, not the
+    // moment this screen happened to mount.
     useEffect(() => {
-        if (timeLeft <= 0) {
-            setShowModal(true);
-            return;
-        }
-        const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
-        return () => clearInterval(timer);
-    }, [timeLeft]);
+        if (!session) return;
+        const tick = () => {
+            const secondsLeft = Math.max(0, Math.floor((new Date(session.expiresAt).getTime() - Date.now()) / 1000));
+            setTimeLeft(secondsLeft);
+        };
+        tick();
+        const interval = setInterval(tick, 1000);
+        return () => clearInterval(interval);
+    }, [session]);
 
-    const formatTime = (seconds: number) => {
-        const m = Math.floor(seconds / 60);
-        const s = seconds % 60;
-        return `${m}:${s < 10 ? "0" : ""}${s}`;
+    const ended = endedReason !== null || timeLeft === 0;
+
+    const handleChangeText = (text: string) => {
+        setInput(text);
+        setTyping(true);
+        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = setTimeout(() => setTyping(false), 1500);
     };
 
-    const sendMessage = () => {
-        if (!input.trim()) return;
-        setMessages((prev) => [
-            ...prev,
-            { id: Date.now().toString(), text: input, sender: "me" },
-        ]);
+    const handleSend = () => {
+        if (!input.trim() || ended) return;
+        sendMessage(input.trim());
         setInput("");
     };
 
@@ -57,13 +75,31 @@ export default function MessageScreen() {
                 <TouchableOpacity onPress={() => router.back()} className="mr-3">
                     <Ionicons name="arrow-back" size={24} color="black" />
                 </TouchableOpacity>
-                <Text className="text-lg font-semibold">Chat with John Doe</Text>
+                <Text className="text-lg font-semibold flex-1">
+                    {session ? `Chat with ${session.partner.firstName} ${session.partner.lastName}` : "Chat"}
+                </Text>
+                {!ended && (
+                    <TouchableOpacity onPress={endChat}>
+                        <Text className="text-red-500 font-medium">End</Text>
+                    </TouchableOpacity>
+                )}
             </View>
 
+            {error && (
+                <Text className="text-sm text-red-500 text-center mt-2">{error}</Text>
+            )}
+
             {/* Countdown */}
-            <Text className="text-sm text-gray-500 text-center mt-2 mb-1">
-                Time remaining: {formatTime(timeLeft)}
-            </Text>
+            {timeLeft !== null && (
+                <Text className="text-sm text-gray-500 text-center mt-2 mb-1">
+                    Time remaining: {formatTime(timeLeft)}
+                </Text>
+            )}
+            {partnerTyping && !ended && (
+                <Text className="text-xs text-gray-400 text-center mb-1">
+                    {session?.partner.firstName} is typing…
+                </Text>
+            )}
 
             {/* Messages + Input container */}
             <KeyboardAvoidingView
@@ -79,17 +115,17 @@ export default function MessageScreen() {
                         renderItem={({ item }) => (
                             <View
                                 className={`mb-3 max-w-[75%] px-4 py-2 rounded-xl ${
-                                    item.sender === "me"
+                                    item.senderId === user?.id
                                         ? "bg-[#F58C26] self-end"
                                         : "bg-gray-200 self-start"
                                 }`}
                             >
                                 <Text
                                     className={`${
-                                        item.sender === "me" ? "text-white" : "text-black"
+                                        item.senderId === user?.id ? "text-white" : "text-black"
                                     } text-base`}
                                 >
-                                    {item.text}
+                                    {item.content}
                                 </Text>
                             </View>
                         )}
@@ -101,13 +137,14 @@ export default function MessageScreen() {
                             className="flex-1 border border-gray-300 rounded-full px-4 py-2 mr-2"
                             placeholder="Type a message..."
                             value={input}
-                            onChangeText={setInput}
-                            editable={!showModal}
+                            onChangeText={handleChangeText}
+                            editable={!ended}
+                            maxLength={500}
                         />
                         <TouchableOpacity
                             className="bg-[#F58C26] rounded-full px-4 py-2"
-                            onPress={sendMessage}
-                            disabled={showModal}
+                            onPress={handleSend}
+                            disabled={ended}
                         >
                             <Text className="text-white font-semibold">Send</Text>
                         </TouchableOpacity>
@@ -115,7 +152,7 @@ export default function MessageScreen() {
                 </View>
             </KeyboardAvoidingView>
 
-            <ExpireModal showModal={showModal} />
+            <ExpireModal showModal={ended} />
         </SafeAreaView>
     );
 }
