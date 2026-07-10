@@ -5,6 +5,8 @@ import { AuthUser } from "@/utils/models";
 
 const ACCESS_TOKEN_KEY = "access_token";
 const USER_KEY = "auth_user";
+const LOCALE_KEY = "locale";
+const ONBOARDING_SEEN_KEY = "onboarding_seen";
 
 // expo-secure-store has no web implementation (no Keychain/Keystore
 // equivalent there) — fall back to localStorage on web, Keychain/Keystore
@@ -49,5 +51,21 @@ export const Storage = {
 
     async clear(): Promise<void> {
         await Promise.all([this.removeAccessToken(), this.removeUser()]);
+    },
+
+    getLocale(): Promise<string | null> {
+        return kv.getItemAsync(LOCALE_KEY);
+    },
+
+    async setLocale(locale: string): Promise<void> {
+        await kv.setItemAsync(LOCALE_KEY, locale);
+    },
+
+    async getHasSeenOnboarding(): Promise<boolean> {
+        return (await kv.getItemAsync(ONBOARDING_SEEN_KEY)) === "true";
+    },
+
+    async setHasSeenOnboarding(): Promise<void> {
+        await kv.setItemAsync(ONBOARDING_SEEN_KEY, "true");
     },
 };
