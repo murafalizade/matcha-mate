@@ -1,11 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
-import { Venue } from "@/utils/models";
 
-interface VenueContextValue {
-    venue: Venue | null;
-    setCheckedInVenue: (venue: Venue) => void;
-    clearCheckedInVenue: () => void;
-}
+import { VenueContextValue } from "@/hooks/useVenue.types";
+import { Venue } from "@/utils/models";
 
 const VenueContext = createContext<VenueContextValue | null>(null);
 
@@ -27,6 +23,8 @@ export function VenueProvider({ children }: { children: React.ReactNode }) {
 
 export function useVenue() {
     const ctx = useContext(VenueContext);
-    if (!ctx) throw new Error("useVenue must be used within a VenueProvider");
+    if (!ctx) {
+        throw new Error("useVenue must be used within a VenueProvider");
+    }
     return ctx;
 }

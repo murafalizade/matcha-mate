@@ -1,18 +1,14 @@
+import * as Location from "expo-location";
 import { useEffect, useRef, useState } from "react";
 import { AppState } from "react-native";
-import * as Location from "expo-location";
 import { Socket } from "socket.io-client";
-import { createSocket } from "@/utils/socket";
+
+import { UsePresenceFeedResult } from "@/hooks/usePresenceFeed.types";
 import { getAccessToken } from "@/utils/api";
 import { FeedProfile } from "@/utils/models";
+import { createSocket } from "@/utils/socket";
 
 const HEARTBEAT_INTERVAL_MS = 30_000;
-
-interface UsePresenceFeedResult {
-    profiles: FeedProfile[];
-    connected: boolean;
-    error: string | null;
-}
 
 export function usePresenceFeed(venueId: string | null): UsePresenceFeedResult {
     const [profiles, setProfiles] = useState<FeedProfile[]>([]);
@@ -22,7 +18,9 @@ export function usePresenceFeed(venueId: string | null): UsePresenceFeedResult {
     const heartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     useEffect(() => {
-        if (!venueId) return;
+        if (!venueId) {
+            return;
+        }
 
         let cancelled = false;
 
@@ -52,35 +50,54 @@ export function usePresenceFeed(venueId: string | null): UsePresenceFeedResult {
 
         const connect = () => {
             const token = getAccessToken();
-            if (!token) return;
+            if (!token) {
+                return;
+            }
 
             const socket = createSocket("/presence", token);
             socketRef.current = socket;
 
             socket.on("connect", () => {
-                if (cancelled) return;
+                if (cancelled) {
+                    return;
+                }
                 setConnected(true);
                 setError(null);
             });
             socket.on("disconnect", () => {
-                if (!cancelled) setConnected(false);
+                if (!cancelled) {
+                    setConnected(false);
+                }
             });
             socket.on("connect_error", (err) => {
-                if (!cancelled) setError(err.message);
+                if (!cancelled) {
+                    setError(err.message);
+                }
             });
             socket.on("error", (payload: { message: string }) => {
-                if (!cancelled) setError(payload.message);
+                if (!cancelled) {
+                    setError(payload.message);
+                }
             });
 
             socket.on("feed_initial", (payload: { users: FeedProfile[] }) => {
-                if (!cancelled) setProfiles(payload.users);
+                if (!cancelled) {
+                    setProfiles(payload.users);
+                }
             });
             socket.on("user_joined", (payload: { user: FeedProfile }) => {
-                if (cancelled) return;
-                setProfiles((prev) => [payload.user, ...prev.filter((p) => p.id !== payload.user.id)]);
+                if (cancelled) {
+                    return;
+                }
+                setProfiles((prev) => [
+                    payload.user,
+                    ...prev.filter((p) => p.id !== payload.user.id),
+                ]);
             });
             socket.on("user_left", (payload: { userId: string }) => {
-                if (cancelled) return;
+                if (cancelled) {
+                    return;
+                }
                 setProfiles((prev) => prev.filter((p) => p.id !== payload.userId));
             });
 

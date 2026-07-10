@@ -1,17 +1,11 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
-import { AuthService, LoginPayload, RegisterPayload } from "@/services/auth";
-import { setAccessToken, setUnauthorizedHandler } from "@/utils/api";
-import { Storage } from "@/utils/storage";
-import { AuthUser } from "@/utils/models";
 
-interface AuthContextValue {
-    user: AuthUser | null;
-    isAuth: boolean;
-    isLoading: boolean;
-    login: (payload: LoginPayload) => Promise<void>;
-    register: (payload: RegisterPayload) => Promise<void>;
-    logout: () => Promise<void>;
-}
+import { AuthContextValue } from "@/hooks/useAuth.types";
+import { AuthService } from "@/services/auth";
+import { LoginPayload, RegisterPayload } from "@/services/auth.types";
+import { setAccessToken, setUnauthorizedHandler } from "@/utils/api";
+import { AuthUser } from "@/utils/models";
+import { Storage } from "@/utils/storage";
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
@@ -31,7 +25,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUnauthorizedHandler(() => {
             // Access tokens aren't refreshed (see MOBILE_INTEGRATION_GUIDE.md §1,
             // Option C) — any 401 means the session is gone, so log out.
-            if (userRef.current) void logout();
+            if (userRef.current) {
+                void logout();
+            }
         });
 
         (async () => {
@@ -51,10 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const persistSession = async (accessToken: string, authUser: AuthUser) => {
         setAccessToken(accessToken);
-        await Promise.all([
-            Storage.setAccessToken(accessToken),
-            Storage.setUser(authUser),
-        ]);
+        await Promise.all([Storage.setAccessToken(accessToken), Storage.setUser(authUser)]);
         setUser(authUser);
     };
 
@@ -69,9 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider
-            value={{ user, isAuth: !!user, isLoading, login, register, logout }}
-        >
+        <AuthContext.Provider value={{ user, isAuth: !!user, isLoading, login, register, logout }}>
             {children}
         </AuthContext.Provider>
     );
@@ -79,6 +70,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export function useAuth() {
     const ctx = useContext(AuthContext);
-    if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
+    if (!ctx) {
+        throw new Error("useAuth must be used within an AuthProvider");
+    }
     return ctx;
 }

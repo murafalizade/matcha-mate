@@ -1,23 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
-import { createSocket } from "@/utils/socket";
+
+import { EndReason, UseChatSessionResult } from "@/hooks/useChatSession.types";
 import { getAccessToken } from "@/utils/api";
 import { ChatMessage, ChatSession } from "@/utils/models";
-
-type EndReason = "chat_ended" | "session_expired" | "partner_left";
-
-interface UseChatSessionResult {
-    session: ChatSession | null;
-    messages: ChatMessage[];
-    partnerTyping: boolean;
-    connected: boolean;
-    error: string | null;
-    endedReason: EndReason | null;
-    minutesLeft: number | null;
-    sendMessage: (content: string) => void;
-    setTyping: (isTyping: boolean) => void;
-    endChat: () => void;
-}
+import { createSocket } from "@/utils/socket";
 
 export function useChatSession(chatSessionId: string | null): UseChatSessionResult {
     const [session, setSession] = useState<ChatSession | null>(null);
@@ -30,60 +17,86 @@ export function useChatSession(chatSessionId: string | null): UseChatSessionResu
     const socketRef = useRef<Socket | null>(null);
 
     useEffect(() => {
-        if (!chatSessionId) return;
+        if (!chatSessionId) {
+            return;
+        }
         let cancelled = false;
 
         const token = getAccessToken();
-        if (!token) return;
+        if (!token) {
+            return;
+        }
 
         const socket = createSocket("/chat", token);
         socketRef.current = socket;
 
         socket.on("connect", () => {
-            if (cancelled) return;
+            if (cancelled) {
+                return;
+            }
             setConnected(true);
             setError(null);
             socket.emit("join_chat", { chatSessionId });
         });
         socket.on("disconnect", () => {
-            if (!cancelled) setConnected(false);
+            if (!cancelled) {
+                setConnected(false);
+            }
         });
         socket.on("connect_error", (err) => {
-            if (!cancelled) setError(err.message);
+            if (!cancelled) {
+                setError(err.message);
+            }
         });
         socket.on("error", (payload: { message: string }) => {
-            if (!cancelled) setError(payload.message);
+            if (!cancelled) {
+                setError(payload.message);
+            }
         });
 
         socket.on(
             "chat_joined",
             (payload: { chatSessionId: string; messages: ChatMessage[]; session: ChatSession }) => {
-                if (cancelled || payload.chatSessionId !== chatSessionId) return;
+                if (cancelled || payload.chatSessionId !== chatSessionId) {
+                    return;
+                }
                 setMessages(payload.messages);
                 setSession(payload.session);
             },
         );
 
         socket.on("message", (message: ChatMessage) => {
-            if (cancelled || message.chatSessionId !== chatSessionId) return;
+            if (cancelled || message.chatSessionId !== chatSessionId) {
+                return;
+            }
             setMessages((prev) => [...prev, message]);
         });
 
         socket.on("partner_typing", (payload: { isTyping: boolean }) => {
-            if (!cancelled) setPartnerTyping(payload.isTyping);
+            if (!cancelled) {
+                setPartnerTyping(payload.isTyping);
+            }
         });
 
         socket.on("session_ending_soon", (payload: { minutesLeft: number }) => {
-            if (!cancelled) setMinutesLeft(payload.minutesLeft);
+            if (!cancelled) {
+                setMinutesLeft(payload.minutesLeft);
+            }
         });
         socket.on("chat_ended", () => {
-            if (!cancelled) setEndedReason("chat_ended");
+            if (!cancelled) {
+                setEndedReason("chat_ended");
+            }
         });
         socket.on("session_expired", () => {
-            if (!cancelled) setEndedReason("session_expired");
+            if (!cancelled) {
+                setEndedReason("session_expired");
+            }
         });
         socket.on("partner_left", () => {
-            if (!cancelled) setEndedReason("partner_left");
+            if (!cancelled) {
+                setEndedReason("partner_left");
+            }
         });
 
         socket.connect();
@@ -96,17 +109,23 @@ export function useChatSession(chatSessionId: string | null): UseChatSessionResu
     }, [chatSessionId]);
 
     const sendMessage = (content: string) => {
-        if (!chatSessionId) return;
+        if (!chatSessionId) {
+            return;
+        }
         socketRef.current?.emit("send_message", { chatSessionId, content });
     };
 
     const setTyping = (isTyping: boolean) => {
-        if (!chatSessionId) return;
+        if (!chatSessionId) {
+            return;
+        }
         socketRef.current?.emit("typing", { chatSessionId, isTyping });
     };
 
     const endChat = () => {
-        if (!chatSessionId) return;
+        if (!chatSessionId) {
+            return;
+        }
         socketRef.current?.emit("end_chat", { chatSessionId });
     };
 
