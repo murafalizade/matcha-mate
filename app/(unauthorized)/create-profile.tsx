@@ -1,4 +1,8 @@
+import { yupResolver } from "@hookform/resolvers/yup";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 import {
     SafeAreaView,
     Text,
@@ -10,57 +14,18 @@ import {
     Alert,
     ActivityIndicator,
 } from "react-native";
-import { useForm, Controller } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as ImagePicker from "expo-image-picker";
-import DateTimePicker from "@react-native-community/datetimepicker";
+
+import { RadioGroup } from "@/components/RadioGroup";
 import { useAuth } from "@/hooks/useAuth";
+import { createProfileSchema } from "@/schemas/create-profile";
+import { CreateProfileFormData } from "@/types/create-profile";
 import { ApiError } from "@/utils/api";
 
-// Mirrors the backend's password/name/bio rules (see auth/constants/validation)
-// so the client rejects the same input the server would, instead of a round-trip 400.
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-const NAME_REGEX = /^[a-zA-Z\s'-]+$/;
-
-interface FormData {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    birthDate: Date;
-    gender: "MALE" | "FEMALE" | "OTHER";
-    bio: string;
-}
-
-const schema = yup.object({
-    firstName: yup
-        .string()
-        .trim()
-        .min(2, "Min 2 characters")
-        .max(50, "Max 50 characters")
-        .matches(NAME_REGEX, "Letters, spaces, ' and - only")
-        .required("First name is required"),
-    lastName: yup
-        .string()
-        .trim()
-        .min(2, "Min 2 characters")
-        .max(50, "Max 50 characters")
-        .matches(NAME_REGEX, "Letters, spaces, ' and - only")
-        .required("Last name is required"),
-    email: yup.string().email("Invalid email").max(255).required("Email is required"),
-    password: yup
-        .string()
-        .matches(PASSWORD_REGEX, "Needs upper, lower, number & special character (@$!%*?&)")
-        .required("Password is required"),
-    birthDate: yup.date().required("Birthdate is required"),
-    gender: yup.string().oneOf(["MALE", "FEMALE", "OTHER"]).required(),
-    bio: yup
-        .string()
-        .min(10, "Min 10 characters")
-        .max(500, "Max 500 characters")
-        .required("Bio is required"),
-});
+const GENDER_OPTIONS = [
+    { value: "MALE" as const, label: "Male" },
+    { value: "FEMALE" as const, label: "Female" },
+    { value: "OTHER" as const, label: "Other" },
+];
 
 export default function CreateProfileScreen() {
     const { register: registerUser } = useAuth();
@@ -73,8 +38,8 @@ export default function CreateProfileScreen() {
         control,
         handleSubmit,
         formState: { errors },
-    } = useForm<FormData>({
-        resolver: yupResolver(schema),
+    } = useForm<CreateProfileFormData>({
+        resolver: yupResolver(createProfileSchema),
         reValidateMode: "onChange",
     });
 
@@ -86,30 +51,12 @@ export default function CreateProfileScreen() {
             aspect: [1, 1],
         });
 
-        if (!result.canceled) setImageUri(result.assets[0].uri);
+        if (!result.canceled) {
+            setImageUri(result.assets[0].uri);
+        }
     };
 
-    const radioButton = (
-        value: string,
-        selected: string,
-        label: string,
-        onPress: () => void
-    ) => (
-        <TouchableOpacity
-            onPress={onPress}
-            className={`px-4 py-2 border rounded-lg ${
-                selected === value
-                    ? "bg-[#F58C26] border-[#F58C26]"
-                    : "border-gray-300"
-            }`}
-        >
-            <Text className={`${selected === value ? "text-white" : "text-gray-700"}`}>
-                {label}
-            </Text>
-        </TouchableOpacity>
-    );
-
-    const onSubmit = async (data: FormData) => {
+    const onSubmit = async (data: CreateProfileFormData) => {
         if (!agree) {
             Alert.alert("Agreement Required", "You must agree to the Terms of Service.");
             return;
@@ -208,12 +155,16 @@ export default function CreateProfileScreen() {
                                     display="default"
                                     onChange={(event, date) => {
                                         setShowDatePicker(false);
-                                        if (date) onChange(date);
+                                        if (date) {
+                                            onChange(date);
+                                        }
                                     }}
                                 />
                             )}
                             {errors.birthDate && (
-                                <Text className="text-red-500 mt-1">{errors.birthDate.message}</Text>
+                                <Text className="text-red-500 mt-1">
+                                    {errors.birthDate.message}
+                                </Text>
                             )}
                         </View>
                     )}
@@ -225,17 +176,17 @@ export default function CreateProfileScreen() {
                     control={control}
                     name="gender"
                     render={({ field: { onChange, value } }) => (
-                        <View className="flex-row space-x-4 mb-4">
-                            {radioButton("MALE", value, "Male", () => onChange("MALE"))}
-                            {radioButton("FEMALE", value, "Female", () => onChange("FEMALE"))}
-                            {radioButton("OTHER", value, "Other", () => onChange("OTHER"))}
+                        <View className="mb-4">
+                            <RadioGroup
+                                options={GENDER_OPTIONS}
+                                value={value}
+                                onChange={onChange}
+                            />
                         </View>
                     )}
                 />
                 {errors.gender && (
-                    <Text className="text-red-500 text-sm mb-2">
-                        {errors.gender.message}
-                    </Text>
+                    <Text className="text-red-500 text-sm mb-2">{errors.gender.message}</Text>
                 )}
 
                 {/* Bio */}

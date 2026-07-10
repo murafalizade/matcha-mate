@@ -1,3 +1,9 @@
+import { yupResolver } from "@hookform/resolvers/yup";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import * as ImagePicker from "expo-image-picker";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 import {
     View,
     Text,
@@ -8,36 +14,19 @@ import {
     Alert,
     ActivityIndicator,
 } from "react-native";
-import { useForm, Controller } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as ImagePicker from "expo-image-picker";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
-import { Gender } from "@/utils/models";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+import { RadioGroup } from "@/components/RadioGroup";
+import { editProfileSchema } from "@/schemas/edit-profile";
 import { ProfileService } from "@/services/profile";
+import { EditProfileFormData } from "@/types/edit-profile";
 import { ApiError } from "@/utils/api";
 
-// Interests aren't editable here: PATCH /profiles/me accepts interestIds,
-// but there's no endpoint to list the available Interest catalog to pick
-// from, so there's nothing to build a picker against yet.
-interface EditFormData {
-    firstName: string;
-    lastName: string;
-    birthDate: Date;
-    gender: Gender;
-    bio: string;
-}
-
-const schema = yup.object({
-    firstName: yup.string().required("First name is required"),
-    lastName: yup.string().required("Last name is required"),
-    birthDate: yup.date().required("Birthdate is required"),
-    gender: yup.string().oneOf(["MALE", "FEMALE", "OTHER"]).required(),
-    bio: yup.string().max(500, "Max 500 characters").required("Bio is required"),
-});
+const GENDER_OPTIONS = [
+    { value: "MALE" as const, label: "Male" },
+    { value: "FEMALE" as const, label: "Female" },
+    { value: "OTHER" as const, label: "Other" },
+];
 
 export default function EditProfileScreen() {
     const [loading, setLoading] = useState(true);
@@ -51,15 +40,17 @@ export default function EditProfileScreen() {
         handleSubmit,
         reset,
         formState: { errors },
-    } = useForm<EditFormData>({
-        resolver: yupResolver(schema),
+    } = useForm<EditProfileFormData>({
+        resolver: yupResolver(editProfileSchema),
     });
 
     useEffect(() => {
         let cancelled = false;
         ProfileService.getMe()
             .then((profile) => {
-                if (cancelled) return;
+                if (cancelled) {
+                    return;
+                }
                 reset({
                     firstName: profile.firstName,
                     lastName: profile.lastName,
@@ -70,10 +61,15 @@ export default function EditProfileScreen() {
                 setImageUri(profile.profileImageUrl);
             })
             .catch((err) => {
-                Alert.alert("Failed to load profile", err instanceof ApiError ? err.message : "Please try again.");
+                Alert.alert(
+                    "Failed to load profile",
+                    err instanceof ApiError ? err.message : "Please try again.",
+                );
             })
             .finally(() => {
-                if (!cancelled) setLoading(false);
+                if (!cancelled) {
+                    setLoading(false);
+                }
             });
         return () => {
             cancelled = true;
@@ -93,28 +89,24 @@ export default function EditProfileScreen() {
         }
     };
 
-    const radioButton = (value: Gender, selected: Gender, onPress: () => void) => (
-        <TouchableOpacity
-            onPress={onPress}
-            className={`px-4 py-2 border rounded-lg ${
-                selected === value ? "bg-[#F58C26] border-[#F58C26]" : "border-gray-300"
-            }`}
-        >
-            <Text className={`${selected === value ? "text-white" : "text-gray-700"}`}>
-                {value.charAt(0) + value.slice(1).toLowerCase()}
-            </Text>
-        </TouchableOpacity>
-    );
-
-    const onSubmit = async (data: EditFormData) => {
+    const onSubmit = async (data: EditProfileFormData) => {
         setSubmitting(true);
         try {
             if (imageChanged) {
                 if (imageUri) {
                     const fileName = imageUri.split("/").pop() ?? "profile.jpg";
                     const extension = fileName.split(".").pop()?.toLowerCase();
-                    const mimeType = extension === "png" ? "image/png" : extension === "webp" ? "image/webp" : "image/jpeg";
-                    await ProfileService.uploadImage({ uri: imageUri, name: fileName, type: mimeType });
+                    const mimeType =
+                        extension === "png"
+                            ? "image/png"
+                            : extension === "webp"
+                              ? "image/webp"
+                              : "image/jpeg";
+                    await ProfileService.uploadImage({
+                        uri: imageUri,
+                        name: fileName,
+                        type: mimeType,
+                    });
                 } else {
                     await ProfileService.deleteImage();
                 }
@@ -130,7 +122,10 @@ export default function EditProfileScreen() {
 
             router.back();
         } catch (err) {
-            Alert.alert("Failed to save", err instanceof ApiError ? err.message : "Please try again.");
+            Alert.alert(
+                "Failed to save",
+                err instanceof ApiError ? err.message : "Please try again.",
+            );
         } finally {
             setSubmitting(false);
         }
@@ -190,7 +185,9 @@ export default function EditProfileScreen() {
                                     onChangeText={onChange}
                                 />
                                 {errors[name] && (
-                                    <Text className="text-red-500 mt-1">{errors[name]?.message}</Text>
+                                    <Text className="text-red-500 mt-1">
+                                        {errors[name]?.message}
+                                    </Text>
                                 )}
                             </View>
                         )}
@@ -216,12 +213,16 @@ export default function EditProfileScreen() {
                                     display="default"
                                     onChange={(event, date) => {
                                         setShowDatePicker(false);
-                                        if (date) onChange(date);
+                                        if (date) {
+                                            onChange(date);
+                                        }
                                     }}
                                 />
                             )}
                             {errors.birthDate && (
-                                <Text className="text-red-500 mt-1">{errors.birthDate.message}</Text>
+                                <Text className="text-red-500 mt-1">
+                                    {errors.birthDate.message}
+                                </Text>
                             )}
                         </View>
                     )}
@@ -232,10 +233,12 @@ export default function EditProfileScreen() {
                     control={control}
                     name="gender"
                     render={({ field: { onChange, value } }) => (
-                        <View className="flex-row space-x-4 mb-4">
-                            {radioButton("MALE", value, () => onChange("MALE"))}
-                            {radioButton("FEMALE", value, () => onChange("FEMALE"))}
-                            {radioButton("OTHER", value, () => onChange("OTHER"))}
+                        <View className="mb-4">
+                            <RadioGroup
+                                options={GENDER_OPTIONS}
+                                value={value}
+                                onChange={onChange}
+                            />
                         </View>
                     )}
                 />

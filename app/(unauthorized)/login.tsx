@@ -1,4 +1,7 @@
+import { yupResolver } from "@hookform/resolvers/yup";
+import { router } from "expo-router";
 import React, { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 import {
     SafeAreaView,
     Text,
@@ -8,22 +11,11 @@ import {
     ScrollView,
     ActivityIndicator,
 } from "react-native";
-import { useForm, Controller } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { router } from "expo-router";
+
 import { useAuth } from "@/hooks/useAuth";
+import { loginSchema } from "@/schemas/login";
+import { LoginData } from "@/types/login";
 import { ApiError } from "@/utils/api";
-
-interface LoginData {
-    email: string;
-    password: string;
-}
-
-const schema = yup.object({
-    email: yup.string().email("Enter a valid email").required("Email is required"),
-    password: yup.string().required("Password is required"),
-});
 
 export default function LoginScreen() {
     const { login } = useAuth();
@@ -35,7 +27,7 @@ export default function LoginScreen() {
         handleSubmit,
         formState: { errors },
     } = useForm<LoginData>({
-        resolver: yupResolver(schema),
+        resolver: yupResolver(loginSchema),
         reValidateMode: "onChange",
         defaultValues: { email: "", password: "" },
     });
@@ -63,9 +55,7 @@ export default function LoginScreen() {
             >
                 {/* Header */}
                 <View className="mb-10">
-                    <Text className="text-3xl font-bold text-center mb-2">
-                        Welcome Back 👋
-                    </Text>
+                    <Text className="text-3xl font-bold text-center mb-2">Welcome Back 👋</Text>
                     <Text className="text-gray-600 text-center">
                         Login to continue connecting with people around you
                     </Text>
@@ -127,9 +117,7 @@ export default function LoginScreen() {
                     className="mb-8"
                     // onPress={() => router.push("/(unauthorized)/forgot-password")}
                 >
-                    <Text className="text-[#F58C26] text-right font-medium">
-                        Forgot Password?
-                    </Text>
+                    <Text className="text-[#F58C26] text-right font-medium">Forgot Password?</Text>
                 </TouchableOpacity>
 
                 {serverError && (
@@ -145,18 +133,14 @@ export default function LoginScreen() {
                     {submitting ? (
                         <ActivityIndicator color="white" />
                     ) : (
-                        <Text className="text-white text-center font-semibold text-lg">
-                            Log In
-                        </Text>
+                        <Text className="text-white text-center font-semibold text-lg">Log In</Text>
                     )}
                 </TouchableOpacity>
 
                 {/* Register link */}
                 <View className="mt-6 flex-row justify-center">
                     <Text className="text-gray-600">Don’t have an account? </Text>
-                    <TouchableOpacity
-                        onPress={() => router.push("/(unauthorized)/create-profile")}
-                    >
+                    <TouchableOpacity onPress={() => router.push("/(unauthorized)/create-profile")}>
                         <Text className="text-[#F58C26] font-semibold">Sign Up</Text>
                     </TouchableOpacity>
                 </View>

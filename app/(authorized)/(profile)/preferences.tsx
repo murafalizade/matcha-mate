@@ -1,3 +1,7 @@
+import { yupResolver } from "@hookform/resolvers/yup";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 import {
     View,
     Text,
@@ -7,54 +11,16 @@ import {
     Alert,
     ActivityIndicator,
 } from "react-native";
-import { useForm, Controller } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Gender, LookingFor } from "@/utils/models";
-import { humanizeEnum } from "@/utils/format";
-import { ProfileService } from "@/services/profile";
+
+import { MultiSelectChips } from "@/components/MultiSelectChips";
+import { RadioGroup } from "@/components/RadioGroup";
+import { preferencesSchema } from "@/schemas/preferences";
 import { PreferenceService } from "@/services/preference";
+import { ProfileService } from "@/services/profile";
+import { PreferencesFormData } from "@/types/preferences";
 import { ApiError } from "@/utils/api";
-
-const LOOKING_FOR_OPTIONS: LookingFor[] = [
-    "ROMANTIC_RELATIONSHIP",
-    "CASUAL_DATING",
-    "FRIENDSHIP",
-    "NETWORKING",
-    "ACTIVITY_PARTNER",
-    "STUDY_BUDDY",
-    "LANGUAGE_EXCHANGE",
-    "COFFEE_CHAT",
-    "EVENTS_COMPANION",
-];
-
-interface FormData {
-    minAge: string;
-    maxAge: string;
-    preferredGender: Gender;
-    lookingFor: LookingFor[];
-}
-
-const schema = yup.object({
-    minAge: yup
-        .string()
-        .matches(/^\d+$/, "Must be a number")
-        .test("range", "Must be between 18 and 100", (v) => !!v && +v >= 18 && +v <= 100)
-        .required("Required"),
-    maxAge: yup
-        .string()
-        .matches(/^\d+$/, "Must be a number")
-        .test("range", "Must be between 18 and 100", (v) => !!v && +v >= 18 && +v <= 100)
-        .test("gte-min", "Must be ≥ min age", function (v) {
-            return !!v && +v >= +this.parent.minAge;
-        })
-        .required("Required"),
-    preferredGender: yup.string().oneOf(["MALE", "FEMALE", "OTHER"]).required(),
-    lookingFor: yup.array().min(1, "Pick at least one").required(),
-});
+import { GENDER_OPTIONS, LOOKING_FOR_OPTIONS } from "@/utils/models";
 
 export default function PreferencesScreen() {
     const [loading, setLoading] = useState(true);
@@ -65,8 +31,8 @@ export default function PreferencesScreen() {
         handleSubmit,
         reset,
         formState: { errors },
-    } = useForm<FormData>({
-        resolver: yupResolver(schema),
+    } = useForm<PreferencesFormData>({
+        resolver: yupResolver(preferencesSchema),
         defaultValues: { minAge: "18", maxAge: "35", preferredGender: "OTHER", lookingFor: [] },
     });
 
@@ -74,7 +40,9 @@ export default function PreferencesScreen() {
         let cancelled = false;
         ProfileService.getMe()
             .then((profile) => {
-                if (cancelled || !profile.preference) return;
+                if (cancelled || !profile.preference) {
+                    return;
+                }
                 reset({
                     minAge: String(profile.preference.minAge),
                     maxAge: String(profile.preference.maxAge),
@@ -83,17 +51,22 @@ export default function PreferencesScreen() {
                 });
             })
             .catch((err) => {
-                Alert.alert("Failed to load preferences", err instanceof ApiError ? err.message : "Please try again.");
+                Alert.alert(
+                    "Failed to load preferences",
+                    err instanceof ApiError ? err.message : "Please try again.",
+                );
             })
             .finally(() => {
-                if (!cancelled) setLoading(false);
+                if (!cancelled) {
+                    setLoading(false);
+                }
             });
         return () => {
             cancelled = true;
         };
     }, [reset]);
 
-    const onSubmit = async (data: FormData) => {
+    const onSubmit = async (data: PreferencesFormData) => {
         setSubmitting(true);
         try {
             await PreferenceService.updateMe({
@@ -104,7 +77,10 @@ export default function PreferencesScreen() {
             });
             router.back();
         } catch (err) {
-            Alert.alert("Failed to save", err instanceof ApiError ? err.message : "Please try again.");
+            Alert.alert(
+                "Failed to save",
+                err instanceof ApiError ? err.message : "Please try again.",
+            );
         } finally {
             setSubmitting(false);
         }
@@ -137,7 +113,9 @@ export default function PreferencesScreen() {
                                     onChangeText={onChange}
                                 />
                                 {errors.minAge && (
-                                    <Text className="text-red-500 mt-1 text-sm">{errors.minAge.message}</Text>
+                                    <Text className="text-red-500 mt-1 text-sm">
+                                        {errors.minAge.message}
+                                    </Text>
                                 )}
                             </View>
                         )}
@@ -155,7 +133,9 @@ export default function PreferencesScreen() {
                                     onChangeText={onChange}
                                 />
                                 {errors.maxAge && (
-                                    <Text className="text-red-500 mt-1 text-sm">{errors.maxAge.message}</Text>
+                                    <Text className="text-red-500 mt-1 text-sm">
+                                        {errors.maxAge.message}
+                                    </Text>
                                 )}
                             </View>
                         )}
@@ -167,20 +147,12 @@ export default function PreferencesScreen() {
                     control={control}
                     name="preferredGender"
                     render={({ field: { onChange, value } }) => (
-                        <View className="flex-row space-x-4 mb-6">
-                            {(["MALE", "FEMALE", "OTHER"] as Gender[]).map((g) => (
-                                <TouchableOpacity
-                                    key={g}
-                                    onPress={() => onChange(g)}
-                                    className={`px-4 py-2 border rounded-lg ${
-                                        value === g ? "bg-[#F58C26] border-[#F58C26]" : "border-gray-300"
-                                    }`}
-                                >
-                                    <Text className={value === g ? "text-white" : "text-gray-700"}>
-                                        {g.charAt(0) + g.slice(1).toLowerCase()}
-                                    </Text>
-                                </TouchableOpacity>
-                            ))}
+                        <View className="mb-6">
+                            <RadioGroup
+                                options={GENDER_OPTIONS}
+                                value={value}
+                                onChange={onChange}
+                            />
                         </View>
                     )}
                 />
@@ -190,30 +162,11 @@ export default function PreferencesScreen() {
                     control={control}
                     name="lookingFor"
                     render={({ field: { onChange, value } }) => (
-                        <View className="flex-row flex-wrap mb-2">
-                            {LOOKING_FOR_OPTIONS.map((option) => {
-                                const selected = value.includes(option);
-                                return (
-                                    <TouchableOpacity
-                                        key={option}
-                                        onPress={() =>
-                                            onChange(
-                                                selected
-                                                    ? value.filter((v) => v !== option)
-                                                    : [...value, option],
-                                            )
-                                        }
-                                        className={`px-3 py-2 border rounded-lg mr-2 mb-2 ${
-                                            selected ? "bg-[#F58C26] border-[#F58C26]" : "border-gray-300"
-                                        }`}
-                                    >
-                                        <Text className={`capitalize ${selected ? "text-white" : "text-gray-700"}`}>
-                                            {humanizeEnum(option)}
-                                        </Text>
-                                    </TouchableOpacity>
-                                );
-                            })}
-                        </View>
+                        <MultiSelectChips
+                            options={LOOKING_FOR_OPTIONS}
+                            selected={value}
+                            onChange={onChange}
+                        />
                     )}
                 />
                 {errors.lookingFor && (

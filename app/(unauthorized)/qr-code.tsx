@@ -1,17 +1,17 @@
-import { View, Text, SafeAreaView, TouchableOpacity, ActivityIndicator } from "react-native";
-import React, { useState } from "react";
 import * as Location from "expo-location";
 import { router } from "expo-router";
+import React, { useState } from "react";
+import { View, Text, SafeAreaView, TouchableOpacity, ActivityIndicator } from "react-native";
+
 import QRScanner from "@/components/QRScanner";
 import { useVenue } from "@/hooks/useVenue";
 import { VenueService } from "@/services/venue";
+import { QrCodeScreenState } from "@/types/qr-code";
 import { ApiError } from "@/utils/api";
-
-type ScreenState = "scanning" | "checking-in" | "error";
 
 export default function QrCodeScanScreen() {
     const { setCheckedInVenue } = useVenue();
-    const [state, setState] = useState<ScreenState>("scanning");
+    const [state, setState] = useState<QrCodeScreenState>("scanning");
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [scannerKey, setScannerKey] = useState(0);
 
@@ -54,7 +54,11 @@ export default function QrCodeScanScreen() {
 
                 <View className="flex-1 w-full rounded-2xl overflow-hidden">
                     {state === "scanning" && (
-                        <QRScanner key={scannerKey} onScan={handleScan} onCancel={() => router.back()} />
+                        <QRScanner
+                            key={scannerKey}
+                            onScan={handleScan}
+                            onCancel={() => router.back()}
+                        />
                     )}
 
                     {state === "checking-in" && (
