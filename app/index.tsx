@@ -1,10 +1,8 @@
-// app/index.tsx
 import { Redirect } from "expo-router";
-import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function RootScreen() {
-    // Replace with your real auth state (from context, redux, etc.)
-    const [isAuth] = useState(false);
+    const { isAuth } = useAuth();
 
     if (isAuth) {
         return <Redirect href="/(unauthorized)/launch" />;
