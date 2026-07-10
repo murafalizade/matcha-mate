@@ -1,27 +1,12 @@
+import {
+    FeedResponse,
+    GetFeedParams,
+    ImagePickerFile,
+    ProfileImageUploadResponse,
+    UpdateProfilePayload,
+} from "@/services/profile.types";
 import { apiDelete, apiGet, apiPatch, apiPost } from "@/utils/api";
-import { FeedProfile, Gender, Profile } from "@/utils/models";
-
-export interface ImagePickerFile {
-    uri: string;
-    name: string;
-    type: string;
-}
-
-export interface FeedResponse {
-    profiles: FeedProfile[];
-    total: number;
-    nextCursor: string | null;
-    hasMore: boolean;
-}
-
-export interface UpdateProfilePayload {
-    firstName?: string;
-    lastName?: string;
-    birthDate?: string;
-    gender?: Gender;
-    bio?: string;
-    interestIds?: string[];
-}
+import { Profile } from "@/utils/models";
 
 export const ProfileService = {
     getMe(): Promise<Profile> {
@@ -29,7 +14,7 @@ export const ProfileService = {
     },
 
     // Requires an active venue check-in (400 otherwise).
-    getFeed(params?: { limit?: number; cursor?: string }): Promise<FeedResponse> {
+    getFeed(params?: GetFeedParams): Promise<FeedResponse> {
         return apiGet<FeedResponse>("/profiles/feed", { params });
     },
 
@@ -37,12 +22,12 @@ export const ProfileService = {
         return apiPatch<Profile>("/profiles/me", payload);
     },
 
-    uploadImage(file: ImagePickerFile): Promise<{ profileImageUrl: string }> {
+    uploadImage(file: ImagePickerFile): Promise<ProfileImageUploadResponse> {
         const formData = new FormData();
         // React Native's FormData accepts a {uri, name, type} object in place
         // of a Blob — the DOM FormData type doesn't know about that shape.
         formData.append("profileImage", file as unknown as Blob);
-        return apiPost<{ profileImageUrl: string }>("/profiles/me/image", formData, {
+        return apiPost<ProfileImageUploadResponse>("/profiles/me/image", formData, {
             headers: { "Content-Type": "multipart/form-data" },
         });
     },

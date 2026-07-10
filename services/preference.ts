@@ -1,16 +1,10 @@
+import { PreferenceExistsResponse, UpdatePreferencePayload } from "@/services/preference.types";
 import { apiDelete, apiGet, apiPut } from "@/utils/api";
-import { Gender, LookingFor, Preference } from "@/utils/models";
-
-export interface UpdatePreferencePayload {
-    minAge: number;
-    maxAge: number;
-    preferredGender: Gender;
-    lookingFor: LookingFor[];
-}
+import { Preference } from "@/utils/models";
 
 export const PreferenceService = {
-    exists(): Promise<{ exists: boolean }> {
-        return apiGet<{ exists: boolean }>("/preferences/me/exists");
+    exists(): Promise<PreferenceExistsResponse> {
+        return apiGet<PreferenceExistsResponse>("/preferences/me/exists");
     },
 
     getMe(): Promise<Preference> {

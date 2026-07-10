@@ -1,11 +1,8 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:8000";
+import { ApiEnvelope, FieldError } from "@/utils/api.types";
 
-export interface FieldError {
-    field: string;
-    messages: string[];
-}
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:8000";
 
 export class ApiError extends Error {
     statusCode: number;
@@ -17,23 +14,6 @@ export class ApiError extends Error {
         this.statusCode = statusCode;
         this.errors = errors;
     }
-}
-
-interface ApiEnvelope<T> {
-    success: boolean;
-    statusCode: number;
-    message?: string;
-    data: T;
-    pagination?: {
-        total: number;
-        page: number;
-        limit: number;
-        totalPages: number;
-        hasNextPage: boolean;
-        hasPreviousPage: boolean;
-    };
-    errors?: FieldError[];
-    timestamp: string;
 }
 
 export const api = axios.create({
@@ -70,7 +50,7 @@ api.interceptors.response.use(
         const envelope = response.data as ApiEnvelope<unknown>;
         // Paginated responses carry metadata alongside `data` — keep the shape, unwrap otherwise.
         if (envelope && typeof envelope === "object" && "pagination" in envelope) {
-            return { ...envelope.data as object, pagination: envelope.pagination };
+            return { ...(envelope.data as object), pagination: envelope.pagination };
         }
         return envelope?.data;
     },

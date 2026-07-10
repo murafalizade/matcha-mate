@@ -1,10 +1,6 @@
+import { CheckInPayload } from "@/services/venue.types";
 import { apiPost } from "@/utils/api";
 import { Venue } from "@/utils/models";
-
-export interface CheckInPayload {
-    latitude: number;
-    longitude: number;
-}
 
 export const VenueService = {
     checkIn(venueId: string, payload: CheckInPayload): Promise<Venue> {
