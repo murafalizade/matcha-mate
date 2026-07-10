@@ -1,5 +1,11 @@
-import { apiGet, apiPatch } from "@/utils/api";
+import { apiDelete, apiGet, apiPatch, apiPost } from "@/utils/api";
 import { FeedProfile, Gender, Profile } from "@/utils/models";
+
+export interface ImagePickerFile {
+    uri: string;
+    name: string;
+    type: string;
+}
 
 export interface FeedResponse {
     profiles: FeedProfile[];
@@ -29,5 +35,19 @@ export const ProfileService = {
 
     updateMe(payload: UpdateProfilePayload): Promise<Profile> {
         return apiPatch<Profile>("/profiles/me", payload);
+    },
+
+    uploadImage(file: ImagePickerFile): Promise<{ profileImageUrl: string }> {
+        const formData = new FormData();
+        // React Native's FormData accepts a {uri, name, type} object in place
+        // of a Blob — the DOM FormData type doesn't know about that shape.
+        formData.append("profileImage", file as unknown as Blob);
+        return apiPost<{ profileImageUrl: string }>("/profiles/me/image", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+    },
+
+    deleteImage(): Promise<void> {
+        return apiDelete<void>("/profiles/me/image");
     },
 };

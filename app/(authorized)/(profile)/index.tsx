@@ -1,56 +1,78 @@
-import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import { router } from "expo-router";
-import { Profile } from "@/utils/models"; // assuming your models are here
+import { useCallback, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import { Profile } from "@/utils/models";
 import { humanizeEnum } from "@/utils/format";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { ProfileService } from "@/services/profile";
+import { ApiError } from "@/utils/api";
 
-// TODO: replace with GET /profiles/me once wired up.
-const mockProfile: Profile = {
-    id: "1",
-    firstName: "John",
-    lastName: "Doe",
-    email: "johndoe@example.com",
-    gender: "MALE",
-    profileImageUrl: null,
-    bio: "I’m a software developer who loves coffee, adventures, and meeting new people.",
-    interests: [
-        { id: "i1", name: "Music" },
-        { id: "i2", name: "Coding" },
-        { id: "i3", name: "Traveling" },
-    ],
-    preference: {
-        minAge: 25,
-        maxAge: 35,
-        preferredGender: "FEMALE",
-        lookingFor: ["ROMANTIC_RELATIONSHIP"],
-    },
-    birthDate: "1997-01-15T00:00:00.000Z",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-};
+function calculateAge(birthDate: string): number {
+    const diff = Date.now() - new Date(birthDate).getTime();
+    return new Date(diff).getUTCFullYear() - 1970;
+}
 
 export default function ProfileScreen() {
-    const user = mockProfile;
+    const [profile, setProfile] = useState<Profile | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    // Calculate age from birthdate
-    const calculateAge = (birthDate: string) => {
-        const diff = Date.now() - new Date(birthDate).getTime();
-        const age = new Date(diff).getUTCFullYear() - 1970;
-        return age;
-    };
+    // Re-fetch every time this tab regains focus so edits made on the
+    // edit/preferences screens show up without lifting state between them.
+    useFocusEffect(
+        useCallback(() => {
+            let cancelled = false;
+            setLoading(true);
+            setError(null);
+            ProfileService.getMe()
+                .then((data) => {
+                    if (!cancelled) setProfile(data);
+                })
+                .catch((err) => {
+                    if (!cancelled) setError(err instanceof ApiError ? err.message : "Failed to load profile");
+                })
+                .finally(() => {
+                    if (!cancelled) setLoading(false);
+                });
+            return () => {
+                cancelled = true;
+            };
+        }, []),
+    );
 
-    const age = calculateAge(user.birthDate);
+    if (loading) {
+        return (
+            <View className="flex-1 items-center justify-center bg-white">
+                <ActivityIndicator color="#F58C26" size="large" />
+            </View>
+        );
+    }
+
+    if (error || !profile) {
+        return (
+            <View className="flex-1 items-center justify-center bg-white px-6">
+                <Text className="text-red-500 text-center">{error ?? "Profile unavailable"}</Text>
+            </View>
+        );
+    }
+
+    const age = calculateAge(profile.birthDate);
 
     return (
         <ScrollView className="flex-1 bg-white p-6">
             <SafeAreaView>
             <View className="items-center mb-6">
                 <Image
-                    source={{ uri: "https://i.pravatar.cc/100?img=12" }}
+                    source={
+                        profile.profileImageUrl
+                            ? { uri: profile.profileImageUrl }
+                            : require("../../../assets/images/test.jpeg")
+                    }
                     className="w-24 h-24 rounded-full mb-3"
                 />
-                <Text className="text-xl font-bold">{user.firstName} {user.lastName}</Text>
-                <Text className="text-gray-500">{user.email}</Text>
+                <Text className="text-xl font-bold">{profile.firstName} {profile.lastName}</Text>
+                <Text className="text-gray-500">{profile.email}</Text>
             </View>
 
             <View className="bg-gray-100 rounded-xl p-4 mb-4">
@@ -60,32 +82,36 @@ export default function ProfileScreen() {
 
             <View className="bg-gray-100 rounded-xl p-4 mb-4">
                 <Text className="text-gray-500 mb-1">Gender</Text>
-                <Text className="font-semibold text-lg capitalize">{user.gender.toLowerCase()}</Text>
+                <Text className="font-semibold text-lg capitalize">{profile.gender.toLowerCase()}</Text>
             </View>
 
             <View className="bg-gray-100 rounded-xl p-4 mb-4">
                 <Text className="text-gray-500 mb-1">Bio</Text>
-                <Text className="font-semibold text-base">{user.bio}</Text>
+                <Text className="font-semibold text-base">{profile.bio || "—"}</Text>
             </View>
 
             <View className="bg-gray-100 rounded-xl p-4 mb-4">
                 <Text className="text-gray-500 mb-1">Interests</Text>
                 <Text className="font-semibold text-base">
-                    {user.interests.map((interest) => interest.name).join(", ")}
+                    {profile.interests.length ? profile.interests.map((interest) => interest.name).join(", ") : "—"}
                 </Text>
             </View>
 
-            {user.preference && (
-                <View className="bg-gray-100 rounded-xl p-4 mb-4">
-                    <Text className="text-gray-500 mb-1">Looking For</Text>
-                    <Text className="font-semibold text-base capitalize">
-                        {user.preference.lookingFor?.map(humanizeEnum).join(", ") ?? "—"}
-                    </Text>
-                    <Text className="text-gray-400 mt-1">
-                        Prefers: {user.preference.preferredGender ?? "Anyone"} · Age {user.preference.minAge}-{user.preference.maxAge}
-                    </Text>
-                </View>
-            )}
+            <View className="bg-gray-100 rounded-xl p-4 mb-4">
+                <Text className="text-gray-500 mb-1">Looking For</Text>
+                {profile.preference ? (
+                    <>
+                        <Text className="font-semibold text-base capitalize">
+                            {profile.preference.lookingFor?.map(humanizeEnum).join(", ") ?? "—"}
+                        </Text>
+                        <Text className="text-gray-400 mt-1">
+                            Prefers: {profile.preference.preferredGender ?? "Anyone"} · Age {profile.preference.minAge}-{profile.preference.maxAge}
+                        </Text>
+                    </>
+                ) : (
+                    <Text className="text-gray-400">Not set yet</Text>
+                )}
+            </View>
 
             <TouchableOpacity
                 className="bg-[#F58C26] rounded-xl py-3 mb-3"
@@ -93,6 +119,15 @@ export default function ProfileScreen() {
             >
                 <Text className="text-white text-center font-semibold text-lg">
                     Edit Profile
+                </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                className="bg-gray-200 rounded-xl py-3 mb-3"
+                onPress={() => router.push("/(authorized)/(profile)/preferences")}
+            >
+                <Text className="text-center font-semibold text-gray-700 text-lg">
+                    Edit Preferences
                 </Text>
             </TouchableOpacity>
 
