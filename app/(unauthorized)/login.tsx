@@ -13,12 +13,14 @@ import {
 } from "react-native";
 
 import { useAuth } from "@/hooks/useAuth";
+import { useLocale } from "@/hooks/useLocale";
 import { loginSchema } from "@/schemas/login";
 import { LoginData } from "@/types/login";
 import { ApiError } from "@/utils/api";
 
 export default function LoginScreen() {
     const { login } = useAuth();
+    const { t } = useLocale();
     const [submitting, setSubmitting] = useState(false);
     const [serverError, setServerError] = useState<string | null>(null);
 
@@ -40,7 +42,7 @@ export default function LoginScreen() {
             // Successful login flips `isAuth`; the root layout's route guard
             // handles navigating away from this screen.
         } catch (err) {
-            setServerError(err instanceof ApiError ? err.message : "Something went wrong");
+            setServerError(err instanceof ApiError ? err.message : t.common.genericError);
         } finally {
             setSubmitting(false);
         }
@@ -55,10 +57,8 @@ export default function LoginScreen() {
             >
                 {/* Header */}
                 <View className="mb-10">
-                    <Text className="text-3xl font-bold text-center mb-2">Welcome Back 👋</Text>
-                    <Text className="text-gray-600 text-center">
-                        Login to continue connecting with people around you
-                    </Text>
+                    <Text className="text-3xl font-bold text-center mb-2">{t.login.title} 👋</Text>
+                    <Text className="text-gray-600 text-center">{t.login.subtitle}</Text>
                 </View>
 
                 {/* Email */}
@@ -67,10 +67,12 @@ export default function LoginScreen() {
                     name="email"
                     render={({ field: { onChange, onBlur, value } }) => (
                         <View className="mb-5">
-                            <Text className="mb-2 font-semibold text-gray-700">Email</Text>
+                            <Text className="mb-2 font-semibold text-gray-700">
+                                {t.login.email}
+                            </Text>
                             <TextInput
                                 className="border border-gray-300 rounded-xl px-4 py-3 text-base"
-                                placeholder="Enter your email"
+                                placeholder={t.login.emailPlaceholder}
                                 onBlur={onBlur}
                                 onChangeText={onChange}
                                 value={value}
@@ -93,10 +95,12 @@ export default function LoginScreen() {
                     name="password"
                     render={({ field: { onChange, onBlur, value } }) => (
                         <View className="mb-3">
-                            <Text className="mb-2 font-semibold text-gray-700">Password</Text>
+                            <Text className="mb-2 font-semibold text-gray-700">
+                                {t.login.password}
+                            </Text>
                             <TextInput
                                 className="border border-gray-300 rounded-xl px-4 py-3 text-base"
-                                placeholder="Enter your password"
+                                placeholder={t.login.passwordPlaceholder}
                                 onBlur={onBlur}
                                 onChangeText={onChange}
                                 value={value}
@@ -117,7 +121,9 @@ export default function LoginScreen() {
                     className="mb-8"
                     // onPress={() => router.push("/(unauthorized)/forgot-password")}
                 >
-                    <Text className="text-[#F58C26] text-right font-medium">Forgot Password?</Text>
+                    <Text className="text-[#F58C26] text-right font-medium">
+                        {t.login.forgotPassword}
+                    </Text>
                 </TouchableOpacity>
 
                 {serverError && (
@@ -133,15 +139,17 @@ export default function LoginScreen() {
                     {submitting ? (
                         <ActivityIndicator color="white" />
                     ) : (
-                        <Text className="text-white text-center font-semibold text-lg">Log In</Text>
+                        <Text className="text-white text-center font-semibold text-lg">
+                            {t.login.logIn}
+                        </Text>
                     )}
                 </TouchableOpacity>
 
                 {/* Register link */}
                 <View className="mt-6 flex-row justify-center">
-                    <Text className="text-gray-600">Don’t have an account? </Text>
+                    <Text className="text-gray-600">{t.login.noAccount}</Text>
                     <TouchableOpacity onPress={() => router.push("/(unauthorized)/create-profile")}>
-                        <Text className="text-[#F58C26] font-semibold">Sign Up</Text>
+                        <Text className="text-[#F58C26] font-semibold">{t.login.signUp}</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
