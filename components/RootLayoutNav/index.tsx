@@ -5,11 +5,16 @@ import { useEffect } from "react";
 
 import { useColorScheme } from "@/components/useColorScheme";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocale } from "@/hooks/useLocale";
+import { useOnboarding } from "@/hooks/useOnboarding";
 import { useProtectedRoute } from "@/hooks/useProtectedRoute";
 
 export function RootLayoutNav() {
     const colorScheme = useColorScheme();
-    const { isLoading } = useAuth();
+    const { isLoading: isAuthLoading } = useAuth();
+    const { isLoading: isOnboardingLoading } = useOnboarding();
+    const { isLoading: isLocaleLoading } = useLocale();
+    const isLoading = isAuthLoading || isOnboardingLoading || isLocaleLoading;
     useProtectedRoute();
 
     useEffect(() => {

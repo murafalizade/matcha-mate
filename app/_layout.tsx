@@ -5,6 +5,8 @@ import { useEffect } from "react";
 
 import { RootLayoutNav } from "@/components/RootLayoutNav";
 import { AuthProvider } from "@/hooks/useAuth";
+import { LocaleProvider } from "@/hooks/useLocale";
+import { OnboardingProvider } from "@/hooks/useOnboarding";
 import { VenueProvider } from "@/hooks/useVenue";
 import "../global.css";
 
@@ -30,10 +32,14 @@ export default function RootLayout() {
     }
 
     return (
-        <AuthProvider>
-            <VenueProvider>
-                <RootLayoutNav />
-            </VenueProvider>
-        </AuthProvider>
+        <LocaleProvider>
+            <AuthProvider>
+                <OnboardingProvider>
+                    <VenueProvider>
+                        <RootLayoutNav />
+                    </VenueProvider>
+                </OnboardingProvider>
+            </AuthProvider>
+        </LocaleProvider>
     );
 }
