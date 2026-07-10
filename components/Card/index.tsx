@@ -1,28 +1,27 @@
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, Dimensions } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { User } from "@/utils/models";
+import { FeedProfile } from "@/utils/models";
+import { humanizeEnum } from "@/utils/format";
 import { Heart } from "lucide-react-native"; // lightweight vector icons
 
 const { width } = Dimensions.get("window");
 
 // Helper to calculate age
-const getAge = (birthdate: Date) => {
-    const diff = Date.now() - new Date(birthdate).getTime();
+const getAge = (birthDate: string) => {
+    const diff = Date.now() - new Date(birthDate).getTime();
     return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
 };
-
-const aliceImg = require("../../assets/images/test.jpeg");
 
 export const RenderProfile = ({
                                   item,
                                   onLike,
                               }: {
-    item: User;
-    onLike: (user: User, liked: boolean) => void;
+    item: FeedProfile;
+    onLike: (user: FeedProfile, liked: boolean) => void;
 }) => {
     const [liked, setLiked] = useState(false);
-    const age = getAge(item.birthdate);
+    const age = getAge(item.birthDate);
 
     const handleLike = () => {
         const newLikeState = !liked;
@@ -42,7 +41,7 @@ export const RenderProfile = ({
         >
             {/* Profile Image */}
             <Image
-                source={{ uri: 'https://i.pravatar.cc/100?img=1' }}
+                source={item.profileImageUrl ? { uri: item.profileImageUrl } : require("../../assets/images/test.jpeg")}
                 style={{ width: "100%", height: 320, borderRadius: 24 }}
             />
 
@@ -64,12 +63,13 @@ export const RenderProfile = ({
                 <Text className="text-white text-3xl font-bold">
                     {item.firstName} {item.lastName}, {age}
                 </Text>
-                <Text className="text-gray-300 text-sm mt-1">
-                    {item.gender} • Looking for {item.preferences?.lookingFor}
+                <Text className="text-gray-300 text-sm mt-1 capitalize">
+                    {item.gender.toLowerCase()}
+                    {item.lookingFor?.length ? ` • Looking for ${item.lookingFor.map(humanizeEnum).join(", ")}` : ""}
                 </Text>
-                {item.interests && (
+                {item.interests.length > 0 && (
                     <Text className="text-gray-200 text-sm mt-1 italic">
-                        {item.interests}
+                        {item.interests.map((interest) => interest.name).join(", ")}
                     </Text>
                 )}
                 {item.bio && (
