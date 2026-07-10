@@ -1,14 +1,24 @@
-import { View, Text, FlatList, TouchableOpacity, RefreshControl, ActivityIndicator } from "react-native";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
+import {
+    View,
+    Text,
+    FlatList,
+    TouchableOpacity,
+    RefreshControl,
+    ActivityIndicator,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 import { ChatService } from "@/services/chat";
-import { ChatSession } from "@/utils/models";
 import { ApiError } from "@/utils/api";
+import { ChatSession } from "@/utils/models";
 
 function formatTimeLeft(expiresAt: string): string {
     const ms = new Date(expiresAt).getTime() - Date.now();
-    if (ms <= 0) return "Expired";
+    if (ms <= 0) {
+        return "Expired";
+    }
     const totalSeconds = Math.floor(ms / 1000);
     const m = Math.floor(totalSeconds / 60);
     const s = totalSeconds % 60;
@@ -55,7 +65,12 @@ export default function ChatsScreen() {
                     <FlatList
                         data={sessions}
                         refreshControl={
-                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#F58C26" colors={["#F58C26"]} />
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
+                                tintColor="#F58C26"
+                                colors={["#F58C26"]}
+                            />
                         }
                         keyExtractor={(item) => item.id}
                         ListEmptyComponent={
@@ -66,7 +81,9 @@ export default function ChatsScreen() {
                         renderItem={({ item }) => (
                             <TouchableOpacity
                                 className="flex-row items-center px-4 py-3 border-b border-gray-200"
-                                onPress={() => router.push(`/(authorized)/(chats)/message?id=${item.id}`)}
+                                onPress={() =>
+                                    router.push(`/(authorized)/(chats)/message?id=${item.id}`)
+                                }
                             >
                                 <View className="w-12 h-12 rounded-full bg-gray-200 items-center justify-center mr-3">
                                     <Text className="font-semibold text-gray-600 text-lg">
@@ -82,7 +99,9 @@ export default function ChatsScreen() {
                                     </Text>
                                 </View>
                                 <Text className="text-xs text-gray-400 ml-2">
-                                    {item.status === "ACTIVE" ? formatTimeLeft(item.expiresAt) : item.status}
+                                    {item.status === "ACTIVE"
+                                        ? formatTimeLeft(item.expiresAt)
+                                        : item.status}
                                 </Text>
                             </TouchableOpacity>
                         )}

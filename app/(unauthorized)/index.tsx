@@ -1,6 +1,6 @@
-import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
-import React from "react";
 import { router } from "expo-router";
+import React from "react";
+import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
 
 export default function WelcomeScreen() {
     return (
@@ -10,8 +10,8 @@ export default function WelcomeScreen() {
                     Welcome to <Text className="text-[#F58C26]">Social Coffee</Text>
                 </Text>
                 <Text className="text-gray-600 text-center text-base leading-6">
-                    Meet, connect, and vibe with people nearby.
-                    Scan the café’s QR code to check in and get started.
+                    Meet, connect, and vibe with people nearby. Scan the café’s QR code to check in
+                    and get started.
                 </Text>
             </View>
 
@@ -29,15 +29,12 @@ export default function WelcomeScreen() {
                     className="border border-[#F58C26] rounded-xl py-4"
                     onPress={() => router.push("/(unauthorized)/login")}
                 >
-                    <Text className="text-[#F58C26] text-center font-semibold text-lg">
-                        Log In
-                    </Text>
+                    <Text className="text-[#F58C26] text-center font-semibold text-lg">Log In</Text>
                 </TouchableOpacity>
 
                 <Text className="text-center text-sm text-gray-500 mt-6">
                     By continuing, you agree to our{" "}
-                    <Text className="text-[#F58C26] font-medium">Terms of Service</Text>{" "}
-                    and{" "}
+                    <Text className="text-[#F58C26] font-medium">Terms of Service</Text> and{" "}
                     <Text className="text-[#F58C26] font-medium">Privacy Policy</Text>.
                 </Text>
             </View>

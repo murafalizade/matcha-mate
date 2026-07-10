@@ -1,3 +1,6 @@
+import { Ionicons } from "@expo/vector-icons";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import {
     View,
     Text,
@@ -8,9 +11,7 @@ import {
     Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useEffect, useRef, useState } from "react";
-import { router, useLocalSearchParams } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+
 import { ExpireModal } from "@/components/ExpireModal";
 import { useAuth } from "@/hooks/useAuth";
 import { useChatSession } from "@/hooks/useChatSession";
@@ -43,9 +44,14 @@ export default function MessageScreen() {
     // local fixed timer — it needs to reflect the server's clock, not the
     // moment this screen happened to mount.
     useEffect(() => {
-        if (!session) return;
+        if (!session) {
+            return;
+        }
         const tick = () => {
-            const secondsLeft = Math.max(0, Math.floor((new Date(session.expiresAt).getTime() - Date.now()) / 1000));
+            const secondsLeft = Math.max(
+                0,
+                Math.floor((new Date(session.expiresAt).getTime() - Date.now()) / 1000),
+            );
             setTimeLeft(secondsLeft);
         };
         tick();
@@ -58,12 +64,16 @@ export default function MessageScreen() {
     const handleChangeText = (text: string) => {
         setInput(text);
         setTyping(true);
-        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+        if (typingTimeoutRef.current) {
+            clearTimeout(typingTimeoutRef.current);
+        }
         typingTimeoutRef.current = setTimeout(() => setTyping(false), 1500);
     };
 
     const handleSend = () => {
-        if (!input.trim() || ended) return;
+        if (!input.trim() || ended) {
+            return;
+        }
         sendMessage(input.trim());
         setInput("");
     };
@@ -76,7 +86,9 @@ export default function MessageScreen() {
                     <Ionicons name="arrow-back" size={24} color="black" />
                 </TouchableOpacity>
                 <Text className="text-lg font-semibold flex-1">
-                    {session ? `Chat with ${session.partner.firstName} ${session.partner.lastName}` : "Chat"}
+                    {session
+                        ? `Chat with ${session.partner.firstName} ${session.partner.lastName}`
+                        : "Chat"}
                 </Text>
                 {!ended && (
                     <TouchableOpacity onPress={endChat}>
@@ -85,9 +97,7 @@ export default function MessageScreen() {
                 )}
             </View>
 
-            {error && (
-                <Text className="text-sm text-red-500 text-center mt-2">{error}</Text>
-            )}
+            {error && <Text className="text-sm text-red-500 text-center mt-2">{error}</Text>}
 
             {/* Countdown */}
             {timeLeft !== null && (

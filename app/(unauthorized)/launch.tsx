@@ -1,7 +1,17 @@
-import React, { useState } from "react";
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, Modal, FlatList } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { router } from "expo-router";
+import React, { useState } from "react";
+import {
+    View,
+    Text,
+    SafeAreaView,
+    ScrollView,
+    TouchableOpacity,
+    Image,
+    Modal,
+    FlatList,
+} from "react-native";
+
 import { useAuth } from "@/hooks/useAuth";
 
 export default function LaunchScreen() {
@@ -40,9 +50,12 @@ export default function LaunchScreen() {
 
                 {/* Main QR CTA */}
                 <View className="flex-1 items-center mb-10">
-                    <Text className="text-3xl font-bold mb-4 text-center text-gray-800">Ready to Connect?</Text>
+                    <Text className="text-3xl font-bold mb-4 text-center text-gray-800">
+                        Ready to Connect?
+                    </Text>
                     <Text className="text-center text-gray-500 text-base mb-6 px-4">
-                        Scan the QR code at your favorite coffee shop and start meeting people around you instantly!
+                        Scan the QR code at your favorite coffee shop and start meeting people
+                        around you instantly!
                     </Text>
 
                     <TouchableOpacity
@@ -55,10 +68,7 @@ export default function LaunchScreen() {
                 </View>
 
                 {/* Clickable Available Locations */}
-                <TouchableOpacity
-                    className="mb-4"
-                    onPress={() => setModalVisible(true)}
-                >
+                <TouchableOpacity className="mb-4" onPress={() => setModalVisible(true)}>
                     <Text className="text-[#F58C26] text-center font-semibold text-lg underline">
                         See Available Coffee Shops
                     </Text>
@@ -73,7 +83,9 @@ export default function LaunchScreen() {
                 >
                     <View className="flex-1 justify-end bg-black/30">
                         <View className="bg-white rounded-t-3xl p-6 max-h-[50%]">
-                            <Text className="text-gray-800 font-bold text-xl mb-4">Nearby Coffee Shops</Text>
+                            <Text className="text-gray-800 font-bold text-xl mb-4">
+                                Nearby Coffee Shops
+                            </Text>
                             <FlatList
                                 data={availableLocations}
                                 keyExtractor={(item) => item.id}
