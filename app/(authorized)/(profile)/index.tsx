@@ -1,35 +1,45 @@
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import { router } from "expo-router";
-import { User } from "@/utils/models"; // assuming your models are here
+import { Profile } from "@/utils/models"; // assuming your models are here
+import { humanizeEnum } from "@/utils/format";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+// TODO: replace with GET /profiles/me once wired up.
+const mockProfile: Profile = {
+    id: "1",
+    firstName: "John",
+    lastName: "Doe",
+    email: "johndoe@example.com",
+    gender: "MALE",
+    profileImageUrl: null,
+    bio: "I’m a software developer who loves coffee, adventures, and meeting new people.",
+    interests: [
+        { id: "i1", name: "Music" },
+        { id: "i2", name: "Coding" },
+        { id: "i3", name: "Traveling" },
+    ],
+    preference: {
+        minAge: 25,
+        maxAge: 35,
+        preferredGender: "FEMALE",
+        lookingFor: ["ROMANTIC_RELATIONSHIP"],
+    },
+    birthDate: "1997-01-15T00:00:00.000Z",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+};
+
 export default function ProfileScreen() {
-    // Mock user
-    const user: User = {
-        id: "1",
-        firstName: "John",
-        lastName: "Doe",
-        email: "johndoe@example.com",
-        password: "hashedpass",
-        gender: "male",
-        preferences: {
-            preferredGender: "female",
-            lookingFor: "relations",
-            description: "Looking for a meaningful connection",
-        },
-        birthdate: new Date("1997-01-15"),
-        interests: "Music, Coding, Traveling",
-        bio: "I’m a software developer who loves coffee, adventures, and meeting new people.",
-    };
+    const user = mockProfile;
 
     // Calculate age from birthdate
-    const calculateAge = (birthdate: Date) => {
-        const diff = Date.now() - birthdate.getTime();
+    const calculateAge = (birthDate: string) => {
+        const diff = Date.now() - new Date(birthDate).getTime();
         const age = new Date(diff).getUTCFullYear() - 1970;
         return age;
     };
 
-    const age = calculateAge(user.birthdate);
+    const age = calculateAge(user.birthDate);
 
     return (
         <ScrollView className="flex-1 bg-white p-6">
@@ -50,7 +60,7 @@ export default function ProfileScreen() {
 
             <View className="bg-gray-100 rounded-xl p-4 mb-4">
                 <Text className="text-gray-500 mb-1">Gender</Text>
-                <Text className="font-semibold text-lg capitalize">{user.gender}</Text>
+                <Text className="font-semibold text-lg capitalize">{user.gender.toLowerCase()}</Text>
             </View>
 
             <View className="bg-gray-100 rounded-xl p-4 mb-4">
@@ -60,21 +70,22 @@ export default function ProfileScreen() {
 
             <View className="bg-gray-100 rounded-xl p-4 mb-4">
                 <Text className="text-gray-500 mb-1">Interests</Text>
-                <Text className="font-semibold text-base">{user.interests}</Text>
+                <Text className="font-semibold text-base">
+                    {user.interests.map((interest) => interest.name).join(", ")}
+                </Text>
             </View>
 
-            <View className="bg-gray-100 rounded-xl p-4 mb-4">
-                <Text className="text-gray-500 mb-1">Looking For</Text>
-                <Text className="font-semibold text-base capitalize">
-                    {user.preferences.lookingFor}
-                </Text>
-                <Text className="text-gray-400 mt-1">
-                    Prefers: {user.preferences.preferredGender}
-                </Text>
-                {user.preferences.description ? (
-                    <Text className="text-gray-500 mt-1">{user.preferences.description}</Text>
-                ) : null}
-            </View>
+            {user.preference && (
+                <View className="bg-gray-100 rounded-xl p-4 mb-4">
+                    <Text className="text-gray-500 mb-1">Looking For</Text>
+                    <Text className="font-semibold text-base capitalize">
+                        {user.preference.lookingFor?.map(humanizeEnum).join(", ") ?? "—"}
+                    </Text>
+                    <Text className="text-gray-400 mt-1">
+                        Prefers: {user.preference.preferredGender ?? "Anyone"} · Age {user.preference.minAge}-{user.preference.maxAge}
+                    </Text>
+                </View>
+            )}
 
             <TouchableOpacity
                 className="bg-[#F58C26] rounded-xl py-3 mb-3"

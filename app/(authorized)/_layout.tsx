@@ -2,7 +2,15 @@ import React from 'react';
 import { Tabs } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
-function TabBarIcon({ name, color, focused }: { name: string; color: string; focused: boolean }) {
+function TabBarIcon({
+    name,
+    color,
+    focused,
+}: {
+    name: React.ComponentProps<typeof FontAwesome>["name"];
+    color: string;
+    focused: boolean;
+}) {
     return <FontAwesome name={name} size={focused ? 30 : 26} color={color} />;
 }
 
