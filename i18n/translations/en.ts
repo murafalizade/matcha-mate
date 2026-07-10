@@ -1,0 +1,68 @@
+import { Translations } from "@/i18n/translations/types";
+
+export const en: Translations = {
+    common: {
+        next: "Next",
+        skip: "Skip",
+        getStarted: "Get Started",
+        back: "Back",
+        genericError: "Something went wrong",
+    },
+    onboarding: {
+        slide1Title: "Check in at a venue",
+        slide1Body: "Scan a coffee shop's QR code to check in and see who else is there right now.",
+        slide2Title: "Meet people nearby",
+        slide2Body:
+            "Browse profiles of people checked in at the same venue and like the ones you vibe with.",
+        slide3Title: "Chat for 10 minutes",
+        slide3Body: "A mutual like starts a 10-minute chat. Make it count — meet up in person!",
+    },
+    welcome: {
+        title: "Welcome to",
+        brand: "Social Coffee",
+        subtitle:
+            "Meet, connect, and vibe with people nearby. Scan the café’s QR code to check in and get started.",
+        createAccount: "Create Account",
+        logIn: "Log In",
+        terms: "By continuing, you agree to our Terms of Service and Privacy Policy.",
+    },
+    login: {
+        title: "Welcome Back",
+        subtitle: "Login to continue connecting with people around you",
+        email: "Email",
+        emailPlaceholder: "Enter your email",
+        password: "Password",
+        passwordPlaceholder: "Enter your password",
+        forgotPassword: "Forgot Password?",
+        logIn: "Log In",
+        noAccount: "Don’t have an account? ",
+        signUp: "Sign Up",
+    },
+    createProfile: {
+        title: "Create Your Profile",
+        pickImage: "Pick Image",
+        firstName: "First Name",
+        lastName: "Last Name",
+        email: "Email",
+        password: "Password",
+        birthdate: "Birthdate",
+        selectDate: "Select Date",
+        gender: "Gender",
+        male: "Male",
+        female: "Female",
+        other: "Other",
+        bio: "Bio",
+        bioPlaceholder: "Tell us about yourself (min 10 characters)",
+        agreeTerms: "I agree to the Terms of Service",
+        createProfile: "Create Profile",
+        agreementRequiredTitle: "Agreement Required",
+        agreementRequiredBody: "You must agree to the Terms of Service.",
+        registrationFailedTitle: "Registration failed",
+    },
+    language: {
+        title: "Language",
+        english: "English",
+        russian: "Russian",
+        turkish: "Turkish",
+    },
+};
