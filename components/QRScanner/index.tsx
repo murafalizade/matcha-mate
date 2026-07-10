@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
-import { Camera, CameraView } from "expo-camera";
+import { Camera, CameraView, BarcodeScanningResult } from "expo-camera";
 
 type QRScannerProps = {
     onScan?: (data: string) => void;
@@ -12,6 +12,15 @@ export default function QRScanner({
                                       onCancel,
                                   }: QRScannerProps) {
     const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+    // A single CameraView keeps firing onBarcodeScanned for the same code
+    // while it's in frame — latch after the first read so onScan fires once.
+    const scannedRef = useRef(false);
+
+    const handleBarcodeScanned = (result: BarcodeScanningResult) => {
+        if (scannedRef.current) return;
+        scannedRef.current = true;
+        onScan?.(result.data);
+    };
 
     useEffect(() => {
         Camera.requestCameraPermissionsAsync().then(({ status }) => {
@@ -53,7 +62,7 @@ export default function QRScanner({
         <View className="flex-1 bg-black">
             <CameraView
                 style={{ flex: 1 }}
-                onBarcodeScanned={()=> console.log('scanned')}
+                onBarcodeScanned={handleBarcodeScanned}
                 barcodeScannerSettings={{
                     barcodeTypes: ['qr'],
                 }}
