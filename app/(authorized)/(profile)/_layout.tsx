@@ -6,6 +6,7 @@ export default function ProfileLayout(){
             <Stack.Screen name="index" options={{ title: "Profile", headerShown: false}} />
             <Stack.Screen name="settings" options={{ headerShown: false }} />
             <Stack.Screen name="edit" options={{ headerShown: false }} />
+            <Stack.Screen name="preferences" options={{ headerShown: false }} />
         </Stack>
     )
 }
