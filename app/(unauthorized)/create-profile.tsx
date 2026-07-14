@@ -4,7 +4,6 @@ import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
-    SafeAreaView,
     Text,
     TextInput,
     View,
@@ -14,6 +13,7 @@ import {
     Alert,
     ActivityIndicator,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { RadioGroup } from "@/components/RadioGroup";
 import { useAuth } from "@/hooks/useAuth";

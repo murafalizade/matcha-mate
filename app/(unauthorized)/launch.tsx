@@ -1,16 +1,8 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import {
-    View,
-    Text,
-    SafeAreaView,
-    ScrollView,
-    TouchableOpacity,
-    Image,
-    Modal,
-    FlatList,
-} from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Image, Modal, FlatList } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useAuth } from "@/hooks/useAuth";
 

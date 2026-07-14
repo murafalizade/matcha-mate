@@ -1,7 +1,8 @@
 import * as Location from "expo-location";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { View, Text, SafeAreaView, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import QRScanner from "@/components/QRScanner";
 import { useVenue } from "@/hooks/useVenue";

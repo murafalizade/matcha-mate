@@ -1,6 +1,7 @@
 import { router } from "expo-router";
 import React from "react";
-import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { LanguagePicker } from "@/components/LanguagePicker";
 import { useLocale } from "@/hooks/useLocale";

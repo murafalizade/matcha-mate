@@ -3,7 +3,6 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
-    SafeAreaView,
     Text,
     TextInput,
     View,
@@ -11,6 +10,7 @@ import {
     ScrollView,
     ActivityIndicator,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useAuth } from "@/hooks/useAuth";
 import { useLocale } from "@/hooks/useLocale";

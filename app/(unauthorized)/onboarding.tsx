@@ -5,12 +5,12 @@ import {
     Dimensions,
     NativeScrollEvent,
     NativeSyntheticEvent,
-    SafeAreaView,
     ScrollView,
     Text,
     TouchableOpacity,
     View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useLocale } from "@/hooks/useLocale";
 import { useOnboarding } from "@/hooks/useOnboarding";
