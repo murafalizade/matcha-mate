@@ -11,11 +11,11 @@ export function RadioGroup<T extends string>({ options, value, onChange }: Radio
                     <TouchableOpacity
                         key={option.value}
                         onPress={() => onChange(option.value)}
-                        className={`px-4 py-2 border rounded-lg ${
-                            selected ? "bg-primary border-primary" : "border-gray-300"
+                        className={`px-4 py-2 border rounded-full ${
+                            selected ? "bg-espresso border-espresso" : "border-dot"
                         }`}
                     >
-                        <Text className={selected ? "text-white" : "text-gray-700"}>
+                        <Text className={selected ? "text-white font-semibold" : "text-muted"}>
                             {option.label}
                         </Text>
                     </TouchableOpacity>

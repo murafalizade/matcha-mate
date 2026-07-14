@@ -21,11 +21,11 @@ export function MultiSelectChips<T extends string>({
                     <TouchableOpacity
                         key={option.value}
                         onPress={() => toggle(option.value)}
-                        className={`px-3 py-2 border rounded-lg mr-2 mb-2 ${
-                            isSelected ? "bg-primary border-primary" : "border-gray-300"
+                        className={`px-3 py-2 border rounded-full mr-2 mb-2 ${
+                            isSelected ? "bg-caramel border-caramel" : "border-dot"
                         }`}
                     >
-                        <Text className={isSelected ? "text-white" : "text-gray-700"}>
+                        <Text className={isSelected ? "text-white font-semibold" : "text-muted"}>
                             {option.label}
                         </Text>
                     </TouchableOpacity>
