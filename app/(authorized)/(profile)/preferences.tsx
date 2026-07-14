@@ -89,92 +89,114 @@ export default function PreferencesScreen() {
     if (loading) {
         return (
             <View className="flex-1 items-center justify-center bg-cream">
-                <ActivityIndicator color="#D9704A" size="large" />
+                <ActivityIndicator color="#CD8F62" size="large" />
             </View>
         );
     }
 
     return (
-        <ScrollView className="flex-1 bg-cream p-6">
-            <SafeAreaView>
-                <Text className="text-2xl font-bold mb-6 text-center">Preferences</Text>
+        <ScrollView className="flex-1 bg-cream" contentContainerStyle={{ padding: 20 }}>
+            <SafeAreaView edges={["bottom"]}>
+                <Text className="text-2xl font-bold mb-6 text-center text-ink">
+                    Discovery Preferences
+                </Text>
 
-                <View className="flex-row space-x-4 mb-4">
+                <View
+                    className="bg-white rounded-2xl p-6 mb-6"
+                    style={{
+                        shadowColor: "#4A2C2A",
+                        shadowOpacity: 0.08,
+                        shadowRadius: 30,
+                        shadowOffset: { width: 0, height: 10 },
+                    }}
+                >
+                    <View className="flex-row space-x-4 mb-4">
+                        <Controller
+                            control={control}
+                            name="minAge"
+                            render={({ field: { onChange, value } }) => (
+                                <View className="flex-1">
+                                    <Text className="mb-1 text-xs font-semibold text-muted uppercase tracking-widest">
+                                        Min Age
+                                    </Text>
+                                    <TextInput
+                                        className="border border-dot rounded-lg px-4 py-3 bg-panel text-ink"
+                                        keyboardType="number-pad"
+                                        value={value}
+                                        onChangeText={onChange}
+                                    />
+                                    {errors.minAge && (
+                                        <Text className="text-red-500 mt-1 text-sm">
+                                            {errors.minAge.message}
+                                        </Text>
+                                    )}
+                                </View>
+                            )}
+                        />
+                        <Controller
+                            control={control}
+                            name="maxAge"
+                            render={({ field: { onChange, value } }) => (
+                                <View className="flex-1">
+                                    <Text className="mb-1 text-xs font-semibold text-muted uppercase tracking-widest">
+                                        Max Age
+                                    </Text>
+                                    <TextInput
+                                        className="border border-dot rounded-lg px-4 py-3 bg-panel text-ink"
+                                        keyboardType="number-pad"
+                                        value={value}
+                                        onChangeText={onChange}
+                                    />
+                                    {errors.maxAge && (
+                                        <Text className="text-red-500 mt-1 text-sm">
+                                            {errors.maxAge.message}
+                                        </Text>
+                                    )}
+                                </View>
+                            )}
+                        />
+                    </View>
+
+                    <Text className="text-xs font-semibold text-muted uppercase tracking-widest mb-2">
+                        Preferred Gender
+                    </Text>
                     <Controller
                         control={control}
-                        name="minAge"
+                        name="preferredGender"
                         render={({ field: { onChange, value } }) => (
-                            <View className="flex-1">
-                                <Text className="mb-1 font-semibold">Min Age</Text>
-                                <TextInput
-                                    className="border border-gray-300 rounded-lg px-3 py-2"
-                                    keyboardType="number-pad"
+                            <View className="mb-6">
+                                <RadioGroup
+                                    options={GENDER_OPTIONS}
                                     value={value}
-                                    onChangeText={onChange}
+                                    onChange={onChange}
                                 />
-                                {errors.minAge && (
-                                    <Text className="text-red-500 mt-1 text-sm">
-                                        {errors.minAge.message}
-                                    </Text>
-                                )}
                             </View>
                         )}
                     />
+
+                    <Text className="text-xs font-semibold text-muted uppercase tracking-widest mb-2">
+                        Looking For
+                    </Text>
                     <Controller
                         control={control}
-                        name="maxAge"
+                        name="lookingFor"
                         render={({ field: { onChange, value } }) => (
-                            <View className="flex-1">
-                                <Text className="mb-1 font-semibold">Max Age</Text>
-                                <TextInput
-                                    className="border border-gray-300 rounded-lg px-3 py-2"
-                                    keyboardType="number-pad"
-                                    value={value}
-                                    onChangeText={onChange}
-                                />
-                                {errors.maxAge && (
-                                    <Text className="text-red-500 mt-1 text-sm">
-                                        {errors.maxAge.message}
-                                    </Text>
-                                )}
-                            </View>
-                        )}
-                    />
-                </View>
-
-                <Text className="font-semibold mb-2">Preferred Gender</Text>
-                <Controller
-                    control={control}
-                    name="preferredGender"
-                    render={({ field: { onChange, value } }) => (
-                        <View className="mb-6">
-                            <RadioGroup
-                                options={GENDER_OPTIONS}
-                                value={value}
+                            <MultiSelectChips
+                                options={LOOKING_FOR_OPTIONS}
+                                selected={value}
                                 onChange={onChange}
                             />
-                        </View>
+                        )}
+                    />
+                    {errors.lookingFor && (
+                        <Text className="text-red-500 mb-2 text-sm">
+                            {errors.lookingFor.message}
+                        </Text>
                     )}
-                />
-
-                <Text className="font-semibold mb-2">Looking For</Text>
-                <Controller
-                    control={control}
-                    name="lookingFor"
-                    render={({ field: { onChange, value } }) => (
-                        <MultiSelectChips
-                            options={LOOKING_FOR_OPTIONS}
-                            selected={value}
-                            onChange={onChange}
-                        />
-                    )}
-                />
-                {errors.lookingFor && (
-                    <Text className="text-red-500 mb-4 text-sm">{errors.lookingFor.message}</Text>
-                )}
+                </View>
 
                 <TouchableOpacity
-                    className="bg-primary rounded-xl py-3 mt-4"
+                    className="bg-caramel rounded-xl py-4"
                     onPress={handleSubmit(onSubmit)}
                     disabled={submitting}
                 >
