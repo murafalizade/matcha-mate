@@ -68,4 +68,17 @@ export const Storage = {
     async setHasSeenOnboarding(): Promise<void> {
         await kv.setItemAsync(ONBOARDING_SEEN_KEY, "true");
     },
+
+    // Wipes every key this module manages — session, locale, and the
+    // onboarding flag — so the app behaves like a fresh install. Used by the
+    // dev-only "Reset app data" button; not something a real user action
+    // should ever call.
+    async resetAll(): Promise<void> {
+        await Promise.all([
+            this.removeAccessToken(),
+            this.removeUser(),
+            kv.deleteItemAsync(LOCALE_KEY),
+            kv.deleteItemAsync(ONBOARDING_SEEN_KEY),
+        ]);
+    },
 };

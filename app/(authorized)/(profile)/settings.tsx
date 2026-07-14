@@ -1,13 +1,25 @@
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { DevSettings, View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { LanguagePicker } from "@/components/LanguagePicker";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocale } from "@/hooks/useLocale";
+import { Storage } from "@/utils/storage";
 
 export default function SettingsScreen() {
     const { logout } = useAuth();
     const { t } = useLocale();
+
+    const handleResetAppData = async () => {
+        await Storage.resetAll();
+        // Session/onboarding state is only read once at boot (in the
+        // Auth/Onboarding providers), so a JS reload is needed to see the
+        // reset take effect — same as reinstalling the app. DevSettings
+        // isn't implemented on react-native-web, hence the guard.
+        if (typeof DevSettings?.reload === "function") {
+            DevSettings.reload();
+        }
+    };
 
     return (
         <ScrollView className="flex-1 bg-cream p-6">
@@ -41,6 +53,17 @@ export default function SettingsScreen() {
                 >
                     <Text className="text-white text-center font-semibold text-lg">Log Out</Text>
                 </TouchableOpacity>
+
+                {__DEV__ && (
+                    <TouchableOpacity
+                        className="border border-gray-300 rounded-xl py-3 mt-4"
+                        onPress={handleResetAppData}
+                    >
+                        <Text className="text-gray-500 text-center font-semibold text-lg">
+                            Reset App Data (Dev)
+                        </Text>
+                    </TouchableOpacity>
+                )}
             </SafeAreaView>
         </ScrollView>
     );
