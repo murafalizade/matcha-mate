@@ -134,7 +134,7 @@ export default function EditProfileScreen() {
     if (loading) {
         return (
             <View className="flex-1 items-center justify-center bg-white">
-                <ActivityIndicator color="#F58C26" size="large" />
+                <ActivityIndicator color="#D9704A" size="large" />
             </View>
         );
     }
@@ -152,7 +152,7 @@ export default function EditProfileScreen() {
                             <Text className="text-gray-600">Pick Image</Text>
                         </View>
                     )}
-                    <Text className="text-[#F58C26] mt-2 font-medium">Change Photo</Text>
+                    <Text className="text-primary mt-2 font-medium">Change Photo</Text>
                 </TouchableOpacity>
                 {imageUri && (
                     <TouchableOpacity
@@ -266,7 +266,7 @@ export default function EditProfileScreen() {
                 />
 
                 <TouchableOpacity
-                    className="bg-[#F58C26] rounded-xl py-3 mt-4"
+                    className="bg-primary rounded-xl py-3 mt-4"
                     onPress={handleSubmit(onSubmit)}
                     disabled={submitting}
                 >

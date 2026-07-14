@@ -12,7 +12,7 @@ export function RadioGroup<T extends string>({ options, value, onChange }: Radio
                         key={option.value}
                         onPress={() => onChange(option.value)}
                         className={`px-4 py-2 border rounded-lg ${
-                            selected ? "bg-[#F58C26] border-[#F58C26]" : "border-gray-300"
+                            selected ? "bg-primary border-primary" : "border-gray-300"
                         }`}
                     >
                         <Text className={selected ? "text-white" : "text-gray-700"}>

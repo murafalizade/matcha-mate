@@ -54,7 +54,7 @@ export default function HomeScreen() {
                     Scan a venue’s QR code to see who else is here.
                 </Text>
                 <TouchableOpacity
-                    className="bg-[#F58C26] rounded-xl px-6 py-3"
+                    className="bg-primary rounded-xl px-6 py-3"
                     onPress={() => router.push("/(unauthorized)/qr-code")}
                 >
                     <Text className="text-white font-semibold text-lg">Scan QR Code</Text>

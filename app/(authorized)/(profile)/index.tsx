@@ -46,7 +46,7 @@ export default function ProfileScreen() {
     if (loading) {
         return (
             <View className="flex-1 items-center justify-center bg-white">
-                <ActivityIndicator color="#F58C26" size="large" />
+                <ActivityIndicator color="#D9704A" size="large" />
             </View>
         );
     }
@@ -123,7 +123,7 @@ export default function ProfileScreen() {
                 </View>
 
                 <TouchableOpacity
-                    className="bg-[#F58C26] rounded-xl py-3 mb-3"
+                    className="bg-primary rounded-xl py-3 mb-3"
                     onPress={() => router.push("/(authorized)/(profile)/edit")}
                 >
                     <Text className="text-white text-center font-semibold text-lg">

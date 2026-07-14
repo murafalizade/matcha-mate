@@ -59,7 +59,7 @@ export default function LaunchScreen() {
                     </Text>
 
                     <TouchableOpacity
-                        className="bg-[#F58C26] rounded-2xl flex-row items-center px-8 py-5 shadow-lg"
+                        className="bg-primary rounded-2xl flex-row items-center px-8 py-5 shadow-lg"
                         onPress={() => router.push("/(unauthorized)/qr-code")}
                     >
                         <FontAwesome size={24} style={{ marginRight: 10 }} name="qrcode" />
@@ -69,7 +69,7 @@ export default function LaunchScreen() {
 
                 {/* Clickable Available Locations */}
                 <TouchableOpacity className="mb-4" onPress={() => setModalVisible(true)}>
-                    <Text className="text-[#F58C26] text-center font-semibold text-lg underline">
+                    <Text className="text-primary text-center font-semibold text-lg underline">
                         See Available Coffee Shops
                     </Text>
                 </TouchableOpacity>

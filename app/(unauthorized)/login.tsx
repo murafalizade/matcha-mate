@@ -121,7 +121,7 @@ export default function LoginScreen() {
                     className="mb-8"
                     // onPress={() => router.push("/(unauthorized)/forgot-password")}
                 >
-                    <Text className="text-[#F58C26] text-right font-medium">
+                    <Text className="text-primary text-right font-medium">
                         {t.login.forgotPassword}
                     </Text>
                 </TouchableOpacity>
@@ -132,7 +132,7 @@ export default function LoginScreen() {
 
                 {/* Login button */}
                 <TouchableOpacity
-                    className="bg-[#F58C26] rounded-xl py-4"
+                    className="bg-primary rounded-xl py-4"
                     onPress={handleSubmit(onSubmit)}
                     disabled={submitting}
                 >
@@ -149,7 +149,7 @@ export default function LoginScreen() {
                 <View className="mt-6 flex-row justify-center">
                     <Text className="text-gray-600">{t.login.noAccount}</Text>
                     <TouchableOpacity onPress={() => router.push("/(unauthorized)/create-profile")}>
-                        <Text className="text-[#F58C26] font-semibold">{t.login.signUp}</Text>
+                        <Text className="text-primary font-semibold">{t.login.signUp}</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>

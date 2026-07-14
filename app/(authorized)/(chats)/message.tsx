@@ -126,7 +126,7 @@ export default function MessageScreen() {
                             <View
                                 className={`mb-3 max-w-[75%] px-4 py-2 rounded-xl ${
                                     item.senderId === user?.id
-                                        ? "bg-[#F58C26] self-end"
+                                        ? "bg-primary self-end"
                                         : "bg-gray-200 self-start"
                                 }`}
                             >
@@ -152,7 +152,7 @@ export default function MessageScreen() {
                             maxLength={500}
                         />
                         <TouchableOpacity
-                            className="bg-[#F58C26] rounded-full px-4 py-2"
+                            className="bg-primary rounded-full px-4 py-2"
                             onPress={handleSend}
                             disabled={ended}
                         >

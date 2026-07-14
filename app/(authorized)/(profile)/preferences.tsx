@@ -89,7 +89,7 @@ export default function PreferencesScreen() {
     if (loading) {
         return (
             <View className="flex-1 items-center justify-center bg-white">
-                <ActivityIndicator color="#F58C26" size="large" />
+                <ActivityIndicator color="#D9704A" size="large" />
             </View>
         );
     }
@@ -174,7 +174,7 @@ export default function PreferencesScreen() {
                 )}
 
                 <TouchableOpacity
-                    className="bg-[#F58C26] rounded-xl py-3 mt-4"
+                    className="bg-primary rounded-xl py-3 mt-4"
                     onPress={handleSubmit(onSubmit)}
                     disabled={submitting}
                 >

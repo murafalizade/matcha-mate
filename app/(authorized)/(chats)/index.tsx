@@ -58,7 +58,7 @@ export default function ChatsScreen() {
                 <Text className="text-2xl font-bold mb-6 text-center">Chats</Text>
 
                 {loading ? (
-                    <ActivityIndicator className="mt-10" color="#F58C26" />
+                    <ActivityIndicator className="mt-10" color="#D9704A" />
                 ) : error ? (
                     <Text className="text-center text-red-500">{error}</Text>
                 ) : (
@@ -68,8 +68,8 @@ export default function ChatsScreen() {
                             <RefreshControl
                                 refreshing={refreshing}
                                 onRefresh={onRefresh}
-                                tintColor="#F58C26"
-                                colors={["#F58C26"]}
+                                tintColor="#D9704A"
+                                colors={["#D9704A"]}
                             />
                         }
                         keyExtractor={(item) => item.id}

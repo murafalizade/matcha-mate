@@ -232,7 +232,7 @@ export default function CreateProfileScreen() {
                 >
                     <View
                         className={`w-5 h-5 border rounded mr-2 items-center justify-center ${
-                            agree ? "bg-[#F58C26]" : "border-gray-400"
+                            agree ? "bg-primary" : "border-gray-400"
                         }`}
                     />
                     <Text className="text-gray-700">{t.createProfile.agreeTerms}</Text>
@@ -242,7 +242,7 @@ export default function CreateProfileScreen() {
             {/* Sticky Bottom Button */}
             <View className="p-4">
                 <TouchableOpacity
-                    className="bg-[#F58C26] rounded-xl py-4"
+                    className="bg-primary rounded-xl py-4"
                     onPress={handleSubmit(onSubmit)}
                     disabled={submitting}
                 >

@@ -22,7 +22,7 @@ export function MultiSelectChips<T extends string>({
                         key={option.value}
                         onPress={() => toggle(option.value)}
                         className={`px-3 py-2 border rounded-lg mr-2 mb-2 ${
-                            isSelected ? "bg-[#F58C26] border-[#F58C26]" : "border-gray-300"
+                            isSelected ? "bg-primary border-primary" : "border-gray-300"
                         }`}
                     >
                         <Text className={isSelected ? "text-white" : "text-gray-700"}>

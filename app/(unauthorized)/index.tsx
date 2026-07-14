@@ -16,7 +16,7 @@ export default function WelcomeScreen() {
 
             <View className="flex-1 justify-center items-center px-6">
                 <Text className="text-3xl font-bold text-center mb-3">
-                    {t.welcome.title} <Text className="text-[#F58C26]">{t.welcome.brand}</Text>
+                    {t.welcome.title} <Text className="text-primary">{t.welcome.brand}</Text>
                 </Text>
                 <Text className="text-gray-600 text-center text-base leading-6">
                     {t.welcome.subtitle}
@@ -25,7 +25,7 @@ export default function WelcomeScreen() {
 
             <View className="px-6 pb-8">
                 <TouchableOpacity
-                    className="bg-[#F58C26] rounded-xl py-4 mb-4"
+                    className="bg-primary rounded-xl py-4 mb-4"
                     onPress={() => router.push("/(unauthorized)/create-profile")}
                 >
                     <Text className="text-white text-center font-semibold text-lg">
@@ -34,10 +34,10 @@ export default function WelcomeScreen() {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    className="border border-[#F58C26] rounded-xl py-4"
+                    className="border border-primary rounded-xl py-4"
                     onPress={() => router.push("/(unauthorized)/login")}
                 >
-                    <Text className="text-[#F58C26] text-center font-semibold text-lg">
+                    <Text className="text-primary text-center font-semibold text-lg">
                         {t.welcome.logIn}
                     </Text>
                 </TouchableOpacity>

@@ -15,7 +15,7 @@ export default function TabLayout() {
                     alignItems: "center",
                     justifyContent: "center",
                 },
-                tabBarActiveTintColor: "#F58C26",
+                tabBarActiveTintColor: "#D9704A",
                 tabBarInactiveTintColor: "#A0A0A0",
             }}
         >

@@ -64,7 +64,7 @@ export default function OnboardingScreen() {
                 {slides.map((slide) => (
                     <View key={slide.title} style={{ width }} className="items-center px-10 pt-6">
                         <View className="w-28 h-28 rounded-full bg-orange-50 items-center justify-center mb-8">
-                            <slide.Icon color="#F58C26" size={56} />
+                            <slide.Icon color="#D9704A" size={56} />
                         </View>
                         <Text className="text-2xl font-bold text-center mb-3">{slide.title}</Text>
                         <Text className="text-gray-600 text-center text-base leading-6">
@@ -79,14 +79,14 @@ export default function OnboardingScreen() {
                     <View
                         key={slide.title}
                         className={`h-2 rounded-full mx-1 ${
-                            i === index ? "w-6 bg-[#F58C26]" : "w-2 bg-gray-300"
+                            i === index ? "w-6 bg-primary" : "w-2 bg-gray-300"
                         }`}
                     />
                 ))}
             </View>
 
             <View className="px-6 pb-8">
-                <TouchableOpacity className="bg-[#F58C26] rounded-xl py-4" onPress={goNext}>
+                <TouchableOpacity className="bg-primary rounded-xl py-4" onPress={goNext}>
                     <Text className="text-white text-center font-semibold text-lg">
                         {index === slides.length - 1 ? t.common.getStarted : t.common.next}
                     </Text>

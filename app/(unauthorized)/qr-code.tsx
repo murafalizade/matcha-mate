@@ -74,7 +74,7 @@ export default function QrCodeScanScreen() {
                                 {errorMessage}
                             </Text>
                             <TouchableOpacity
-                                className="mt-4 px-6 py-3 rounded-xl bg-[#F58C26]"
+                                className="mt-4 px-6 py-3 rounded-xl bg-primary"
                                 onPress={retry}
                             >
                                 <Text className="text-white font-semibold">Scan Again</Text>
