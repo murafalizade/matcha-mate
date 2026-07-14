@@ -7,6 +7,7 @@ export const ru: Translations = {
         getStarted: "Начать",
         back: "Назад",
         genericError: "Что-то пошло не так",
+        continue: "Продолжить",
     },
     onboarding: {
         slide1Title: "Отметьтесь в заведении",

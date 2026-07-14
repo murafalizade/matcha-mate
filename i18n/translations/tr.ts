@@ -7,6 +7,7 @@ export const tr: Translations = {
         getStarted: "Başla",
         back: "Geri",
         genericError: "Bir şeyler ters gitti",
+        continue: "Devam Et",
     },
     onboarding: {
         slide1Title: "Bir mekâna giriş yap",

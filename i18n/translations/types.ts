@@ -5,6 +5,7 @@ export interface Translations {
         getStarted: string;
         back: string;
         genericError: string;
+        continue: string;
     };
     onboarding: {
         slide1Title: string;

@@ -7,6 +7,7 @@ export const en: Translations = {
         getStarted: "Get Started",
         back: "Back",
         genericError: "Something went wrong",
+        continue: "Continue",
     },
     onboarding: {
         slide1Title: "Check in at a venue",
