@@ -29,6 +29,15 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
+                name="map"
+                options={{
+                    tabBarIcon: ({ color, focused }) => (
+                        <TabBarIcon name="map-marker" color={color} focused={focused} />
+                    ),
+                    headerShown: false,
+                }}
+            />
+            <Tabs.Screen
                 name="(chats)"
                 options={{
                     tabBarIcon: ({ color, focused }) => (
