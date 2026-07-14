@@ -24,7 +24,7 @@ export const RenderProfile = ({ item, onLike }: RenderProfileProps) => {
             style={{
                 width: width - 32,
                 alignSelf: "center",
-                backgroundColor: "#fff",
+                backgroundColor: "#FFF8F0",
                 position: "relative",
             }}
         >
@@ -81,9 +81,9 @@ export const RenderProfile = ({ item, onLike }: RenderProfileProps) => {
                 activeOpacity={0.85}
             >
                 {liked ? (
-                    <Heart fill="#FFB84D" color="#FFB84D" size={28} />
+                    <Heart fill="#D9704A" color="#D9704A" size={28} />
                 ) : (
-                    <Heart color="#FFB84D" size={28} />
+                    <Heart color="#D9704A" size={28} />
                 )}
             </TouchableOpacity>
         </View>
