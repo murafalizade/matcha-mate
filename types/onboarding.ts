@@ -1,7 +1,7 @@
-import { LucideIcon } from "lucide-react-native";
+import { ImageSourcePropType } from "react-native";
 
 export interface OnboardingSlide {
-    Icon: LucideIcon;
+    image: ImageSourcePropType;
     title: string;
     body: string;
 }

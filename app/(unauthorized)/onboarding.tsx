@@ -1,8 +1,9 @@
 import { router } from "expo-router";
-import { MessageCircle, ScanQrCode, Users } from "lucide-react-native";
+import { ArrowRight } from "lucide-react-native";
 import { useRef, useState } from "react";
 import {
     Dimensions,
+    Image,
     NativeScrollEvent,
     NativeSyntheticEvent,
     ScrollView,
@@ -16,7 +17,8 @@ import { useLocale } from "@/hooks/useLocale";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { OnboardingSlide } from "@/types/onboarding";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
+const ILLUSTRATION_HEIGHT = height * 0.55;
 
 export default function OnboardingScreen() {
     const { t } = useLocale();
@@ -25,9 +27,21 @@ export default function OnboardingScreen() {
     const scrollRef = useRef<ScrollView>(null);
 
     const slides: OnboardingSlide[] = [
-        { Icon: ScanQrCode, title: t.onboarding.slide1Title, body: t.onboarding.slide1Body },
-        { Icon: Users, title: t.onboarding.slide2Title, body: t.onboarding.slide2Body },
-        { Icon: MessageCircle, title: t.onboarding.slide3Title, body: t.onboarding.slide3Body },
+        {
+            image: require("../../assets/images/onboarding/slide-1.png"),
+            title: t.onboarding.slide1Title,
+            body: t.onboarding.slide1Body,
+        },
+        {
+            image: require("../../assets/images/onboarding/slide-2.png"),
+            title: t.onboarding.slide2Title,
+            body: t.onboarding.slide2Body,
+        },
+        {
+            image: require("../../assets/images/onboarding/slide-3.png"),
+            title: t.onboarding.slide3Title,
+            body: t.onboarding.slide3Body,
+        },
     ];
 
     const finish = () => {
@@ -49,49 +63,82 @@ export default function OnboardingScreen() {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-cream">
-            <TouchableOpacity className="self-end px-6 pt-2" onPress={finish}>
-                <Text className="text-gray-500 font-medium">{t.common.skip}</Text>
-            </TouchableOpacity>
-
-            <ScrollView
-                ref={scrollRef}
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-                onMomentumScrollEnd={handleMomentumScrollEnd}
-            >
-                {slides.map((slide) => (
-                    <View key={slide.title} style={{ width }} className="items-center px-10 pt-6">
-                        <View className="w-28 h-28 rounded-full bg-orange-50 items-center justify-center mb-8">
-                            <slide.Icon color="#D9704A" size={56} />
-                        </View>
-                        <Text className="text-2xl font-bold text-center mb-3">{slide.title}</Text>
-                        <Text className="text-gray-600 text-center text-base leading-6">
-                            {slide.body}
-                        </Text>
-                    </View>
-                ))}
-            </ScrollView>
-
-            <View className="flex-row justify-center mb-6">
-                {slides.map((slide, i) => (
-                    <View
-                        key={slide.title}
-                        className={`h-2 rounded-full mx-1 ${
-                            i === index ? "w-6 bg-primary" : "w-2 bg-gray-300"
-                        }`}
-                    />
-                ))}
-            </View>
-
-            <View className="px-6 pb-8">
-                <TouchableOpacity className="bg-primary rounded-xl py-4" onPress={goNext}>
-                    <Text className="text-white text-center font-semibold text-lg">
-                        {index === slides.length - 1 ? t.common.getStarted : t.common.next}
-                    </Text>
+        <View className="flex-1 bg-panel">
+            <SafeAreaView className="absolute top-0 right-0 z-10" edges={["top"]}>
+                <TouchableOpacity className="px-6 pt-2" onPress={finish}>
+                    <Text className="text-muted font-medium">{t.common.skip}</Text>
                 </TouchableOpacity>
+            </SafeAreaView>
+
+            {/* Illustration carousel — top ~55%. Height is set on this
+                wrapper, not the ScrollView itself — ScrollView doesn't
+                reliably respect an explicit `height` in its own style on
+                web, sizing to its content instead. */}
+            <View style={{ height: ILLUSTRATION_HEIGHT }}>
+                <ScrollView
+                    ref={scrollRef}
+                    horizontal
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                    onMomentumScrollEnd={handleMomentumScrollEnd}
+                    bounces={false}
+                >
+                    {slides.map((slide) => (
+                        <View
+                            key={slide.title}
+                            style={{ width, height: ILLUSTRATION_HEIGHT }}
+                            className="items-center justify-center"
+                        >
+                            <Image
+                                source={slide.image}
+                                style={{ width, height: ILLUSTRATION_HEIGHT }}
+                                resizeMode="cover"
+                            />
+                        </View>
+                    ))}
+                </ScrollView>
             </View>
-        </SafeAreaView>
+
+            {/* Content sheet — overlaps the illustration with a rounded top edge */}
+            <View
+                className="flex-1 bg-cream rounded-t-[32px] px-6 pt-8 pb-8 justify-between"
+                style={{ marginTop: -32 }}
+            >
+                <View className="items-center">
+                    <Text className="text-2xl font-bold text-ink text-center mb-2">
+                        {slides[index].title}
+                    </Text>
+                    <Text
+                        className="text-muted text-center text-base leading-6"
+                        style={{ maxWidth: 280 }}
+                    >
+                        {slides[index].body}
+                    </Text>
+                </View>
+
+                <View className="items-center">
+                    <View className="flex-row justify-center mb-6">
+                        {slides.map((slide, i) => (
+                            <View
+                                key={slide.title}
+                                className={`h-2 rounded-full mx-1 ${
+                                    i === index ? "w-6 bg-caramel" : "w-2 bg-dot"
+                                }`}
+                            />
+                        ))}
+                    </View>
+
+                    <TouchableOpacity
+                        className="w-full h-14 bg-caramel rounded-xl items-center justify-center flex-row"
+                        onPress={goNext}
+                    >
+                        <Text className="text-white font-semibold text-base mr-2">
+                            {index === slides.length - 1 ? t.common.getStarted : t.common.next}
+                        </Text>
+                        <ArrowRight color="white" size={20} />
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </View>
     );
 }
