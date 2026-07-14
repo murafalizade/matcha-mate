@@ -3,6 +3,7 @@ import { Stack } from "expo-router";
 export default function UnAuthorizedLayout() {
     return (
         <Stack>
+            <Stack.Screen name="language" options={{ headerShown: false }} />
             <Stack.Screen name="onboarding" options={{ headerShown: false }} />
             <Stack.Screen name="index" options={{ headerShown: false }} />
             <Stack.Screen name="launch" options={{ headerShown: false }} />
