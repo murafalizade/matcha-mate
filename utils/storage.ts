@@ -7,6 +7,7 @@ const ACCESS_TOKEN_KEY = "access_token";
 const USER_KEY = "auth_user";
 const LOCALE_KEY = "locale";
 const ONBOARDING_SEEN_KEY = "onboarding_seen";
+const LANGUAGE_CHOSEN_KEY = "language_chosen";
 
 // expo-secure-store has no web implementation (no Keychain/Keystore
 // equivalent there) — fall back to localStorage on web, Keychain/Keystore
@@ -69,16 +70,25 @@ export const Storage = {
         await kv.setItemAsync(ONBOARDING_SEEN_KEY, "true");
     },
 
+    async getHasChosenLanguage(): Promise<boolean> {
+        return (await kv.getItemAsync(LANGUAGE_CHOSEN_KEY)) === "true";
+    },
+
+    async setHasChosenLanguage(): Promise<void> {
+        await kv.setItemAsync(LANGUAGE_CHOSEN_KEY, "true");
+    },
+
     // Wipes every key this module manages — session, locale, and the
-    // onboarding flag — so the app behaves like a fresh install. Used by the
-    // dev-only "Reset app data" button; not something a real user action
-    // should ever call.
+    // onboarding/language-chosen flags — so the app behaves like a fresh
+    // install. Used by the dev-only "Reset app data" button; not something a
+    // real user action should ever call.
     async resetAll(): Promise<void> {
         await Promise.all([
             this.removeAccessToken(),
             this.removeUser(),
             kv.deleteItemAsync(LOCALE_KEY),
             kv.deleteItemAsync(ONBOARDING_SEEN_KEY),
+            kv.deleteItemAsync(LANGUAGE_CHOSEN_KEY),
         ]);
     },
 };
