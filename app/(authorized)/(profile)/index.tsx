@@ -45,7 +45,7 @@ export default function ProfileScreen() {
 
     if (loading) {
         return (
-            <View className="flex-1 items-center justify-center bg-white">
+            <View className="flex-1 items-center justify-center bg-cream">
                 <ActivityIndicator color="#D9704A" size="large" />
             </View>
         );
@@ -53,7 +53,7 @@ export default function ProfileScreen() {
 
     if (error || !profile) {
         return (
-            <View className="flex-1 items-center justify-center bg-white px-6">
+            <View className="flex-1 items-center justify-center bg-cream px-6">
                 <Text className="text-red-500 text-center">{error ?? "Profile unavailable"}</Text>
             </View>
         );
@@ -62,7 +62,7 @@ export default function ProfileScreen() {
     const age = calculateAge(profile.birthDate);
 
     return (
-        <ScrollView className="flex-1 bg-white p-6">
+        <ScrollView className="flex-1 bg-cream p-6">
             <SafeAreaView>
                 <View className="items-center mb-6">
                     <Image

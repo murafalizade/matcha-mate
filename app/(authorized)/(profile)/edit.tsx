@@ -133,14 +133,14 @@ export default function EditProfileScreen() {
 
     if (loading) {
         return (
-            <View className="flex-1 items-center justify-center bg-white">
+            <View className="flex-1 items-center justify-center bg-cream">
                 <ActivityIndicator color="#D9704A" size="large" />
             </View>
         );
     }
 
     return (
-        <ScrollView className="flex-1 bg-white p-6">
+        <ScrollView className="flex-1 bg-cream p-6">
             <SafeAreaView>
                 <Text className="text-2xl font-bold mb-6 text-center">Edit Profile</Text>
 

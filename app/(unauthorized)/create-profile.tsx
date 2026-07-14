@@ -91,7 +91,7 @@ export default function CreateProfileScreen() {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-white">
+        <SafeAreaView className="flex-1 bg-cream">
             <ScrollView contentContainerStyle={{ padding: 20, flexGrow: 1 }}>
                 <Text className="text-2xl font-bold mb-6 text-center">{t.createProfile.title}</Text>
 

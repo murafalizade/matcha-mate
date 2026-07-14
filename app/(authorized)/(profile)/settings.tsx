@@ -10,7 +10,7 @@ export default function SettingsScreen() {
     const { t } = useLocale();
 
     return (
-        <ScrollView className="flex-1 bg-white p-6">
+        <ScrollView className="flex-1 bg-cream p-6">
             <SafeAreaView>
                 <Text className="text-2xl font-bold mb-6 text-center">Settings</Text>
 

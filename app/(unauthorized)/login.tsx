@@ -49,7 +49,7 @@ export default function LoginScreen() {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-white">
+        <SafeAreaView className="flex-1 bg-cream">
             <ScrollView
                 contentContainerStyle={{ flexGrow: 1 }}
                 className="px-6 py-10"

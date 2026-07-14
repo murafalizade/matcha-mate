@@ -45,7 +45,7 @@ export default function QrCodeScanScreen() {
     };
 
     return (
-        <SafeAreaView className="bg-white flex-1">
+        <SafeAreaView className="bg-cream flex-1">
             <View className="flex-1 items-center p-6">
                 <Text className="text-2xl mb-2 font-semibold">Scan QR Code</Text>
                 <Text className="text-gray-600 text-center mb-4">

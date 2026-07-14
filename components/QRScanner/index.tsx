@@ -35,7 +35,7 @@ export default function QRScanner({ onScan, onCancel }: QRScannerProps) {
 
     if (!hasPermission) {
         return (
-            <View className="flex-1 items-center justify-center p-6 bg-white">
+            <View className="flex-1 items-center justify-center p-6 bg-cream">
                 <Text className="text-center text-base font-semibold mb-2">
                     Camera permission is required
                 </Text>

@@ -49,7 +49,7 @@ export default function OnboardingScreen() {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-white">
+        <SafeAreaView className="flex-1 bg-cream">
             <TouchableOpacity className="self-end px-6 pt-2" onPress={finish}>
                 <Text className="text-gray-500 font-medium">{t.common.skip}</Text>
             </TouchableOpacity>

@@ -28,7 +28,7 @@ export default function LaunchScreen() {
     ];
 
     return (
-        <SafeAreaView className="flex-1 bg-white">
+        <SafeAreaView className="flex-1 bg-cream">
             <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="p-6">
                 {/* Top Profile */}
                 <View className="flex-row items-center mb-8">

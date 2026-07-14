@@ -53,7 +53,7 @@ export default function ChatsScreen() {
     };
 
     return (
-        <View className="flex-1 bg-white h-screen">
+        <View className="flex-1 bg-cream h-screen">
             <SafeAreaView>
                 <Text className="text-2xl font-bold mb-6 text-center">Chats</Text>
 

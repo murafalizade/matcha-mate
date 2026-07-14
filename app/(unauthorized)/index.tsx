@@ -9,7 +9,7 @@ export default function WelcomeScreen() {
     const { t } = useLocale();
 
     return (
-        <SafeAreaView className="flex-1 bg-white">
+        <SafeAreaView className="flex-1 bg-cream">
             <View className="px-6 pt-2">
                 <LanguagePicker />
             </View>
