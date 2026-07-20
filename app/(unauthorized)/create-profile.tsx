@@ -1,6 +1,8 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
+import { router } from "expo-router";
+import { ArrowLeft, Check } from "lucide-react-native";
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -92,16 +94,25 @@ export default function CreateProfileScreen() {
 
     return (
         <SafeAreaView className="flex-1 bg-cream">
+            <TouchableOpacity
+                className="w-10 h-10 rounded-full items-center justify-center ml-3 mt-1"
+                onPress={() => router.back()}
+            >
+                <ArrowLeft color="#321716" size={22} />
+            </TouchableOpacity>
+
             <ScrollView contentContainerStyle={{ padding: 20, flexGrow: 1 }}>
-                <Text className="text-2xl font-bold mb-6 text-center">{t.createProfile.title}</Text>
+                <Text className="text-2xl font-bold mb-6 text-center text-ink">
+                    {t.createProfile.title}
+                </Text>
 
                 {/* Profile Image */}
                 <TouchableOpacity onPress={pickImage} className="items-center mb-6">
                     {imageUri ? (
                         <Image source={{ uri: imageUri }} className="w-28 h-28 rounded-full" />
                     ) : (
-                        <View className="w-28 h-28 bg-gray-200 rounded-full items-center justify-center">
-                            <Text className="text-gray-600">{t.createProfile.pickImage}</Text>
+                        <View className="w-28 h-28 bg-panel rounded-full items-center justify-center">
+                            <Text className="text-muted">{t.createProfile.pickImage}</Text>
                         </View>
                     )}
                 </TouchableOpacity>
@@ -129,9 +140,11 @@ export default function CreateProfileScreen() {
                         name={name}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <View className="mb-4">
-                                <Text className="mb-1 font-semibold">{label}</Text>
+                                <Text className="mb-1 text-xs font-semibold text-muted uppercase tracking-widest">
+                                    {label}
+                                </Text>
                                 <TextInput
-                                    className="border border-gray-300 rounded-lg px-3 py-2"
+                                    className="border border-dot rounded-lg px-4 py-3 bg-panel text-ink"
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value?.toString()}
@@ -154,12 +167,14 @@ export default function CreateProfileScreen() {
                     name="birthDate"
                     render={({ field: { value, onChange } }) => (
                         <View className="mb-4">
-                            <Text className="mb-1 font-semibold">{t.createProfile.birthdate}</Text>
+                            <Text className="mb-1 text-xs font-semibold text-muted uppercase tracking-widest">
+                                {t.createProfile.birthdate}
+                            </Text>
                             <TouchableOpacity
                                 onPress={() => setShowDatePicker(true)}
-                                className="border border-gray-300 rounded-lg px-3 py-2"
+                                className="border border-dot rounded-lg px-4 py-3 bg-panel"
                             >
-                                <Text>
+                                <Text className="text-ink">
                                     {value ? value.toDateString() : t.createProfile.selectDate}
                                 </Text>
                             </TouchableOpacity>
@@ -186,7 +201,9 @@ export default function CreateProfileScreen() {
                 />
 
                 {/* Gender */}
-                <Text className="font-semibold mb-2">{t.createProfile.gender}</Text>
+                <Text className="text-xs font-semibold text-muted uppercase tracking-widest mb-2">
+                    {t.createProfile.gender}
+                </Text>
                 <Controller
                     control={control}
                     name="gender"
@@ -210,10 +227,13 @@ export default function CreateProfileScreen() {
                     name="bio"
                     render={({ field: { onChange, value } }) => (
                         <View className="mb-4">
-                            <Text className="mb-1 font-semibold">{t.createProfile.bio}</Text>
+                            <Text className="mb-1 text-xs font-semibold text-muted uppercase tracking-widest">
+                                {t.createProfile.bio}
+                            </Text>
                             <TextInput
-                                className="border border-gray-300 rounded-lg px-3 py-2 h-24"
+                                className="border border-dot rounded-lg px-4 py-3 bg-panel text-ink h-24"
                                 placeholder={t.createProfile.bioPlaceholder}
+                                placeholderTextColor="#504443"
                                 multiline
                                 onChangeText={onChange}
                                 value={value}
@@ -232,17 +252,19 @@ export default function CreateProfileScreen() {
                 >
                     <View
                         className={`w-5 h-5 border rounded mr-2 items-center justify-center ${
-                            agree ? "bg-primary" : "border-gray-400"
+                            agree ? "bg-caramel border-caramel" : "border-dot"
                         }`}
-                    />
-                    <Text className="text-gray-700">{t.createProfile.agreeTerms}</Text>
+                    >
+                        {agree && <Check color="white" size={14} />}
+                    </View>
+                    <Text className="text-muted">{t.createProfile.agreeTerms}</Text>
                 </TouchableOpacity>
             </ScrollView>
 
             {/* Sticky Bottom Button */}
             <View className="p-4">
                 <TouchableOpacity
-                    className="bg-primary rounded-xl py-4"
+                    className="bg-caramel rounded-xl py-4"
                     onPress={handleSubmit(onSubmit)}
                     disabled={submitting}
                 >

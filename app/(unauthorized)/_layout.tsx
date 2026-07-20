@@ -11,10 +11,7 @@ export default function UnAuthorizedLayout() {
                 name="qr-code"
                 options={{ headerShown: true, title: "QR Code", headerBackVisible: false }}
             />
-            <Stack.Screen
-                name="create-profile"
-                options={{ headerShown: true, title: "Profile", headerBackVisible: false }}
-            />
+            <Stack.Screen name="create-profile" options={{ headerShown: false }} />
             <Stack.Screen name="login" options={{ headerShown: false }} />
         </Stack>
     );
