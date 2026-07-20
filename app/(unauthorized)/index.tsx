@@ -1,9 +1,9 @@
 import { router } from "expo-router";
+import { Coffee } from "lucide-react-native";
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { LanguagePicker } from "@/components/LanguagePicker";
 import { useLocale } from "@/hooks/useLocale";
 
 export default function WelcomeScreen() {
@@ -11,39 +11,42 @@ export default function WelcomeScreen() {
 
     return (
         <SafeAreaView className="flex-1 bg-cream">
-            <View className="px-6 pt-2">
-                <LanguagePicker />
-            </View>
-
-            <View className="flex-1 justify-center items-center px-6">
-                <Text className="text-3xl font-bold text-center mb-3">
-                    {t.welcome.title} <Text className="text-primary">{t.welcome.brand}</Text>
-                </Text>
-                <Text className="text-gray-600 text-center text-base leading-6">
-                    {t.welcome.subtitle}
-                </Text>
-            </View>
-
-            <View className="px-6 pb-8">
-                <TouchableOpacity
-                    className="bg-primary rounded-xl py-4 mb-4"
-                    onPress={() => router.push("/(unauthorized)/create-profile")}
-                >
-                    <Text className="text-white text-center font-semibold text-lg">
-                        {t.welcome.createAccount}
+            <View className="flex-1 px-6 justify-between pb-8">
+                <View className="items-center mt-4">
+                    <Coffee color="#321716" size={28} />
+                    <Text className="text-2xl font-bold text-ink mt-1">Social Coffee</Text>
+                    <Text className="text-muted text-center text-base mt-6 leading-6">
+                        {t.welcome.subtitle}
                     </Text>
-                </TouchableOpacity>
+                </View>
 
-                <TouchableOpacity
-                    className="border border-primary rounded-xl py-4"
-                    onPress={() => router.push("/(unauthorized)/login")}
-                >
-                    <Text className="text-primary text-center font-semibold text-lg">
-                        {t.welcome.logIn}
-                    </Text>
-                </TouchableOpacity>
+                <View className="w-full aspect-square rounded-2xl overflow-hidden">
+                    <Image
+                        source={require("../../assets/images/welcome/hero.png")}
+                        style={{ width: "100%", height: "100%" }}
+                        resizeMode="cover"
+                    />
+                </View>
 
-                <Text className="text-center text-sm text-gray-500 mt-6">{t.welcome.terms}</Text>
+                <View>
+                    <TouchableOpacity
+                        className="w-full h-14 bg-caramel rounded-xl items-center justify-center mb-4"
+                        onPress={() => router.push("/(unauthorized)/create-profile")}
+                    >
+                        <Text className="text-white font-semibold text-base">
+                            {t.welcome.createAccount}
+                        </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        className="w-full h-14 border-2 border-ink rounded-xl items-center justify-center"
+                        onPress={() => router.push("/(unauthorized)/login")}
+                    >
+                        <Text className="text-ink font-semibold text-base">{t.welcome.logIn}</Text>
+                    </TouchableOpacity>
+
+                    <Text className="text-center text-xs text-muted mt-5">{t.welcome.terms}</Text>
+                </View>
             </View>
         </SafeAreaView>
     );
