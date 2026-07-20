@@ -63,6 +63,12 @@ export interface Translations {
         russian: string;
         turkish: string;
     };
+    tabs: {
+        discovery: string;
+        map: string;
+        chat: string;
+        profile: string;
+    };
 }
 
 export type Locale = "en" | "ru" | "tr";

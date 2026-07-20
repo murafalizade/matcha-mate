@@ -67,4 +67,10 @@ export const en: Translations = {
         russian: "Russian",
         turkish: "Turkish",
     },
+    tabs: {
+        discovery: "Discovery",
+        map: "Map",
+        chat: "Chat",
+        profile: "Profile",
+    },
 };

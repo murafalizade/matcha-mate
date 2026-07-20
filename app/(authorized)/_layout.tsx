@@ -1,57 +1,69 @@
 import { Tabs } from "expo-router";
 
 import { TabBarIcon } from "@/components/TabBarIcon";
+import { useLocale } from "@/hooks/useLocale";
 
 export default function TabLayout() {
+    const { t } = useLocale();
+
     return (
         <Tabs
             screenOptions={{
-                tabBarShowLabel: false,
+                tabBarShowLabel: true,
+                tabBarActiveTintColor: "#321716",
+                tabBarInactiveTintColor: "#321716",
+                tabBarLabelStyle: {
+                    fontSize: 11,
+                    fontWeight: "600",
+                    marginTop: 2,
+                },
                 tabBarStyle: {
-                    paddingTop: 8,
+                    backgroundColor: "#FFF8F0",
+                    borderTopWidth: 0,
+                    height: 78,
+                    paddingTop: 10,
+                    elevation: 8,
+                    shadowColor: "#4A2C2A",
+                    shadowOpacity: 0.08,
+                    shadowRadius: 30,
+                    shadowOffset: { width: 0, height: -10 },
                 },
                 headerTitleAlign: "center",
                 tabBarIconStyle: {
                     alignItems: "center",
                     justifyContent: "center",
                 },
-                tabBarActiveTintColor: "#D9704A",
-                tabBarInactiveTintColor: "#A69488",
             }}
         >
             <Tabs.Screen
                 name="index"
                 options={{
-                    tabBarIcon: ({ color, focused }) => (
-                        <TabBarIcon name="home" color={color} focused={focused} />
-                    ),
+                    title: t.tabs.discovery,
+                    tabBarIcon: ({ focused }) => <TabBarIcon name="discovery" focused={focused} />,
                     headerShown: false,
                 }}
             />
             <Tabs.Screen
                 name="map"
                 options={{
-                    tabBarIcon: ({ color, focused }) => (
-                        <TabBarIcon name="map-marker" color={color} focused={focused} />
-                    ),
+                    title: t.tabs.map,
+                    tabBarIcon: ({ focused }) => <TabBarIcon name="map" focused={focused} />,
                     headerShown: false,
                 }}
             />
             <Tabs.Screen
                 name="(chats)"
                 options={{
-                    tabBarIcon: ({ color, focused }) => (
-                        <TabBarIcon name="comments" color={color} focused={focused} />
-                    ),
+                    title: t.tabs.chat,
+                    tabBarIcon: ({ focused }) => <TabBarIcon name="chat" focused={focused} />,
                     headerShown: false,
                 }}
             />
             <Tabs.Screen
                 name="(profile)"
                 options={{
-                    tabBarIcon: ({ color, focused }) => (
-                        <TabBarIcon name="user" color={color} focused={focused} />
-                    ),
+                    title: t.tabs.profile,
+                    tabBarIcon: ({ focused }) => <TabBarIcon name="profile" focused={focused} />,
                     headerShown: false,
                 }}
             />

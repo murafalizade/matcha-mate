@@ -69,4 +69,10 @@ export const ru: Translations = {
         russian: "Русский",
         turkish: "Турецкий",
     },
+    tabs: {
+        discovery: "Обзор",
+        map: "Карта",
+        chat: "Чат",
+        profile: "Профиль",
+    },
 };

@@ -1,8 +1,6 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { ComponentProps } from "react";
+export type TabBarIconName = "discovery" | "map" | "chat" | "profile";
 
 export interface TabBarIconProps {
-    name: ComponentProps<typeof FontAwesome>["name"];
-    color: string;
+    name: TabBarIconName;
     focused: boolean;
 }
