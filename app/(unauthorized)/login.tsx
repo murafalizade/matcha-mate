@@ -1,5 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { router } from "expo-router";
+import { ArrowLeft, Coffee, Eye, EyeOff, Lock, Mail } from "lucide-react-native";
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -23,6 +24,7 @@ export default function LoginScreen() {
     const { t } = useLocale();
     const [submitting, setSubmitting] = useState(false);
     const [serverError, setServerError] = useState<string | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
 
     const {
         control,
@@ -50,15 +52,25 @@ export default function LoginScreen() {
 
     return (
         <SafeAreaView className="flex-1 bg-cream">
+            <TouchableOpacity
+                className="w-10 h-10 rounded-full items-center justify-center ml-3 mt-1"
+                onPress={() => router.back()}
+            >
+                <ArrowLeft color="#321716" size={22} />
+            </TouchableOpacity>
+
             <ScrollView
                 contentContainerStyle={{ flexGrow: 1 }}
-                className="px-6 py-10"
+                className="px-6"
                 keyboardShouldPersistTaps="handled"
             >
                 {/* Header */}
-                <View className="mb-10">
-                    <Text className="text-3xl font-bold text-center mb-2">{t.login.title} 👋</Text>
-                    <Text className="text-gray-600 text-center">{t.login.subtitle}</Text>
+                <View className="items-center mt-2 mb-8">
+                    <View className="w-20 h-20 rounded-full bg-espresso items-center justify-center mb-4">
+                        <Coffee color="white" size={36} />
+                    </View>
+                    <Text className="text-2xl font-bold text-ink mb-1">{t.login.title}</Text>
+                    <Text className="text-muted">{t.login.subtitle}</Text>
                 </View>
 
                 {/* Email */}
@@ -66,20 +78,28 @@ export default function LoginScreen() {
                     control={control}
                     name="email"
                     render={({ field: { onChange, onBlur, value } }) => (
-                        <View className="mb-5">
-                            <Text className="mb-2 font-semibold text-gray-700">
+                        <View className="mb-4">
+                            <Text className="mb-1 text-xs font-semibold text-muted uppercase tracking-widest">
                                 {t.login.email}
                             </Text>
-                            <TextInput
-                                className="border border-gray-300 rounded-xl px-4 py-3 text-base"
-                                placeholder={t.login.emailPlaceholder}
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                                textContentType="emailAddress"
-                                keyboardType="email-address"
-                                autoCapitalize="none"
-                            />
+                            <View className="relative justify-center">
+                                <Mail
+                                    color="#504443"
+                                    size={18}
+                                    style={{ position: "absolute", left: 16, zIndex: 1 }}
+                                />
+                                <TextInput
+                                    className="border border-dot rounded-xl pl-11 pr-4 py-4 bg-panel text-ink"
+                                    placeholder={t.login.emailPlaceholder}
+                                    placeholderTextColor="#504443"
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                    textContentType="emailAddress"
+                                    keyboardType="email-address"
+                                    autoCapitalize="none"
+                                />
+                            </View>
                             {errors.email && (
                                 <Text className="text-red-500 mt-1 text-sm">
                                     {errors.email.message}
@@ -94,19 +114,37 @@ export default function LoginScreen() {
                     control={control}
                     name="password"
                     render={({ field: { onChange, onBlur, value } }) => (
-                        <View className="mb-3">
-                            <Text className="mb-2 font-semibold text-gray-700">
+                        <View className="mb-1">
+                            <Text className="mb-1 text-xs font-semibold text-muted uppercase tracking-widest">
                                 {t.login.password}
                             </Text>
-                            <TextInput
-                                className="border border-gray-300 rounded-xl px-4 py-3 text-base"
-                                placeholder={t.login.passwordPlaceholder}
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                                textContentType="password"
-                                secureTextEntry
-                            />
+                            <View className="relative justify-center">
+                                <Lock
+                                    color="#504443"
+                                    size={18}
+                                    style={{ position: "absolute", left: 16, zIndex: 1 }}
+                                />
+                                <TextInput
+                                    className="border border-dot rounded-xl pl-11 pr-11 py-4 bg-panel text-ink"
+                                    placeholder={t.login.passwordPlaceholder}
+                                    placeholderTextColor="#504443"
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                    textContentType="password"
+                                    secureTextEntry={!showPassword}
+                                />
+                                <TouchableOpacity
+                                    style={{ position: "absolute", right: 16, zIndex: 1 }}
+                                    onPress={() => setShowPassword((prev) => !prev)}
+                                >
+                                    {showPassword ? (
+                                        <EyeOff color="#504443" size={18} />
+                                    ) : (
+                                        <Eye color="#504443" size={18} />
+                                    )}
+                                </TouchableOpacity>
+                            </View>
                             {errors.password && (
                                 <Text className="text-red-500 mt-1 text-sm">
                                     {errors.password.message}
@@ -117,11 +155,8 @@ export default function LoginScreen() {
                 />
 
                 {/* Forgot password */}
-                <TouchableOpacity
-                    className="mb-8"
-                    // onPress={() => router.push("/(unauthorized)/forgot-password")}
-                >
-                    <Text className="text-primary text-right font-medium">
+                <TouchableOpacity className="mb-8 mt-2">
+                    <Text className="text-caramel text-right font-medium">
                         {t.login.forgotPassword}
                     </Text>
                 </TouchableOpacity>
@@ -132,24 +167,24 @@ export default function LoginScreen() {
 
                 {/* Login button */}
                 <TouchableOpacity
-                    className="bg-primary rounded-xl py-4"
+                    className="h-14 bg-caramel rounded-xl items-center justify-center"
                     onPress={handleSubmit(onSubmit)}
                     disabled={submitting}
                 >
                     {submitting ? (
                         <ActivityIndicator color="white" />
                     ) : (
-                        <Text className="text-white text-center font-semibold text-lg">
+                        <Text className="text-white text-center font-semibold text-base">
                             {t.login.logIn}
                         </Text>
                     )}
                 </TouchableOpacity>
 
                 {/* Register link */}
-                <View className="mt-6 flex-row justify-center">
-                    <Text className="text-gray-600">{t.login.noAccount}</Text>
+                <View className="mt-6 mb-8 flex-row justify-center">
+                    <Text className="text-muted">{t.login.noAccount}</Text>
                     <TouchableOpacity onPress={() => router.push("/(unauthorized)/create-profile")}>
-                        <Text className="text-primary font-semibold">{t.login.signUp}</Text>
+                        <Text className="text-caramel font-bold">{t.login.signUp}</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>

@@ -15,10 +15,7 @@ export default function UnAuthorizedLayout() {
                 name="create-profile"
                 options={{ headerShown: true, title: "Profile", headerBackVisible: false }}
             />
-            <Stack.Screen
-                name="login"
-                options={{ headerShown: true, title: "Login", headerBackVisible: false }}
-            />
+            <Stack.Screen name="login" options={{ headerShown: false }} />
         </Stack>
     );
 }
