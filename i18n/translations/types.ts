@@ -52,6 +52,7 @@ export interface Translations {
         bioPlaceholder: string;
         agreeTerms: string;
         createProfile: string;
+        alreadyHaveAccount: string;
         agreementRequiredTitle: string;
         agreementRequiredBody: string;
         registrationFailedTitle: string;

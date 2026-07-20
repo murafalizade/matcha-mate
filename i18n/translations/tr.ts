@@ -58,6 +58,7 @@ export const tr: Translations = {
         bioPlaceholder: "Kendinden bahset (en az 10 karakter)",
         agreeTerms: "Kullanım Şartları'nı kabul ediyorum",
         createProfile: "Profili Oluştur",
+        alreadyHaveAccount: "Zaten hesabın var mı? ",
         agreementRequiredTitle: "Onay Gerekli",
         agreementRequiredBody: "Kullanım Şartları'nı kabul etmelisin.",
         registrationFailedTitle: "Kayıt başarısız oldu",

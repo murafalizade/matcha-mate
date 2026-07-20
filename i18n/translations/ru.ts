@@ -58,6 +58,7 @@ export const ru: Translations = {
         bioPlaceholder: "Расскажите о себе (мин. 10 символов)",
         agreeTerms: "Я согласен с Условиями использования",
         createProfile: "Создать профиль",
+        alreadyHaveAccount: "Уже есть аккаунт? ",
         agreementRequiredTitle: "Требуется согласие",
         agreementRequiredBody: "Вы должны согласиться с Условиями использования.",
         registrationFailedTitle: "Не удалось зарегистрироваться",
