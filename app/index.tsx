@@ -16,7 +16,7 @@ export default function RootScreen() {
         return <Redirect href="/(unauthorized)/onboarding" />;
     }
     if (isAuth) {
-        return <Redirect href="/(unauthorized)/launch" />;
+        return <Redirect href="/(authorized)" />;
     }
     return <Redirect href="/(unauthorized)" />;
 }

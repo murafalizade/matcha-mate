@@ -5,10 +5,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLocale } from "@/hooks/useLocale";
 import { useOnboarding } from "@/hooks/useOnboarding";
 
-// "launch" and "qr-code" live under the (unauthorized) route group for
-// historical reasons, but both require a logged-in user (post-login,
-// pre-check-in screens) — hence the explicit auth requirement below rather
-// than deriving it purely from the group name. "onboarding"/"language" are
+// "qr-code" lives under the (unauthorized) route group for historical
+// reasons, but requires a logged-in user (post-login, pre-check-in screen) —
+// hence the explicit auth requirement below rather than deriving it purely
+// from the group name. "onboarding"/"language" are
 // genuinely public (pre-auth) — omitting either here caused an infinite
 // redirect loop between that screen and welcome, since it would otherwise
 // fall through to the "requires auth" branch below.
@@ -66,7 +66,7 @@ export function useProtectedRoute() {
         if (!isAuth && requiresAuth) {
             router.replace("/(unauthorized)");
         } else if (isAuth && isPublicScreen) {
-            router.replace("/(unauthorized)/launch");
+            router.replace("/(authorized)");
         }
     }, [
         isAuth,
