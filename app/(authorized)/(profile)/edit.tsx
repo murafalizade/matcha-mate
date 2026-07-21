@@ -50,8 +50,9 @@ export default function EditProfileScreen() {
 
     useEffect(() => {
         let cancelled = false;
-        Promise.all([ProfileService.getMe(), ProfileService.getInterests()])
-            .then(([profile, allInterests]) => {
+
+        ProfileService.getMe()
+            .then((profile) => {
                 if (cancelled) {
                     return;
                 }
@@ -63,7 +64,6 @@ export default function EditProfileScreen() {
                     bio: profile.bio ?? "",
                 });
                 setImageUri(profile.profileImageUrl);
-                setInterests(allInterests);
                 setSelectedInterestIds(profile.interests.map((interest) => interest.id));
             })
             .catch((err) => {
@@ -77,6 +77,18 @@ export default function EditProfileScreen() {
                     setLoading(false);
                 }
             });
+
+        // The interest catalog is a nice-to-have for this screen — if it's
+        // unavailable, the picker just stays empty instead of blocking the
+        // rest of the (already-fetched) profile from loading.
+        ProfileService.getInterests()
+            .then((allInterests) => {
+                if (!cancelled) {
+                    setInterests(allInterests);
+                }
+            })
+            .catch(() => {});
+
         return () => {
             cancelled = true;
         };
