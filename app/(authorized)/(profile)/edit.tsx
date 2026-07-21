@@ -16,11 +16,13 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { MultiSelectChips } from "@/components/MultiSelectChips";
 import { RadioGroup } from "@/components/RadioGroup";
 import { editProfileSchema } from "@/schemas/edit-profile";
 import { ProfileService } from "@/services/profile";
 import { EditProfileFormData } from "@/types/edit-profile";
 import { ApiError } from "@/utils/api";
+import { Interest } from "@/utils/models";
 
 const GENDER_OPTIONS = [
     { value: "MALE" as const, label: "Male" },
@@ -34,6 +36,8 @@ export default function EditProfileScreen() {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [imageUri, setImageUri] = useState<string | null>(null);
     const [imageChanged, setImageChanged] = useState(false);
+    const [interests, setInterests] = useState<Interest[]>([]);
+    const [selectedInterestIds, setSelectedInterestIds] = useState<string[]>([]);
 
     const {
         control,
@@ -46,8 +50,8 @@ export default function EditProfileScreen() {
 
     useEffect(() => {
         let cancelled = false;
-        ProfileService.getMe()
-            .then((profile) => {
+        Promise.all([ProfileService.getMe(), ProfileService.getInterests()])
+            .then(([profile, allInterests]) => {
                 if (cancelled) {
                     return;
                 }
@@ -59,6 +63,8 @@ export default function EditProfileScreen() {
                     bio: profile.bio ?? "",
                 });
                 setImageUri(profile.profileImageUrl);
+                setInterests(allInterests);
+                setSelectedInterestIds(profile.interests.map((interest) => interest.id));
             })
             .catch((err) => {
                 Alert.alert(
@@ -118,6 +124,7 @@ export default function EditProfileScreen() {
                 birthDate: data.birthDate.toISOString().slice(0, 10),
                 gender: data.gender,
                 bio: data.bio,
+                interestIds: selectedInterestIds,
             });
 
             router.back();
@@ -287,6 +294,22 @@ export default function EditProfileScreen() {
                             </View>
                         )}
                     />
+
+                    {interests.length > 0 && (
+                        <View>
+                            <Text className="text-xs font-semibold text-muted uppercase tracking-widest mb-2">
+                                Interests
+                            </Text>
+                            <MultiSelectChips
+                                options={interests.map((interest) => ({
+                                    value: interest.id,
+                                    label: interest.name,
+                                }))}
+                                selected={selectedInterestIds}
+                                onChange={setSelectedInterestIds}
+                            />
+                        </View>
+                    )}
                 </View>
 
                 <TouchableOpacity
