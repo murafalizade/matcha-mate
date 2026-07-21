@@ -46,7 +46,7 @@ export default function ProfileScreen() {
     if (loading) {
         return (
             <View className="flex-1 items-center justify-center bg-cream">
-                <ActivityIndicator color="#D9704A" size="large" />
+                <ActivityIndicator color="#CD8F62" size="large" />
             </View>
         );
     }
@@ -60,9 +60,15 @@ export default function ProfileScreen() {
     }
 
     const age = calculateAge(profile.birthDate);
+    const cardShadow = {
+        shadowColor: "#4A2C2A",
+        shadowOpacity: 0.08,
+        shadowRadius: 30,
+        shadowOffset: { width: 0, height: 10 },
+    };
 
     return (
-        <ScrollView className="flex-1 bg-cream p-6">
+        <ScrollView className="flex-1 bg-cream" contentContainerStyle={{ padding: 20 }}>
             <SafeAreaView>
                 <View className="items-center mb-6">
                     <Image
@@ -71,59 +77,110 @@ export default function ProfileScreen() {
                                 ? { uri: profile.profileImageUrl }
                                 : require("../../../assets/images/test.jpeg")
                         }
-                        className="w-24 h-24 rounded-full mb-3"
+                        className="w-24 h-24 rounded-full mb-3 border-4"
+                        style={{ borderColor: "#F5ECEB" }}
                     />
-                    <Text className="text-xl font-bold">
+                    <Text className="text-xl font-bold text-ink">
                         {profile.firstName} {profile.lastName}
                     </Text>
-                    <Text className="text-gray-500">{profile.email}</Text>
+                    <Text className="text-muted">{profile.email}</Text>
                 </View>
 
-                <View className="bg-gray-100 rounded-xl p-4 mb-4">
-                    <Text className="text-gray-500 mb-1">Age</Text>
-                    <Text className="font-semibold text-lg">{age}</Text>
+                <View className="bg-white rounded-2xl p-6 mb-6" style={cardShadow}>
+                    <View className="mb-4">
+                        <Text className="text-xs font-semibold text-muted uppercase tracking-widest mb-1">
+                            Age
+                        </Text>
+                        <Text className="font-semibold text-lg text-ink">{age}</Text>
+                    </View>
+
+                    <View className="mb-4">
+                        <Text className="text-xs font-semibold text-muted uppercase tracking-widest mb-1">
+                            Gender
+                        </Text>
+                        <Text className="font-semibold text-lg text-ink capitalize">
+                            {profile.gender.toLowerCase()}
+                        </Text>
+                    </View>
+
+                    <View className="mb-4">
+                        <Text className="text-xs font-semibold text-muted uppercase tracking-widest mb-1">
+                            Bio
+                        </Text>
+                        <Text className="text-base text-ink">{profile.bio ?? "—"}</Text>
+                    </View>
+
+                    <View>
+                        <Text className="text-xs font-semibold text-muted uppercase tracking-widest mb-2">
+                            Interests
+                        </Text>
+                        {profile.interests.length ? (
+                            <View className="flex-row flex-wrap gap-2">
+                                {profile.interests.map((interest) => (
+                                    <View
+                                        key={interest.id}
+                                        className="bg-panel border border-dot rounded-full px-3 py-1.5"
+                                    >
+                                        <Text className="text-ink text-sm font-medium">
+                                            {interest.name}
+                                        </Text>
+                                    </View>
+                                ))}
+                            </View>
+                        ) : (
+                            <Text className="text-muted">—</Text>
+                        )}
+                    </View>
                 </View>
 
-                <View className="bg-gray-100 rounded-xl p-4 mb-4">
-                    <Text className="text-gray-500 mb-1">Gender</Text>
-                    <Text className="font-semibold text-lg capitalize">
-                        {profile.gender.toLowerCase()}
+                <View className="bg-white rounded-2xl p-6 mb-6" style={cardShadow}>
+                    <Text className="text-xs font-semibold text-muted uppercase tracking-widest mb-2">
+                        Looking For
                     </Text>
-                </View>
-
-                <View className="bg-gray-100 rounded-xl p-4 mb-4">
-                    <Text className="text-gray-500 mb-1">Bio</Text>
-                    <Text className="font-semibold text-base">{profile.bio ?? "—"}</Text>
-                </View>
-
-                <View className="bg-gray-100 rounded-xl p-4 mb-4">
-                    <Text className="text-gray-500 mb-1">Interests</Text>
-                    <Text className="font-semibold text-base">
-                        {profile.interests.length
-                            ? profile.interests.map((interest) => interest.name).join(", ")
-                            : "—"}
-                    </Text>
-                </View>
-
-                <View className="bg-gray-100 rounded-xl p-4 mb-4">
-                    <Text className="text-gray-500 mb-1">Looking For</Text>
                     {profile.preference ? (
                         <>
-                            <Text className="font-semibold text-base capitalize">
-                                {profile.preference.lookingFor?.map(humanizeEnum).join(", ") ?? "—"}
-                            </Text>
-                            <Text className="text-gray-400 mt-1">
-                                Prefers: {profile.preference.preferredGender ?? "Anyone"} · Age{" "}
-                                {profile.preference.minAge}-{profile.preference.maxAge}
-                            </Text>
+                            <View className="flex-row flex-wrap gap-2 mb-4">
+                                {profile.preference.lookingFor?.length ? (
+                                    profile.preference.lookingFor.map((item) => (
+                                        <View
+                                            key={item}
+                                            className="bg-caramel rounded-full px-3 py-1.5"
+                                        >
+                                            <Text className="text-white text-sm font-semibold">
+                                                {humanizeEnum(item)}
+                                            </Text>
+                                        </View>
+                                    ))
+                                ) : (
+                                    <Text className="text-muted">—</Text>
+                                )}
+                            </View>
+
+                            <View className="mb-3">
+                                <Text className="text-xs font-semibold text-muted uppercase tracking-widest mb-1">
+                                    Preferred Gender
+                                </Text>
+                                <Text className="font-semibold text-base text-ink capitalize">
+                                    {profile.preference.preferredGender?.toLowerCase() ?? "Anyone"}
+                                </Text>
+                            </View>
+
+                            <View>
+                                <Text className="text-xs font-semibold text-muted uppercase tracking-widest mb-1">
+                                    Age Range
+                                </Text>
+                                <Text className="font-semibold text-base text-ink">
+                                    {profile.preference.minAge}–{profile.preference.maxAge}
+                                </Text>
+                            </View>
                         </>
                     ) : (
-                        <Text className="text-gray-400">Not set yet</Text>
+                        <Text className="text-muted">Not set yet</Text>
                     )}
                 </View>
 
                 <TouchableOpacity
-                    className="bg-primary rounded-xl py-3 mb-3"
+                    className="bg-caramel rounded-xl py-3 mb-3"
                     onPress={() => router.push("/(authorized)/(profile)/edit")}
                 >
                     <Text className="text-white text-center font-semibold text-lg">
@@ -132,21 +189,19 @@ export default function ProfileScreen() {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    className="bg-gray-200 rounded-xl py-3 mb-3"
+                    className="border border-dot rounded-xl py-3 mb-3"
                     onPress={() => router.push("/(authorized)/(profile)/preferences")}
                 >
-                    <Text className="text-center font-semibold text-gray-700 text-lg">
+                    <Text className="text-center font-semibold text-ink text-lg">
                         Edit Preferences
                     </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    className="bg-gray-200 rounded-xl py-3"
+                    className="border border-dot rounded-xl py-3"
                     onPress={() => router.push("/(authorized)/(profile)/settings")}
                 >
-                    <Text className="text-center font-semibold text-gray-700 text-lg">
-                        Settings
-                    </Text>
+                    <Text className="text-center font-semibold text-ink text-lg">Settings</Text>
                 </TouchableOpacity>
             </SafeAreaView>
         </ScrollView>
