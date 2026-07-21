@@ -3,7 +3,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { ArrowLeft, Calendar, Camera, Check, Eye, EyeOff, Lock, Mail } from "lucide-react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
     Text,
@@ -17,12 +17,15 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { MultiSelectChips } from "@/components/MultiSelectChips";
 import { RadioGroup } from "@/components/RadioGroup";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocale } from "@/hooks/useLocale";
 import { createProfileSchema } from "@/schemas/create-profile";
+import { ProfileService } from "@/services/profile";
 import { CreateProfileFormData } from "@/types/create-profile";
 import { ApiError } from "@/utils/api";
+import { Interest } from "@/utils/models";
 
 const BIO_MAX_LENGTH = 500;
 
@@ -34,6 +37,16 @@ export default function CreateProfileScreen() {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [submitting, setSubmitting] = useState(false);
+    const [interests, setInterests] = useState<Interest[]>([]);
+    const [selectedInterestIds, setSelectedInterestIds] = useState<string[]>([]);
+
+    useEffect(() => {
+        ProfileService.getInterests()
+            .then(setInterests)
+            .catch(() => {
+                // Non-critical — the picker just stays empty if this fails.
+            });
+    }, []);
 
     const {
         control,
@@ -85,6 +98,13 @@ export default function CreateProfileScreen() {
             });
             // Profile picture upload happens separately via POST /profiles/me/image
             // once the profile screen is wired up — not part of registration itself.
+            if (selectedInterestIds.length > 0) {
+                try {
+                    await ProfileService.updateMe({ interestIds: selectedInterestIds });
+                } catch {
+                    // Non-critical — the account was created successfully either way.
+                }
+            }
             // Successful registration flips `isAuth`; the root layout's route guard
             // handles navigating away from this screen.
         } catch (err) {
@@ -340,6 +360,23 @@ export default function CreateProfileScreen() {
                         </View>
                     )}
                 />
+
+                {/* Interests */}
+                {interests.length > 0 && (
+                    <View className="mb-4">
+                        <Text className="text-xs font-semibold text-muted uppercase tracking-widest mb-2">
+                            {t.createProfile.interests}
+                        </Text>
+                        <MultiSelectChips
+                            options={interests.map((interest) => ({
+                                value: interest.id,
+                                label: interest.name,
+                            }))}
+                            selected={selectedInterestIds}
+                            onChange={setSelectedInterestIds}
+                        />
+                    </View>
+                )}
 
                 {/* Terms */}
                 <TouchableOpacity
