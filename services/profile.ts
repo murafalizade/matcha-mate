@@ -6,11 +6,15 @@ import {
     UpdateProfilePayload,
 } from "@/services/profile.types";
 import { apiDelete, apiGet, apiPatch, apiPost } from "@/utils/api";
-import { Profile } from "@/utils/models";
+import { Interest, Profile } from "@/utils/models";
 
 export const ProfileService = {
     getMe(): Promise<Profile> {
         return apiGet<Profile>("/profiles/me");
+    },
+
+    getInterests(): Promise<Interest[]> {
+        return apiGet<Interest[]>("/profiles/interests");
     },
 
     // Requires an active venue check-in (400 otherwise).

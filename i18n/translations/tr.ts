@@ -59,6 +59,7 @@ export const tr: Translations = {
         agreeTerms: "Kullanım Şartları'nı kabul ediyorum",
         createProfile: "Profili Oluştur",
         alreadyHaveAccount: "Zaten hesabın var mı? ",
+        interests: "İlgi Alanları",
         agreementRequiredTitle: "Onay Gerekli",
         agreementRequiredBody: "Kullanım Şartları'nı kabul etmelisin.",
         registrationFailedTitle: "Kayıt başarısız oldu",

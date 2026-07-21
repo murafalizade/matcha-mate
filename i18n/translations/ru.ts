@@ -59,6 +59,7 @@ export const ru: Translations = {
         agreeTerms: "Я согласен с Условиями использования",
         createProfile: "Создать профиль",
         alreadyHaveAccount: "Уже есть аккаунт? ",
+        interests: "Интересы",
         agreementRequiredTitle: "Требуется согласие",
         agreementRequiredBody: "Вы должны согласиться с Условиями использования.",
         registrationFailedTitle: "Не удалось зарегистрироваться",

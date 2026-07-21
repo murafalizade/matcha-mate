@@ -53,6 +53,7 @@ export interface Translations {
         agreeTerms: string;
         createProfile: string;
         alreadyHaveAccount: string;
+        interests: string;
         agreementRequiredTitle: string;
         agreementRequiredBody: string;
         registrationFailedTitle: string;

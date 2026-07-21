@@ -57,6 +57,7 @@ export const en: Translations = {
         agreeTerms: "I agree to the Terms of Service",
         createProfile: "Create Profile",
         alreadyHaveAccount: "Already have an account? ",
+        interests: "Interests",
         agreementRequiredTitle: "Agreement Required",
         agreementRequiredBody: "You must agree to the Terms of Service.",
         registrationFailedTitle: "Registration failed",
