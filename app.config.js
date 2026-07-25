@@ -20,6 +20,7 @@ module.exports = {
             },
         },
         android: {
+            package: "com.seyrancodes.matchamate",
             adaptiveIcon: {
                 foregroundImage: "./assets/images/adaptive-icon.png",
                 backgroundColor: "#ffffff",
@@ -49,6 +50,11 @@ module.exports = {
         ],
         experiments: {
             typedRoutes: true,
+        },
+        extra: {
+            eas: {
+                projectId: "7119b4af-6a37-48dc-9ce8-be282a1565f2",
+            },
         },
     },
 };
