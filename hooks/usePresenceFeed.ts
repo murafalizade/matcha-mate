@@ -1,4 +1,3 @@
-import * as Location from "expo-location";
 import { useEffect, useRef, useState } from "react";
 import { AppState } from "react-native";
 import { Socket } from "socket.io-client";
@@ -31,20 +30,7 @@ export function usePresenceFeed(venueId: string | null): UsePresenceFeedResult {
             }
         };
 
-        const sendHeartbeat = async (socket: Socket) => {
-            try {
-                const { status } = await Location.getForegroundPermissionsAsync();
-                if (status === "granted") {
-                    const position = await Location.getCurrentPositionAsync({});
-                    socket.emit("heartbeat", {
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude,
-                    });
-                    return;
-                }
-            } catch {
-                // fall through to a coordinate-less heartbeat
-            }
+        const sendHeartbeat = (socket: Socket) => {
             socket.emit("heartbeat");
         };
 
@@ -89,16 +75,19 @@ export function usePresenceFeed(venueId: string | null): UsePresenceFeedResult {
                 if (cancelled) {
                     return;
                 }
+                // Appended, not prepended — the discovery feed is a swipeable
+                // deck indexed by position, so inserting at the front would
+                // shift whichever card the user is currently looking at.
                 setProfiles((prev) => [
+                    ...(prev ?? []).filter((p) => p.id !== payload.user.id),
                     payload.user,
-                    ...prev.filter((p) => p.id !== payload.user.id),
                 ]);
             });
             socket.on("user_left", (payload: { userId: string }) => {
                 if (cancelled) {
                     return;
                 }
-                setProfiles((prev) => prev.filter((p) => p.id !== payload.userId));
+                setProfiles((prev) => (prev ?? []).filter((p) => p.id !== payload.userId));
             });
 
             socket.connect();
@@ -116,8 +105,7 @@ export function usePresenceFeed(venueId: string | null): UsePresenceFeedResult {
         connect();
 
         // Presence is a live "who's here right now" feed — there's no point
-        // holding the socket (or draining battery on location heartbeats)
-        // while the app is backgrounded.
+        // holding the socket open while the app is backgrounded.
         const subscription = AppState.addEventListener("change", (state) => {
             if (state === "active" && !socketRef.current) {
                 connect();

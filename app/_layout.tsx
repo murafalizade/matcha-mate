@@ -2,6 +2,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import Toast from "react-native-toast-message";
 
 import { RootLayoutNav } from "@/components/RootLayoutNav";
 import { AuthProvider } from "@/hooks/useAuth";
@@ -40,6 +41,7 @@ export default function RootLayout() {
                     </VenueProvider>
                 </OnboardingProvider>
             </AuthProvider>
+            <Toast />
         </LocaleProvider>
     );
 }
