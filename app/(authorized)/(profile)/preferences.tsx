@@ -95,7 +95,10 @@ export default function PreferencesScreen() {
     }
 
     return (
-        <ScrollView className="flex-1 bg-cream" contentContainerStyle={{ padding: 20 }}>
+        <ScrollView
+            className="flex-1 bg-cream"
+            contentContainerStyle={{ padding: 20, flexGrow: 1, justifyContent: "center" }}
+        >
             <SafeAreaView edges={["bottom"]}>
                 <Text className="text-2xl font-bold mb-6 text-center text-ink">
                     Discovery Preferences
