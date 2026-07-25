@@ -1,6 +1,7 @@
+import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import { Coffee, Search } from "lucide-react-native";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
     View,
     Text,
@@ -46,9 +47,15 @@ export default function ChatsScreen() {
         }
     }, []);
 
-    useEffect(() => {
-        load();
-    }, [load]);
+    // Re-fetch every time this tab regains focus — otherwise a chat created
+    // while browsing Discovery wouldn't show up until the app is relaunched,
+    // since tab screens stay mounted (and this effect wouldn't rerun) when
+    // you just switch tabs.
+    useFocusEffect(
+        useCallback(() => {
+            load();
+        }, [load]),
+    );
 
     const onRefresh = () => {
         setRefreshing(true);
