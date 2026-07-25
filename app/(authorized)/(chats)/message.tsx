@@ -114,7 +114,7 @@ export default function MessageScreen() {
             {/* Messages + Input container */}
             <KeyboardAvoidingView
                 className="flex-1"
-                behavior={Platform.OS === "ios" ? "padding" : undefined}
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
                 keyboardVerticalOffset={80}
             >
                 <View className="flex-1 justify-between mt-3">
