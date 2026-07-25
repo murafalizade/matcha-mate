@@ -8,13 +8,15 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLocale } from "@/hooks/useLocale";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { useProtectedRoute } from "@/hooks/useProtectedRoute";
+import { useVenue } from "@/hooks/useVenue";
 
 export function RootLayoutNav() {
     const colorScheme = useColorScheme();
     const { isLoading: isAuthLoading } = useAuth();
     const { isLoading: isOnboardingLoading } = useOnboarding();
     const { isLoading: isLocaleLoading } = useLocale();
-    const isLoading = isAuthLoading || isOnboardingLoading || isLocaleLoading;
+    const { isLoading: isVenueLoading } = useVenue();
+    const isLoading = isAuthLoading || isOnboardingLoading || isLocaleLoading || isVenueLoading;
     useProtectedRoute();
 
     useEffect(() => {

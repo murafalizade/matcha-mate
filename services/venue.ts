@@ -14,4 +14,8 @@ export const VenueService = {
     getNearby(query: NearbyVenuesQuery): Promise<Venue[]> {
         return apiGet<Venue[]>("/venues/nearby", { params: query });
     },
+
+    getCurrentCheckIn(): Promise<Venue | null> {
+        return apiGet<Venue | null>("/venues/me/current");
+    },
 };
