@@ -26,9 +26,9 @@ export default function QRScanner({ onScan, onCancel }: QRScannerProps) {
 
     if (hasPermission === null) {
         return (
-            <View className="flex-1 items-center justify-center bg-black">
-                <ActivityIndicator />
-                <Text className="text-white mt-2">Requesting camera permission…</Text>
+            <View className="flex-1 items-center justify-center bg-cream">
+                <ActivityIndicator color="#CD8F62" />
+                <Text className="text-ink mt-2">Requesting camera permission…</Text>
             </View>
         );
     }
@@ -70,7 +70,7 @@ export default function QRScanner({ onScan, onCancel }: QRScannerProps) {
                 <View className="w-64 h-64 border-white border-2 rounded-lg" />
 
                 <View className="items-center">
-                    <Text className="text-white/80">{"hint"}</Text>
+                    <Text className="text-white/80">Align the QR code within the frame</Text>
                     {onCancel && (
                         <TouchableOpacity
                             className="mt-4 bg-white/15 px-5 py-3 rounded-2xl"

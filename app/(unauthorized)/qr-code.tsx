@@ -63,9 +63,9 @@ export default function QrCodeScanScreen() {
                     )}
 
                     {state === "checking-in" && (
-                        <View className="flex-1 items-center justify-center bg-black">
-                            <ActivityIndicator color="white" size="large" />
-                            <Text className="text-white mt-3">Checking in…</Text>
+                        <View className="flex-1 items-center justify-center bg-cream">
+                            <ActivityIndicator color="#CD8F62" size="large" />
+                            <Text className="text-ink mt-3">Checking in…</Text>
                         </View>
                     )}
 
