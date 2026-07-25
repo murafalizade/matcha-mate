@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Social Coffee - Log In</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#ffdcc6",
+                    "surface-container-highest": "#e9e1df",
+                    "inverse-primary": "#eabcb8",
+                    "secondary": "#645d55",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "primary-fixed-dim": "#eabcb8",
+                    "primary-fixed": "#ffdad7",
+                    "secondary-container": "#ebe1d6",
+                    "background": "#fff8f7",
+                    "surface-bright": "#fff8f7",
+                    "surface-variant": "#e9e1df",
+                    "on-secondary": "#ffffff",
+                    "surface-container": "#f5eceb",
+                    "on-secondary-fixed-variant": "#4c463e",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary": "#351700",
+                    "on-surface-variant": "#504443",
+                    "secondary-fixed": "#ebe1d6",
+                    "tertiary-container": "#532905",
+                    "surface-dim": "#e1d8d7",
+                    "surface-container-high": "#efe6e5",
+                    "on-tertiary-container": "#cd8f62",
+                    "on-tertiary-fixed": "#301400",
+                    "surface-container-low": "#fbf2f0",
+                    "secondary-fixed-dim": "#cec5bb",
+                    "surface": "#fff8f7",
+                    "outline": "#827472",
+                    "on-tertiary-fixed-variant": "#6a3b16",
+                    "on-primary-fixed-variant": "#5f3e3c",
+                    "tertiary-fixed-dim": "#fcb888",
+                    "on-error": "#ffffff",
+                    "surface-tint": "#795553",
+                    "on-surface": "#1e1b1a",
+                    "inverse-surface": "#342f2f",
+                    "primary-container": "#4a2c2a",
+                    "primary": "#321716",
+                    "on-primary-container": "#bd928f",
+                    "error": "#ba1a1a",
+                    "outline-variant": "#d4c3c1",
+                    "on-secondary-container": "#6a635b",
+                    "on-background": "#1e1b1a",
+                    "on-secondary-fixed": "#1f1b14",
+                    "on-tertiary": "#ffffff",
+                    "inverse-on-surface": "#f8efee",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed": "#2e1413"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "32px",
+                    "container-padding": "20px",
+                    "base": "4px",
+                    "md": "24px",
+                    "xl": "48px",
+                    "sm": "16px",
+                    "xs": "8px",
+                    "card-gap": "16px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "label-md": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #fff8f7; /* Latte Beige / Background */
+            color: #321716; /* Espresso Brown / Primary */
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            user-select: none;
+        }
+        .coffee-shadow {
+            box-shadow: 0px 10px 30px rgba(74, 44, 42, 0.08);
+        }
+        .vibrant-coral-btn {
+            background-color: #bd928f; /* Approximating the coral-adjacent brand color from palette */
+            transition: all 0.2s ease-in-out;
+        }
+        .vibrant-coral-btn:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+        .input-inset {
+            background-color: #fbf2f0;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen flex flex-col items-center">
+<!-- Top Navigation -->
+<nav class="w-full max-w-md px-container-padding h-16 flex items-center justify-start">
+<button aria-label="Go back" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+</nav>
+<main class="w-full max-w-md px-container-padding flex-1 flex flex-col pb-lg">
+<!-- Header -->
+<section class="flex flex-col items-center mt-sm mb-lg text-center">
+<div class="w-20 h-20 rounded-full bg-primary-container flex items-center justify-center mb-md coffee-shadow">
+<span class="material-symbols-outlined text-on-primary-container text-[40px]" style="font-variation-settings: 'FILL' 1;">coffee</span>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-xs">Welcome back</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Log in to continue.</p>
+</section>
+<!-- Login Form -->
+<form class="flex flex-col space-y-md" onsubmit="event.preventDefault();">
+<!-- Email Field -->
+<div class="flex flex-col space-y-base">
+<label class="font-label-md text-label-md text-on-surface-variant ml-xs" for="email">Email</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">mail</span>
+<input class="w-full h-14 pl-12 pr-4 rounded-xl border border-outline-variant bg-surface-container-low focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md" id="email" placeholder="yourname@email.com" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="flex flex-col space-y-base">
+<label class="font-label-md text-label-md text-on-surface-variant ml-xs" for="password">Password</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">lock</span>
+<input class="w-full h-14 pl-12 pr-12 rounded-xl border border-outline-variant bg-surface-container-low focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md" id="password" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary transition-colors" onclick="togglePassword()" type="button">
+<span class="material-symbols-outlined" id="pw-icon">visibility</span>
+</button>
+</div>
+<div class="flex justify-end">
+<a class="font-label-md text-label-md text-on-tertiary-container hover:underline mt-base" href="#">Forgot password?</a>
+</div>
+</div>
+<!-- Log In Button -->
+<button class="w-full h-14 rounded-xl bg-primary-container text-on-primary-container font-label-md text-label-md shadow-md hover:opacity-90 active:scale-[0.98] transition-all mt-sm">
+                Log In
+            </button>
+</form>
+<!-- Divider -->
+<div class="flex items-center my-lg">
+<div class="flex-1 h-[1px] bg-outline-variant"></div>
+<span class="px-4 font-label-sm text-label-sm text-on-surface-variant">or</span>
+<div class="flex-1 h-[1px] bg-outline-variant"></div>
+</div>
+<!-- Social Logins -->
+<div class="grid grid-cols-2 gap-card-gap">
+<button class="h-14 border border-outline-variant rounded-xl flex items-center justify-center gap-xs hover:bg-surface-container-lowest transition-colors active:scale-[0.98]">
+<img class="w-5 h-5" data-alt="Official Google multi-colored icon logo on a transparent background, clean and professional vector style for high-end web integration." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4msIvGwnG0kp50bS_Kh-QC89_fNMYnM-eOVROlES3z7MqIq66181RUJMBAFWHx2s886gTEO7WWOdEw8sO-6iyYw6Cyb_5f5-YfE70_V2mkiggxKR9q_H2r9Aj6JIswDWAEpmknC4E-W3r_vuixqD8fRISctUx2VtZ3BeW6RiFe0e5l-r1e1pPRa_yeM1zao6fGPBktLo-RxnHP1x-zIq5bxZ2goqc8CwtbOcARQtnfNFdG3Byyh4U1F030zb84RNuiusYWpnD7nBR"/>
+<span class="font-label-md text-label-md">Google</span>
+</button>
+<button class="h-14 border border-outline-variant rounded-xl flex items-center justify-center gap-xs hover:bg-surface-container-lowest transition-colors active:scale-[0.98]">
+<img class="w-5 h-5" data-alt="Classic black Apple logo in high resolution, minimalist aesthetic suitable for a high-end coffee shop mobile application login screen." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjPBjMFuK-rO5-R8a76EAz0YnJmeQy24m0Eu6Buvx5BLMc5fV4jN6ciIl5JmI632qur6yLTz9Vuous3xUrxDs7dY0r_2eSy5TFaYGB6q41N1eX33Q_0ceJPCtAsvHzVhJSpfII0OznWtDX--svr_ATz2Yf8pBJ1FYCx7M_ro9QtZsCTLcb7do_LGs4o0SHBg-blqWDa_sNj-MY9WMFgP9bRcoFHEICF353N067yLGOQ4yobu5mli5SXlw_PAc7v3JNC81zDKS0bM6k"/>
+<span class="font-label-md text-label-md">Apple</span>
+</button>
+</div>
+<!-- Footer -->
+<footer class="mt-auto pt-lg text-center">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                Don't have an account? 
+                <a class="text-on-tertiary-container font-bold hover:underline" href="#">Sign Up</a>
+</p>
+</footer>
+</main>
+<!-- Decoration Layer (Ambient Atmosphere) -->
+<div class="fixed top-[-100px] right-[-100px] w-[300px] h-[300px] rounded-full bg-primary-fixed-dim/10 blur-[80px] pointer-events-none -z-10"></div>
+<div class="fixed bottom-[-100px] left-[-100px] w-[300px] h-[300px] rounded-full bg-secondary-fixed/20 blur-[80px] pointer-events-none -z-10"></div>
+<script>
+        function togglePassword() {
+            const input = document.getElementById('password');
+            const icon = document.getElementById('pw-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility_off';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility';
+            }
+        }
+    </script>
+</body></html>

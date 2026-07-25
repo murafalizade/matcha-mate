@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Edit Profile - Social Coffee</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "on-surface": "#1e1b1a",
+                        "inverse-on-surface": "#f8efee",
+                        "outline-variant": "#d4c3c1",
+                        "secondary": "#645d55",
+                        "on-primary-fixed-variant": "#5f3e3c",
+                        "on-tertiary-fixed": "#301400",
+                        "surface-tint": "#795553",
+                        "tertiary": "#351700",
+                        "surface-container-high": "#efe6e5",
+                        "secondary-fixed-dim": "#cec5bb",
+                        "on-secondary-fixed-variant": "#4c463e",
+                        "on-surface-variant": "#504443",
+                        "error": "#ba1a1a",
+                        "inverse-surface": "#342f2f",
+                        "surface-dim": "#e1d8d7",
+                        "tertiary-fixed-dim": "#fcb888",
+                        "on-primary-fixed": "#2e1413",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#4a2c2a",
+                        "background": "#fff8f7",
+                        "tertiary-container": "#532905",
+                        "surface-container": "#f5eceb",
+                        "surface": "#fff8f7",
+                        "on-secondary-container": "#6a635b",
+                        "tertiary-fixed": "#ffdcc6",
+                        "primary": "#321716",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#6a3b16",
+                        "inverse-primary": "#eabcb8",
+                        "on-background": "#1e1b1a",
+                        "surface-variant": "#e9e1df",
+                        "surface-container-highest": "#e9e1df",
+                        "secondary-fixed": "#ebe1d6",
+                        "on-tertiary-container": "#cd8f62",
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#fff8f7",
+                        "primary-fixed": "#ffdad7",
+                        "on-secondary-fixed": "#1f1b14",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#ebe1d6",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#bd928f",
+                        "surface-container-low": "#fbf2f0",
+                        "outline": "#827472",
+                        "primary-fixed-dim": "#eabcb8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "8px",
+                        "lg": "16px",
+                        "xl": "24px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "48px",
+                        "xs": "8px",
+                        "sm": "16px",
+                        "lg": "32px",
+                        "base": "4px",
+                        "container-padding": "20px",
+                        "card-gap": "16px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .coffee-shadow {
+            box-shadow: 0px 10px 30px rgba(74, 44, 42, 0.08);
+        }
+        .custom-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #cd8f62;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        body {
+            background-color: #fff8f7;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface">
+<!-- Top App Bar -->
+<header class="w-full top-0 sticky z-50 bg-background/95 backdrop-blur-md">
+<div class="flex items-center justify-between px-container-padding py-sm w-full max-w-7xl mx-auto">
+<button class="active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">Edit Profile</h1>
+<button class="active:scale-95 transition-transform duration-200 font-label-md text-label-md text-on-tertiary-container">
+                Save
+            </button>
+</div>
+</header>
+<main class="max-w-xl mx-auto px-container-padding pt-sm pb-xl">
+<!-- Section 1: My Profile -->
+<section class="bg-surface-container-lowest rounded-lg p-lg coffee-shadow mb-lg">
+<div class="flex flex-col items-center mb-lg">
+<div class="relative">
+<div class="w-32 h-32 rounded-full border-4 border-surface-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional portrait of a woman with warm lighting, styled in a minimalist and clean aesthetic. She is wearing a soft cream sweater, sitting in a cozy, sun-drenched coffee shop with blurry espresso machines in the background. The color palette is rich with latte beiges, deep espresso browns, and soft caramel highlights. High-end lifestyle photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHjBoaVSOKTOulT8vwwqTaAcltEv1Sg4aWMygWO3daW9nrIWSLi3eHxDn1vyQCXUgQYAiPWIBGiSLvKNJBVX1kyMvzEvlV459SIfVxBrDdrIsAFQbawagA2XFeVezyvWvK4HvmqtLs2yP_5UsFimZd5Fa5VxGthZOgor103sfrbJ2owrm9b313SyjI7RDMR6xJtBML_5uIfF3Y07PVJjNRTrJ3IgLS6tFPSKdMacuvIx-Nab4Q0FVJ0Wxx9ijunQnzVww10WtIzx2r"/>
+</div>
+<button class="absolute bottom-0 right-0 bg-on-tertiary-container text-white p-2 rounded-full coffee-shadow active:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
+</button>
+</div>
+<h2 class="mt-sm font-headline-md text-headline-md text-primary">My Profile</h2>
+</div>
+<div class="space-y-sm">
+<!-- First Name -->
+<div class="flex flex-col gap-base">
+<label class="font-label-sm text-label-sm text-outline px-1">First Name</label>
+<input class="w-full px-sm py-3 bg-surface-container-low border border-outline-variant rounded-DEFAULT focus:outline-none focus:border-primary-container text-body-md font-body-md text-on-surface" type="text" value="Alex"/>
+</div>
+<!-- Last Name -->
+<div class="flex flex-col gap-base">
+<label class="font-label-sm text-label-sm text-outline px-1">Last Name</label>
+<input class="w-full px-sm py-3 bg-surface-container-low border border-outline-variant rounded-DEFAULT focus:outline-none focus:border-primary-container text-body-md font-body-md text-on-surface" type="text" value="Sterling"/>
+</div>
+<!-- Email (Read Only) -->
+<div class="flex flex-col gap-base">
+<label class="font-label-sm text-label-sm text-outline px-1">Email</label>
+<div class="relative w-full">
+<input class="w-full pl-sm pr-10 py-3 bg-surface-variant border border-outline-variant rounded-DEFAULT text-body-md font-body-md text-on-surface-variant cursor-not-allowed" readonly="" type="email" value="alex.sterling@email.com"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<!-- Birthdate -->
+<div class="flex flex-col gap-base">
+<label class="font-label-sm text-label-sm text-outline px-1">Birthdate</label>
+<div class="relative w-full">
+<input class="w-full pl-sm pr-10 py-3 bg-surface-container-low border border-outline-variant rounded-DEFAULT focus:outline-none focus:border-primary-container text-body-md font-body-md text-on-surface" type="text" value="Jan 15, 1995"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline">calendar_today</span>
+</div>
+</div>
+<!-- Gender Selection -->
+<div class="flex flex-col gap-sm py-base">
+<label class="font-label-sm text-label-sm text-outline px-1">Gender</label>
+<div class="flex flex-wrap gap-xs">
+<button class="px-sm py-2 rounded-full border border-outline-variant text-label-md font-label-md text-on-surface-variant hover:bg-secondary-container/20 transition-colors">Male</button>
+<button class="px-sm py-2 rounded-full bg-primary-container text-white text-label-md font-label-md coffee-shadow active:scale-95 transition-all">Female</button>
+<button class="px-sm py-2 rounded-full border border-outline-variant text-label-md font-label-md text-on-surface-variant hover:bg-secondary-container/20 transition-colors">Other</button>
+</div>
+</div>
+<!-- Bio -->
+<div class="flex flex-col gap-base">
+<label class="font-label-sm text-label-sm text-outline px-1">Bio</label>
+<textarea class="w-full px-sm py-3 bg-surface-container-low border border-outline-variant rounded-DEFAULT focus:outline-none focus:border-primary-container text-body-md font-body-md text-on-surface resize-none" rows="4">Alex Sterling. Urban explorer and latte enthusiast. Always looking for the next hidden gem cafe in the city. Let's talk about beans!</textarea>
+<span class="text-right font-label-sm text-label-sm text-outline mt-1">142/250</span>
+</div>
+</div>
+</section>
+<!-- Section 2: Discovery Preferences -->
+<section class="bg-surface-container-lowest rounded-lg p-lg coffee-shadow mb-32">
+<h2 class="mb-lg font-headline-md text-headline-md text-primary">Discovery Preferences</h2>
+<div class="space-y-lg">
+<!-- Age Range -->
+<div class="flex flex-col gap-sm">
+<div class="flex justify-between items-end px-1">
+<label class="font-label-sm text-label-sm text-outline">Age Range</label>
+<span class="font-label-md text-label-md text-on-tertiary-container">24 - 35</span>
+</div>
+<div class="relative py-4">
+<div class="h-1.5 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-on-tertiary-container" style="margin-left: 20%; width: 30%;"></div>
+</div>
+<div class="absolute top-1/2 left-[20%] -translate-y-1/2 w-5 h-5 bg-on-tertiary-container border-2 border-white rounded-full coffee-shadow cursor-pointer"></div>
+<div class="absolute top-1/2 left-[50%] -translate-y-1/2 w-5 h-5 bg-on-tertiary-container border-2 border-white rounded-full coffee-shadow cursor-pointer"></div>
+</div>
+</div>
+<!-- Show Me -->
+<div class="flex flex-col gap-sm">
+<label class="font-label-sm text-label-sm text-outline px-1">Show Me</label>
+<div class="flex flex-wrap gap-xs">
+<button class="px-sm py-2 rounded-full border border-outline-variant text-label-md font-label-md text-on-surface-variant">Male</button>
+<button class="px-sm py-2 rounded-full border border-outline-variant text-label-md font-label-md text-on-surface-variant">Female</button>
+<button class="px-sm py-2 rounded-full bg-primary-container text-white text-label-md font-label-md coffee-shadow">Everyone</button>
+</div>
+</div>
+<!-- Looking For -->
+<div class="flex flex-col gap-sm">
+<label class="font-label-sm text-label-sm text-outline px-1">Looking For</label>
+<div class="grid grid-cols-2 gap-xs">
+<button class="flex items-center justify-center gap-xs px-sm py-2 rounded-full bg-on-tertiary-container text-white text-label-md font-label-md coffee-shadow">
+<span class="material-symbols-outlined text-[18px]">local_cafe</span>
+                            Coffee Chats
+                        </button>
+<button class="flex items-center justify-center gap-xs px-sm py-2 rounded-full bg-on-tertiary-container text-white text-label-md font-label-md coffee-shadow">
+<span class="material-symbols-outlined text-[18px]">group</span>
+                            Friendship
+                        </button>
+<button class="flex items-center justify-center gap-xs px-sm py-2 rounded-full border border-outline-variant text-label-md font-label-md text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">work</span>
+                            Networking
+                        </button>
+<button class="flex items-center justify-center gap-xs px-sm py-2 rounded-full border border-outline-variant text-label-md font-label-md text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+                            Dating
+                        </button>
+<button class="flex items-center justify-center gap-xs px-sm py-2 rounded-full border border-outline-variant text-label-md font-label-md text-on-surface-variant col-span-2">
+<span class="material-symbols-outlined text-[18px]">menu_book</span>
+                            Study Buddy
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Action Button -->
+<div class="fixed bottom-0 left-0 w-full p-container-padding bg-background/80 backdrop-blur-lg z-40">
+<div class="max-w-xl mx-auto">
+<button class="w-full h-14 bg-on-tertiary-container hover:opacity-90 active:scale-[0.98] transition-all text-white font-headline-md text-headline-md rounded-DEFAULT coffee-shadow">
+                Save Changes
+            </button>
+</div>
+</div>
+<!-- Script for subtle micro-interactions -->
+<script>
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mousedown', () => {
+                button.classList.add('scale-95');
+            });
+            button.addEventListener('mouseup', () => {
+                button.classList.remove('scale-95');
+            });
+            button.addEventListener('mouseleave', () => {
+                button.classList.remove('scale-95');
+            });
+        });
+    </script>
+</body></html>

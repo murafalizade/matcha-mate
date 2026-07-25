@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Social Coffee Onboarding - Swipe to Connect</title>
+<!-- Google Fonts: Plus Jakarta Sans for a premium, friendly feel -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "surface-dim": "#e1d8d7",
+                    "surface-bright": "#fff8f7",
+                    "outline-variant": "#d4c3c1",
+                    "on-primary": "#ffffff",
+                    "on-secondary-fixed-variant": "#4c463e",
+                    "on-secondary-fixed": "#1f1b14",
+                    "on-primary-fixed-variant": "#5f3e3c",
+                    "secondary-fixed": "#ebe1d6",
+                    "secondary-fixed-dim": "#cec5bb",
+                    "on-background": "#1e1b1a",
+                    "tertiary-fixed-dim": "#fcb888",
+                    "on-surface-variant": "#504443",
+                    "tertiary": "#351700",
+                    "background": "#fff8f7",
+                    "surface-container-high": "#efe6e5",
+                    "tertiary-container": "#532905",
+                    "primary-container": "#4a2c2a",
+                    "on-tertiary-fixed": "#301400",
+                    "on-tertiary-container": "#cd8f62",
+                    "surface-container-highest": "#e9e1df",
+                    "tertiary-fixed": "#ffdcc6",
+                    "surface-tint": "#795553",
+                    "secondary-container": "#ebe1d6",
+                    "error-container": "#ffdad6",
+                    "surface-container-low": "#fbf2f0",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "on-primary-container": "#bd928f",
+                    "on-primary-fixed": "#2e1413",
+                    "surface-variant": "#e9e1df",
+                    "outline": "#827472",
+                    "on-tertiary-fixed-variant": "#6a3b16",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#6a635b",
+                    "secondary": "#645d55",
+                    "inverse-on-surface": "#f8efee",
+                    "primary-fixed": "#ffdad7",
+                    "error": "#ba1a1a",
+                    "primary-fixed-dim": "#eabcb8",
+                    "inverse-surface": "#342f2f",
+                    "inverse-primary": "#eabcb8",
+                    "surface": "#fff8f7",
+                    "on-surface": "#1e1b1a",
+                    "primary": "#321716",
+                    "surface-container": "#f5eceb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "48px",
+                    "container-padding": "20px",
+                    "card-gap": "16px",
+                    "xs": "8px",
+                    "md": "24px",
+                    "base": "4px",
+                    "sm": "16px",
+                    "lg": "32px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "label-md": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f5f0ee; /* Soft coffee tint for global background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        /* Mobile Frame Simulator */
+        .phone-canvas {
+            width: 100%;
+            max-width: 414px;
+            height: 100vh;
+            max-height: 896px;
+            background: #fff8f7; /* Latte Beige */
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .btn-hover:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body class="antialiased">
+<!-- Main Onboarding Container (The "Canvas") -->
+<div class="phone-canvas shadow-2xl md:rounded-[3rem] border-white/20">
+<!-- Header Actions: Skip -->
+<div class="absolute top-0 right-0 p-container-padding z-50">
+<button class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors py-2 px-4">
+                Skip
+            </button>
+</div>
+<!-- Illustration Section (55% Height) -->
+<div class="h-[55%] w-full relative overflow-hidden bg-surface-container-low">
+<!-- Full Width Illustration Placeholder -->
+<img alt="Onboarding Illustration" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADCQsKwxNjCv4hI1G98I0eyXYY1jm2ZOIJRIAl0TTX_yn2nClcmOcWlNK_ZR5QIdKK_tzkUdxasNLljbyuPWKnHF1wYhPQdVM3Mf2sBQCymDXENi_VmzIh1T3Kp8NN9vtm2TnHEANlmrVemoqIDtcyifb0_Fntq8PMeIlF3i39V9XDXcX0KMSYeausFNlyvGZhM1aANPPXstp0IiakCyZdTmrqgzy2L0TwS9CuZugU95zvl-levV2wG5p1pUxFkAJ15EhwUNGfktOY"/>
+<!-- Subtle Atmospheric Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low/80 to-transparent"></div>
+</div>
+<!-- Content Section -->
+<div class="flex-1 flex flex-col items-center justify-between px-container-padding py-xl text-center">
+<!-- Text Content -->
+<div class="space-y-sm max-w-[280px]">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary leading-tight">
+                    Swipe to Connect
+                </h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    Like who you vibe with. When you both swipe right, it's a match.
+                </p>
+</div>
+<!-- Footer Section: Dots & Button -->
+<div class="w-full space-y-xl">
+<!-- Pagination Dots (Slide 2 of 4) -->
+<div class="flex justify-center gap-xs">
+<div class="w-2 h-2 rounded-full bg-secondary-fixed-dim"></div>
+<div class="w-6 h-2 rounded-full bg-on-tertiary-container transition-all"></div>
+<div class="w-2 h-2 rounded-full bg-secondary-fixed-dim"></div>
+<div class="w-2 h-2 rounded-full bg-secondary-fixed-dim"></div>
+</div>
+<!-- Primary Action Button (Caramel Theme) -->
+<div class="w-full">
+<button class="w-full h-[56px] bg-on-tertiary-container hover:bg-tertiary-container text-white font-headline-md text-body-lg rounded-xl shadow-[0px_10px_30px_rgba(74,44,42,0.12)] transition-all duration-200 btn-hover flex items-center justify-center gap-base">
+                        Next
+                        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Safe Area Decor (Physical Home Indicator for aesthetics) -->
+<div class="w-1/3 h-1.5 bg-outline-variant/30 rounded-full mx-auto mb-2"></div>
+</div>
+<!-- Micro-interaction Script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const button = document.querySelector('.btn-hover');
+            
+            // Subtle entrance animation for text
+            const content = document.querySelector('.space-y-sm');
+            content.style.opacity = '0';
+            content.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                content.style.transition = 'all 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
+                content.style.opacity = '1';
+                content.style.transform = 'translateY(0)';
+            }, 100);
+
+            // Button tap effect
+            button.addEventListener('touchstart', () => {
+                button.style.transform = 'scale(0.96)';
+            });
+            button.addEventListener('touchend', () => {
+                button.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body></html>

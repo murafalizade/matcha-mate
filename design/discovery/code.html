@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Social Coffee - Discovery</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#532905",
+                        "tertiary-fixed-dim": "#fcb888",
+                        "on-surface-variant": "#504443",
+                        "on-secondary-fixed": "#1f1b14",
+                        "on-primary-fixed-variant": "#5f3e3c",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container": "#f5eceb",
+                        "background": "#fff8f7",
+                        "inverse-on-surface": "#f8efee",
+                        "outline": "#827472",
+                        "on-surface": "#1e1b1a",
+                        "inverse-primary": "#eabcb8",
+                        "secondary-fixed": "#ebe1d6",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#ffdad7",
+                        "surface": "#fff8f7",
+                        "on-primary-container": "#bd928f",
+                        "secondary-container": "#ebe1d6",
+                        "primary-fixed-dim": "#eabcb8",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#4c463e",
+                        "on-tertiary-fixed": "#301400",
+                        "inverse-surface": "#342f2f",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-container": "#cd8f62",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#d4c3c1",
+                        "on-tertiary-fixed-variant": "#6a3b16",
+                        "surface-variant": "#e9e1df",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#6a635b",
+                        "tertiary": "#351700",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#795553",
+                        "secondary-fixed-dim": "#cec5bb",
+                        "surface-container-highest": "#e9e1df",
+                        "surface-container-high": "#efe6e5",
+                        "tertiary-fixed": "#ffdcc6",
+                        "primary": "#321716",
+                        "surface-bright": "#fff8f7",
+                        "on-primary-fixed": "#2e1413",
+                        "surface-dim": "#e1d8d7",
+                        "surface-container-low": "#fbf2f0",
+                        "on-background": "#1e1b1a",
+                        "secondary": "#645d55",
+                        "primary-container": "#4a2c2a",
+                        "vibrant-coral": "#ff6b6b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "32px",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "16px",
+                        "card-gap": "16px",
+                        "md": "24px",
+                        "base": "4px",
+                        "xl": "48px",
+                        "container-padding": "20px",
+                        "xs": "8px",
+                        "lg": "32px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #fff8f7; /* Latte Beige */
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+        .swipe-card {
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+            touch-action: none;
+            cursor: grab;
+        }
+        .swipe-card:active {
+            cursor: grabbing;
+        }
+        .coffee-shadow {
+            box-shadow: 0px 10px 30px rgba(74, 44, 42, 0.08);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        .bottom-nav-blur {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-50 bg-background dark:bg-background">
+<div class="flex items-center justify-between px-container-padding py-xs w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A close-up high-quality portrait of a friendly young adult with a warm smile, wearing stylish casual attire in a sunlit specialty coffee shop. The lighting is soft and golden, emphasizing a clean, light-mode aesthetic with warm latte beige and cream tones in the background. The style is professional lifestyle photography with a shallow depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgqmUfZsocoK5TQE3MCyGeY19BFWwMD0mYWlRsUCtLdcruZ0xNp0q6F0BDI4vZv6ZBfRX8W_j76nPP7_vkpqogvCvZCF6NaHFgNreS10pFIbeOGT0F6DM9WTU6nI6jae77oyEnGwaM_J4gPdhkizeHjPF_xjb6s6NcljJJfs14CdAC_Ag_7FknWmpEgyp2WaHohkSNfijllygnUzHniAfmOahh2uHVBznbbZIqh8U-_CBbPYmYyGR1l4s_csqON0vpxklSywYCl5yX"/>
+</div>
+</div>
+<h1 class="font-display-lg text-headline-md text-primary dark:text-primary-fixed-dim tracking-tight">Social Coffee</h1>
+<button class="text-primary dark:text-primary-fixed-dim hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 flex flex-col items-center justify-center px-container-padding py-md pb-32">
+<div class="relative w-full max-w-md h-[530px] md:h-[618px]" id="card-container">
+<!-- Discovery Card -->
+<div class="swipe-card absolute inset-0 bg-surface-container-lowest rounded-lg coffee-shadow overflow-hidden flex flex-col border border-outline-variant/20" id="active-card">
+<!-- User Image -->
+<div class="relative flex-1">
+<div class="w-full h-full bg-cover bg-center" data-alt="A beautiful young woman with a relaxed expression sitting at a marble cafe table, holding a ceramic latte cup. The environment is a modern, warm minimalist cafe with light wood textures and soft daylight. The color palette consists of cream, soft caramel, and espresso browns, evoking a Digital Hygge atmosphere." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAGFm5yFk0PFDvK6vHbiPrQiCOpyG30v13RAL-qNlTgt5z7C1DawIoBHcpxjNhoXyKttrRdLWtWDv_1pYJVAzjMtqAuke6cHyzEhgnjSptdCq58DsTasJNc8YYPiklZlpMNkso40YZAl9KL6mrR9GYYACob7Sc3OihYPBRqg7GSTwbI3q2jijSFkjetzm2i6cHfXKc_yrzfQo4YrjQ_a9b9udSgXvoM0yH53s-4hATTfeTV_HyTS2uW1O6cbJwAYpqqaXYvXPttKDMj')"></div>
+<!-- Gradient Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<!-- Content Over Image -->
+<div class="absolute bottom-0 left-0 p-lg w-full text-white">
+<div class="flex items-baseline gap-2">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile">Elena, 26</h2>
+</div>
+<div class="flex items-center gap-2 mt-1 opacity-90">
+<span class="material-symbols-outlined text-[20px]">location_on</span>
+<span class="font-label-md text-label-md tracking-normal">2 miles away</span>
+</div>
+</div>
+</div>
+<!-- Card Details -->
+<div class="p-lg bg-surface-container-lowest">
+<div class="flex flex-col gap-sm">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Favorite Cafe</span>
+<p class="font-body-lg text-body-lg text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">coffee</span>
+                                The Velvet Crema
+                            </p>
+</div>
+<div class="flex flex-wrap gap-xs mt-2">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-sm text-label-sm">Quiet</span>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-sm text-label-sm">Fast Wi-Fi</span>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-sm text-label-sm">Oat Milk</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center justify-center gap-lg mt-xl w-full max-w-md px-lg">
+<!-- Pass Button -->
+<button class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant border border-outline-variant/30 coffee-shadow hover:bg-surface-variant transition-colors active:scale-90 duration-200" id="btn-pass">
+<span class="material-symbols-outlined text-[32px]">close</span>
+</button>
+<!-- Like Button -->
+<button class="w-20 h-20 rounded-full bg-vibrant-coral flex items-center justify-center text-white coffee-shadow hover:brightness-110 transition-all active:scale-90 duration-200" id="btn-like">
+<span class="material-symbols-outlined text-[40px] fill-icon" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+<!-- Chat Shortcut (Secondary Action) -->
+<button class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant border border-outline-variant/30 coffee-shadow hover:bg-surface-variant transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined text-[32px]">bolt</span>
+</button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-3 pb-safe bg-surface/80 dark:bg-surface-container/80 z-50 backdrop-blur-md shadow-[0px_-10px_30px_rgba(74,44,42,0.08)]">
+<!-- Discovery (Active) -->
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-tertiary-container text-on-primary-container dark:text-on-tertiary-container rounded-full px-4 py-1 active:scale-110 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined fill-icon" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-label-sm text-label-sm">Discovery</span>
+</a>
+<!-- Map -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-secondary-container/50 dark:hover:bg-secondary-container/20 px-4 py-1 rounded-full active:scale-110 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-sm text-label-sm">Map</span>
+</a>
+<!-- Chat -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-secondary-container/50 dark:hover:bg-secondary-container/20 px-4 py-1 rounded-full active:scale-110 transition-transform duration-300 ease-out relative" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="font-label-sm text-label-sm">Chat</span>
+<div class="absolute top-0 right-3 w-2 h-2 bg-vibrant-coral rounded-full"></div>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-secondary-container/50 dark:hover:bg-secondary-container/20 px-4 py-1 rounded-full active:scale-110 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple swipe micro-interaction simulation
+        const card = document.getElementById('active-card');
+        const btnLike = document.getElementById('btn-like');
+        const btnPass = document.getElementById('btn-pass');
+        const container = document.getElementById('card-container');
+
+        let isDragging = false;
+        let startX = 0;
+        let currentX = 0;
+
+        card.addEventListener('mousedown', startDrag);
+        card.addEventListener('touchstart', startDrag);
+
+        function startDrag(e) {
+            isDragging = true;
+            startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+            card.style.transition = 'none';
+        }
+
+        window.addEventListener('mousemove', drag);
+        window.addEventListener('touchmove', drag);
+
+        function drag(e) {
+            if (!isDragging) return;
+            currentX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
+            const diff = currentX - startX;
+            const rotation = diff / 20;
+            card.style.transform = `translateX(${diff}px) rotate(${rotation}deg)`;
+            
+            // Visual feedback
+            if (diff > 50) {
+                card.style.borderColor = 'rgba(74, 222, 128, 0.5)'; // Greenish hint
+            } else if (diff < -50) {
+                card.style.borderColor = 'rgba(255, 107, 107, 0.5)'; // Coral hint
+            } else {
+                card.style.borderColor = 'transparent';
+            }
+        }
+
+        window.addEventListener('mouseup', endDrag);
+        window.addEventListener('touchend', endDrag);
+
+        function endDrag() {
+            if (!isDragging) return;
+            isDragging = false;
+            const diff = currentX - startX;
+            
+            if (Math.abs(diff) > 150) {
+                const direction = diff > 0 ? 1 : -1;
+                swipe(direction);
+            } else {
+                card.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                card.style.transform = 'translateX(0) rotate(0)';
+                card.style.borderColor = 'transparent';
+            }
+        }
+
+        function swipe(direction) {
+            card.style.transition = 'transform 0.5s ease-in, opacity 0.3s';
+            card.style.transform = `translateX(${direction * 1000}px) rotate(${direction * 45}deg)`;
+            card.style.opacity = '0';
+            
+            setTimeout(() => {
+                // Reset card for demo purposes
+                card.style.transition = 'none';
+                card.style.transform = 'translateX(0) rotate(0) scale(0.9)';
+                card.style.opacity = '0';
+                
+                setTimeout(() => {
+                    card.style.transition = 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s';
+                    card.style.transform = 'scale(1)';
+                    card.style.opacity = '1';
+                    card.style.borderColor = 'transparent';
+                }, 50);
+            }, 500);
+        }
+
+        btnLike.addEventListener('click', () => swipe(1));
+        btnPass.addEventListener('click', () => swipe(-1));
+    </script>
+</body></html>

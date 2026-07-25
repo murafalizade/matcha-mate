@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Social Coffee - Sign Up</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#bd928f",
+                    "background": "#fff8f7",
+                    "on-secondary-fixed": "#1f1b14",
+                    "surface-variant": "#e9e1df",
+                    "outline": "#827472",
+                    "tertiary-container": "#532905",
+                    "error": "#ba1a1a",
+                    "on-tertiary-container": "#cd8f62",
+                    "tertiary-fixed-dim": "#fcb888",
+                    "surface-tint": "#795553",
+                    "on-surface-variant": "#504443",
+                    "on-error": "#ffffff",
+                    "on-background": "#1e1b1a",
+                    "surface-container-low": "#fbf2f0",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#ebe1d6",
+                    "on-tertiary-fixed-variant": "#6a3b16",
+                    "tertiary-fixed": "#ffdcc6",
+                    "on-secondary-container": "#6a635b",
+                    "surface-container": "#f5eceb",
+                    "on-secondary": "#ffffff",
+                    "primary": "#321716",
+                    "secondary-fixed-dim": "#cec5bb",
+                    "primary-fixed-dim": "#eabcb8",
+                    "primary-fixed": "#ffdad7",
+                    "on-error-container": "#93000a",
+                    "on-primary": "#ffffff",
+                    "tertiary": "#351700",
+                    "on-surface": "#1e1b1a",
+                    "primary-container": "#4a2c2a",
+                    "inverse-on-surface": "#f8efee",
+                    "surface-container-highest": "#e9e1df",
+                    "inverse-primary": "#eabcb8",
+                    "secondary-container": "#ebe1d6",
+                    "outline-variant": "#d4c3c1",
+                    "on-primary-fixed-variant": "#5f3e3c",
+                    "surface-dim": "#e1d8d7",
+                    "on-tertiary-fixed": "#301400",
+                    "on-secondary-fixed-variant": "#4c463e",
+                    "surface-bright": "#fff8f7",
+                    "secondary": "#645d55",
+                    "on-primary-fixed": "#2e1413",
+                    "surface": "#fff8f7",
+                    "error-container": "#ffdad6",
+                    "surface-container-high": "#efe6e5",
+                    "on-tertiary": "#ffffff",
+                    "inverse-surface": "#342f2f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-padding": "20px",
+                    "sm": "16px",
+                    "card-gap": "16px",
+                    "md": "24px",
+                    "xs": "8px",
+                    "lg": "32px",
+                    "base": "4px",
+                    "xl": "48px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "label-md": ["Plus Jakarta Sans"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fff8f7; /* Background Latte Beige */
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom Scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fff8f7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4c3c1;
+            border-radius: 10px;
+        }
+        .loading-spin {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex justify-center min-h-screen">
+<!-- Main Canvas -->
+<div class="relative w-full max-w-[480px] bg-background flex flex-col min-h-screen">
+<!-- Header: TopAppBar logic -->
+<!-- Suppression rule applied: No BottomNavBar/FAB as this is a transactional sign-up screen -->
+<header class="w-full top-0 sticky z-50 bg-background flex items-center justify-between px-container-padding h-16 shadow-[0px_10px_30px_rgba(74,44,42,0.08)]">
+<button class="flex items-center justify-center w-10 h-10 rounded-full active:scale-95 transition-transform duration-200 hover:bg-surface-container">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md-mobile font-bold text-primary">Create Profile</h1>
+<div class="w-10"></div> <!-- Spacer for centering -->
+</header>
+<!-- Scrollable Content -->
+<main class="flex-1 px-container-padding pt-lg pb-xl space-y-lg overflow-y-auto">
+<!-- Profile Photo Picker -->
+<div class="flex flex-col items-center">
+<div class="relative group cursor-pointer active:scale-95 transition-transform duration-200">
+<div class="w-32 h-32 rounded-full border-4 border-surface-container overflow-hidden shadow-[0px_10px_30px_rgba(74,44,42,0.12)]">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist studio portrait of a friendly young adult with a soft smile, set against a warm cream-colored background. The lighting is soft and golden, characteristic of a high-end specialty coffee shop aesthetic. The style is professional and welcoming, with high-quality digital photography clarity and warm brown tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9WHCd36YF6_TyR5LtcQFhK5sq_Ie26lb0CmOrZDzC9LVzZo3ntEv64UQXnzvXg8Q0kk8lu6vww4rufewqTdemDhyvDgn6Owpw9oB8_1NUb3DSticUhneput7CvCDAGuVRKEEL3hiy2YEhDnkkx9iG8xiiWYC10EPgMvIH3QUcZYTaw2Y0-cp9DzlwLZZa6LYPhAtcAU-4ZJF7boD4QY9tiR0xW5uKbSGPEeF2gtqBkFUpxvDKsa69gH5WQydbGh-bQrFAAPgCAtl7"/>
+</div>
+<!-- Caramel Camera Badge -->
+<div class="absolute bottom-1 right-1 bg-on-tertiary-container w-10 h-10 rounded-full border-4 border-background flex items-center justify-center text-white shadow-lg">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
+</div>
+</div>
+</div>
+<!-- Form Container -->
+<form class="space-y-md">
+<!-- Name Row -->
+<div class="grid grid-cols-2 gap-card-gap">
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">First Name</label>
+<input class="w-full h-14 px-md rounded-xl bg-surface-container-low border-outline-variant focus:border-primary focus:ring-0 text-on-surface font-body-md transition-all placeholder:text-outline-variant" placeholder="John" type="text"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Last Name</label>
+<input class="w-full h-14 px-md rounded-xl bg-surface-container-low border-outline-variant focus:border-primary focus:ring-0 text-on-surface font-body-md transition-all placeholder:text-outline-variant" placeholder="Doe" type="text"/>
+</div>
+</div>
+<!-- Email Field -->
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Email</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">mail</span>
+<input class="w-full h-14 pl-12 pr-md rounded-xl bg-surface-container-low border-outline-variant focus:border-primary focus:ring-0 text-on-surface font-body-md transition-all placeholder:text-outline-variant" placeholder="john.doe@example.com" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Password</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">lock</span>
+<input class="w-full h-14 pl-12 pr-12 rounded-xl bg-surface-container-low border-outline-variant focus:border-primary focus:ring-0 text-on-surface font-body-md transition-all placeholder:text-outline-variant" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</div>
+<!-- Birthdate Field -->
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Birthdate</label>
+<div class="relative group">
+<div class="w-full h-14 px-md flex items-center justify-between rounded-xl bg-surface-container-low border border-outline-variant group-active:scale-[0.98] transition-all cursor-pointer">
+<span class="text-outline-variant font-body-md">Select date</span>
+<span class="material-symbols-outlined text-outline">calendar_today</span>
+</div>
+</div>
+</div>
+<!-- Gender Chips -->
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Gender</label>
+<div class="flex gap-xs">
+<button class="flex-1 h-12 rounded-full border border-outline-variant flex items-center justify-center font-label-md text-on-surface-variant hover:bg-secondary-container transition-colors" type="button">Male</button>
+<button class="flex-1 h-12 rounded-full bg-primary-container text-white flex items-center justify-center font-label-md transition-colors shadow-md" type="button">Female</button>
+<button class="flex-1 h-12 rounded-full border border-outline-variant flex items-center justify-center font-label-md text-on-surface-variant hover:bg-secondary-container transition-colors" type="button">Other</button>
+</div>
+</div>
+<!-- Bio Textarea -->
+<div class="space-y-xs">
+<div class="flex justify-between items-center ml-1">
+<label class="font-label-md text-label-md text-on-surface-variant">Bio</label>
+<span class="font-label-sm text-label-sm text-outline">0/250</span>
+</div>
+<textarea class="w-full p-md rounded-xl bg-surface-container-low border-outline-variant focus:border-primary focus:ring-0 text-on-surface font-body-md transition-all placeholder:text-outline-variant resize-none" placeholder="Tell us about your favorite roast or cafe spot..." rows="4"></textarea>
+</div>
+<!-- Terms & Policy -->
+<div class="flex items-start gap-3 py-base">
+<div class="relative flex items-center">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary-container bg-surface-container-low" type="checkbox"/>
+</div>
+<p class="font-body-md text-sm text-on-surface-variant leading-tight">
+                        I agree to the <span class="text-on-tertiary-container font-semibold">Terms</span> &amp; <span class="text-on-tertiary-container font-semibold">Privacy Policy</span>
+</p>
+</div>
+</form>
+<!-- Footer: Navigation Link -->
+<div class="pt-md pb-container-padding text-center">
+<p class="font-body-md text-on-surface-variant">
+                    Already have an account? 
+                    <a class="text-on-tertiary-container font-bold hover:underline transition-all" href="#">Log In</a>
+</p>
+</div>
+</main>
+<!-- Fixed Bottom Action Area -->
+<div class="p-container-padding bg-background/95 backdrop-blur-sm shadow-[0px_-10px_30px_rgba(74,44,42,0.05)]">
+<button class="w-full h-14 bg-on-tertiary-container hover:bg-tertiary-container text-white rounded-xl font-headline-md text-base flex items-center justify-center gap-3 shadow-xl active:scale-[0.98] transition-all group">
+<span>Create Profile</span>
+<span class="material-symbols-outlined loading-spin text-[20px]">progress_activity</span>
+</button>
+</div>
+</div>
+<!-- Micro-interaction Scripts -->
+<script>
+        // Handle multiline character counter
+        const textarea = document.querySelector('textarea');
+        const counter = document.querySelector('.text-label-sm.text-outline');
+        
+        textarea.addEventListener('input', () => {
+            const length = textarea.value.length;
+            counter.textContent = `${length}/250`;
+            if (length >= 250) {
+                counter.classList.add('text-error');
+            } else {
+                counter.classList.remove('text-error');
+            }
+        });
+
+        // Gender chip toggle simulation
+        const chips = document.querySelectorAll('.flex.gap-xs button');
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chips.forEach(c => {
+                    c.classList.remove('bg-primary-container', 'text-white', 'shadow-md');
+                    c.classList.add('border', 'border-outline-variant', 'text-on-surface-variant');
+                });
+                chip.classList.remove('border', 'border-outline-variant', 'text-on-surface-variant');
+                chip.classList.add('bg-primary-container', 'text-white', 'shadow-md');
+            });
+        });
+
+        // Simple button loading toggle demo
+        const submitBtn = document.querySelector('button.bg-on-tertiary-container');
+        submitBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const icon = submitBtn.querySelector('.loading-spin');
+            icon.style.display = 'block';
+            setTimeout(() => {
+                alert('Profile Creation Initiated!');
+            }, 500);
+        });
+    </script>
+</body></html>

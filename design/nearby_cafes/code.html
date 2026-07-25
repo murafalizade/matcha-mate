@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Social Coffee - Map View</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#532905",
+                        "tertiary-fixed-dim": "#fcb888",
+                        "on-surface-variant": "#504443",
+                        "on-secondary-fixed": "#1f1b14",
+                        "on-primary-fixed-variant": "#5f3e3c",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container": "#f5eceb",
+                        "background": "#fff8f7",
+                        "inverse-on-surface": "#f8efee",
+                        "outline": "#827472",
+                        "on-surface": "#1e1b1a",
+                        "inverse-primary": "#eabcb8",
+                        "secondary-fixed": "#ebe1d6",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#ffdad7",
+                        "surface": "#fff8f7",
+                        "on-primary-container": "#bd928f",
+                        "secondary-container": "#ebe1d6",
+                        "primary-fixed-dim": "#eabcb8",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#4c463e",
+                        "on-tertiary-fixed": "#301400",
+                        "inverse-surface": "#342f2f",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-container": "#cd8f62",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#d4c3c1",
+                        "on-tertiary-fixed-variant": "#6a3b16",
+                        "surface-variant": "#e9e1df",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#6a635b",
+                        "tertiary": "#351700",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#795553",
+                        "secondary-fixed-dim": "#cec5bb",
+                        "surface-container-highest": "#e9e1df",
+                        "surface-container-high": "#efe6e5",
+                        "tertiary-fixed": "#ffdcc6",
+                        "primary": "#321716",
+                        "surface-bright": "#fff8f7",
+                        "on-primary-fixed": "#2e1413",
+                        "surface-dim": "#e1d8d7",
+                        "surface-container-low": "#fbf2f0",
+                        "on-background": "#1e1b1a",
+                        "secondary": "#645d55",
+                        "primary-container": "#4a2c2a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "32px",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "16px",
+                        "card-gap": "16px",
+                        "md": "24px",
+                        "base": "4px",
+                        "xl": "48px",
+                        "container-padding": "20px",
+                        "xs": "8px",
+                        "lg": "32px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .coffee-shadow {
+            box-shadow: 0px 10px 30px rgba(74, 44, 42, 0.08);
+        }
+        
+        .pin-pulse::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #4a2c2a;
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.4; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md overflow-hidden">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-50 bg-background/80 backdrop-blur-md">
+<div class="flex items-center justify-between px-container-padding py-xs w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-fixed">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a smiling person with warm lighting, set in a cozy, high-end cafe background with soft bokeh. The style is bright and minimalist, capturing a sense of community and authentic connection within the Social Coffee digital hygge aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAKa7Daf_p-J7lPhfDx-BwqRaEnI7NQHAlMaul1qaK5m3KKrs8N7AAPuPQUf0j6JGg4VrdwtXyQaC0ShJthail_0NGW8rvWVsD3HBEH26VUgEyaGjuPpLc9-KpypdbrLcXbRC7Tz2cSZEjGTIhdXE6Lxzyqyz30e6XAnandph_76Voh1fkmSLri8fvd4saf3VkzSWl5CLw2ufNNyfW-iWrioqB-Iw1XgCubHx2AEToK2nS_HvPSGRKO5QyqyC8sYyC5WZj5oRI5yAd"/>
+</div>
+<h1 class="font-display-lg text-headline-md text-primary tracking-tight">Social Coffee</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary">tune</span>
+</button>
+</div>
+</header>
+<!-- Main Map Canvas -->
+<main class="relative h-[calc(100vh-64px-80px)] w-full overflow-hidden bg-surface-container-low">
+<!-- Map Background -->
+<div class="absolute inset-0 grayscale-[0.2] opacity-80" data-alt="A sophisticated, minimalist architectural map of a modern urban neighborhood, designed with a warm latte beige and soft cream color palette. The map features clean lines for streets and subtle shadows for building blocks, evoking a sense of calm and luxury in an urban setting." data-location="Tokyo, Japan" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCJSGat5Guxs1cHfBXpe-lE_-wjRl6CxXAGQKo3qJOxrtzKddnScJPPlKYdn0Pql9rxMqu6FJC8ksfQjOmsHNfg_Sa6AI3qztjY68NZodvDhGSt_yxhBMz6neFJaqQvFYf98raPiVfI3HnqtWYr8y8Lv3V7R4ULjnSj0t91ImlGMhsdzRyYMe5JC2FE1MStLlU4r4vNAgXYwZLWb4Ml8Wr7UjQGdx-PSDlNwCiIztNygivd6ITP0zxCqXCv1Uj50rzaiQ-m3OWahRXQ')"></div>
+<!-- Search & Filters Overlay -->
+<div class="absolute top-sm left-container-padding right-container-padding flex flex-col gap-xs z-20">
+<div class="flex items-center bg-white/90 backdrop-blur-md px-sm py-xs rounded-full shadow-lg border border-outline-variant/30">
+<span class="material-symbols-outlined text-on-surface-variant mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-full placeholder:text-on-surface-variant/60" placeholder="Find your next favorite roast..." type="text"/>
+<span class="material-symbols-outlined text-primary ml-2">near_me</span>
+</div>
+<!-- Quick Chips -->
+<div class="flex gap-2 overflow-x-auto no-scrollbar py-1">
+<div class="flex-shrink-0 bg-primary-container text-on-primary-container px-4 py-1.5 rounded-full text-label-md flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">wifi</span> Quiet
+                </div>
+<div class="flex-shrink-0 bg-white/90 backdrop-blur-sm text-on-surface-variant px-4 py-1.5 rounded-full text-label-md flex items-center gap-1 border border-outline-variant/30">
+<span class="material-symbols-outlined text-[18px]">temp_preferences_custom</span> Oat Milk
+                </div>
+<div class="flex-shrink-0 bg-white/90 backdrop-blur-sm text-on-surface-variant px-4 py-1.5 rounded-full text-label-md flex items-center gap-1 border border-outline-variant/30">
+<span class="material-symbols-outlined text-[18px]">bolt</span> Fast Wi-Fi
+                </div>
+</div>
+</div>
+<!-- Map Pins (Interactive) -->
+<div class="absolute top-1/3 left-1/4 group cursor-pointer">
+<div class="relative flex flex-col items-center">
+<div class="bg-primary-container p-2 rounded-full shadow-lg border-2 border-white transform transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-white text-[20px]" style="font-variation-settings: 'FILL' 1;">coffee</span>
+</div>
+<div class="pin-pulse absolute bottom-0"></div>
+<div class="mt-1 bg-white px-2 py-0.5 rounded shadow-sm text-label-sm font-bold">Roast &amp; Co</div>
+</div>
+</div>
+<div class="absolute top-1/2 left-2/3 group cursor-pointer">
+<div class="relative flex flex-col items-center">
+<div class="bg-primary p-2 rounded-full shadow-lg border-2 border-white transform transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-white text-[20px]" style="font-variation-settings: 'FILL' 1;">local_cafe</span>
+</div>
+<div class="mt-1 bg-white px-2 py-0.5 rounded shadow-sm text-label-sm font-bold">Mellow Brews</div>
+</div>
+</div>
+<div class="absolute top-1/4 right-1/4 group cursor-pointer">
+<div class="relative flex flex-col items-center">
+<div class="bg-primary-container p-2 rounded-full shadow-lg border-2 border-white transform transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-white text-[20px]" style="font-variation-settings: 'FILL' 1;">coffee_maker</span>
+</div>
+<div class="mt-1 bg-white px-2 py-0.5 rounded shadow-sm text-label-sm font-bold">The Beanery</div>
+</div>
+</div>
+<!-- Bottom Cafe Cards Slider -->
+<div class="absolute bottom-6 left-0 w-full z-30">
+<div class="flex gap-4 overflow-x-auto no-scrollbar px-container-padding snap-x pb-4">
+<!-- Card 1 -->
+<div class="flex-shrink-0 w-[280px] bg-white rounded-lg coffee-shadow p-3 flex gap-3 snap-center border border-outline-variant/20">
+<div class="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Close up of a beautifully poured latte art heart in a ceramic cup, sitting on a wooden table at Roast &amp; Co. Warm morning sunlight streams in, highlighting the creamy texture of the milk and the rich espresso brown of the coffee. High-end, inviting digital hygge atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnj3xBPp0SHhoq67OhBMxHmbTUQ-Easdxaalp3-tXQVtq4c92hYofDEZYmf7LPJzZtseXhbOjQFRbqRWqQBLf6JrT69fSJfBxaa6z5sAQiO2TED4Ugy6phRkUoy3PcG7IXumRXS0HDbIaR0tUr5piq_ymWnzt7JjhJ14-_JvS7OJSpfwbmhuXeNzkm9BwGGoJyH3rTG2W4NH2zRdIY_zmkd59MNtznn2mRItndW-CmfRX1yzCd3t5iKPvAs1RiRbpcCTKyaDELuKgU"/>
+</div>
+<div class="flex flex-col justify-between py-1">
+<div>
+<h3 class="font-headline-md text-sm text-primary leading-tight">Roast &amp; Co</h3>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-orange-400 text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm text-on-surface">4.8</span>
+<span class="text-label-sm text-on-surface-variant">(124)</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">distance</span>
+<span class="text-label-sm">0.4 miles away</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="flex-shrink-0 w-[280px] bg-white rounded-lg coffee-shadow p-3 flex gap-3 snap-center border border-outline-variant/20">
+<div class="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="An interior shot of Mellow Brews, a modern minimalist coffee shop with light wood furniture, white walls, and hanging green plants. The space is filled with soft natural light, creating a serene and productive environment for urban explorers. Soft caramel and cream tones dominate the palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiQEhRvFlWlRu4BxFCzu7CAoJB-gqTJlZlbQBtyfKE5Wj7W1eGSfoUodIx-imzi0p-mqtX70tOFvrcFVV8tMYbuzbA0eo9lQDHu1TENjqF7pk8yQmjck_64ICfPiumSeHsaXBxp2tKq8Z2crrt4Cu6ihxa7dsTTUAaIR8SHN7NeYF3GAfS6O-FRROGf-vEpq0tyKrrJXpfkI_c7A2XBmJGhuoVXNujJ7fq3C9gtBnu_V7qkZSTF7mdzQlCWMlrfBG7fkgtB6-D_88B"/>
+</div>
+<div class="flex flex-col justify-between py-1">
+<div>
+<h3 class="font-headline-md text-sm text-primary leading-tight">Mellow Brews</h3>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-orange-400 text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm text-on-surface">4.9</span>
+<span class="text-label-sm text-on-surface-variant">(86)</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">distance</span>
+<span class="text-label-sm">0.9 miles away</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="flex-shrink-0 w-[280px] bg-white rounded-lg coffee-shadow p-3 flex gap-3 snap-center border border-outline-variant/20">
+<div class="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A vintage espresso machine at The Beanery, steam rising softly in a dimly lit, cozy corner. The aesthetic is focused on specialty coffee craftsmanship, featuring warm walnut wood accents and brushed copper details. The mood is authentic, quiet, and deeply comforting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_DYONOsfDIUhCqtMd3Rp-ZqyrNPQrH0tjknf9B73dWO_DoUy7gIrR-DwUtPaDGk61YtAh0f_MaR4XZdXBuiNR8LQxYXSiWkZqF9YfdujgOxWnzKntTzUrNZBr65rUJVdWNyhyKM36WaE7pThCle-sb-XIbMXTzvtvYLOGDcnLB_h0ykuR5aD1v1qMUoxGwKZjbqgYDm9ZWUl3hGX6BmsQM_hSt_M5bV7brsXNWe2yUQtMb9AwxUEPRAGgIwfUvQg0aOcJFz-Gixu5"/>
+</div>
+<div class="flex flex-col justify-between py-1">
+<div>
+<h3 class="font-headline-md text-sm text-primary leading-tight">The Beanery</h3>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-orange-400 text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm text-on-surface">4.7</span>
+<span class="text-label-sm text-on-surface-variant">(210)</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">distance</span>
+<span class="text-label-sm">1.2 miles away</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-3 pb-safe bg-surface/80 dark:bg-surface-container/80 backdrop-blur-md z-50 coffee-shadow">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-secondary-container/50 transition-colors duration-200 px-4 py-1 rounded-full" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-label-sm text-label-sm">Discovery</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-tertiary-container text-on-primary-container dark:text-on-tertiary-container rounded-full px-4 py-1 active:scale-110 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-label-sm text-label-sm font-bold">Map</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-secondary-container/50 transition-colors duration-200 px-4 py-1 rounded-full" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="font-label-sm text-label-sm">Chat</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-secondary-container/50 transition-colors duration-200 px-4 py-1 rounded-full" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for map pins and scrolling
+        document.querySelectorAll('.cursor-pointer').forEach(pin => {
+            pin.addEventListener('click', () => {
+                // Haptic feedback simulation
+                pin.style.transform = 'scale(0.95)';
+                setTimeout(() => pin.style.transform = 'scale(1)', 100);
+                
+                // Active pin logic could be added here
+            });
+        });
+
+        // Horizontal scroll card highlight logic
+        const slider = document.querySelector('.snap-x');
+        slider.addEventListener('scroll', () => {
+            // Optional: update map center based on card scroll
+        });
+    </script>
+</body></html>
