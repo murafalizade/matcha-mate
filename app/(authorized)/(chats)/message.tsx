@@ -82,7 +82,10 @@ export default function MessageScreen() {
         <SafeAreaView className="flex-1 bg-cream">
             {/* Header */}
             <View className="flex-row items-center px-4 py-3 border-b border-gray-200">
-                <TouchableOpacity onPress={() => router.back()} className="mr-3">
+                <TouchableOpacity
+                    onPress={() => router.push("/(authorized)/(chats)")}
+                    className="mr-3"
+                >
                     <Ionicons name="arrow-back" size={24} color="black" />
                 </TouchableOpacity>
                 <Text className="text-lg font-semibold flex-1">
