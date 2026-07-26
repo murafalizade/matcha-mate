@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import { Heart, MapPin, SlidersHorizontal, X } from "lucide-react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Alert, Image, Text, TouchableOpacity, View } from "react-native";
 import Swiper from "react-native-deck-swiper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -29,6 +29,18 @@ export default function HomeScreen() {
     const swiperRef = useRef<Swiper<FeedProfile>>(null);
     const [swipedCount, setSwipedCount] = useState(0);
     const [leaving, setLeaving] = useState(false);
+
+    // The Swiper indexes cards by position, but `profiles` is a live socket feed
+    // that can mutate (joins/leaves) mid-deck. Mirror it into an append-only local
+    // snapshot so card indices stay stable for whoever is mid-swipe.
+    const [deck, setDeck] = useState<FeedProfile[]>([]);
+    useEffect(() => {
+        setDeck((prev) => {
+            const existingIds = new Set(prev.map((p) => p.id));
+            const additions = profiles.filter((p) => !existingIds.has(p.id));
+            return additions.length > 0 ? [...prev, ...additions] : prev;
+        });
+    }, [profiles]);
 
     // The header is rendered as an absolute overlay (not a normal flex sibling)
     // so the Swiper's immediate parent is the full screen area react-navigation
@@ -113,7 +125,7 @@ export default function HomeScreen() {
         );
     }
 
-    const hasMoreCards = swipedCount < profiles.length;
+    const hasMoreCards = swipedCount < deck.length;
 
     return (
         <View className="flex-1 bg-cream relative">
@@ -158,7 +170,7 @@ export default function HomeScreen() {
                 </View>
             )}
 
-            {profiles.length === 0 ? (
+            {deck.length === 0 ? (
                 <View
                     className="flex-1 items-center justify-center px-8"
                     style={{ paddingTop: HEADER_HEIGHT }}
@@ -182,11 +194,11 @@ export default function HomeScreen() {
             ) : (
                 <Swiper
                     ref={swiperRef}
-                    cards={profiles}
+                    cards={deck}
                     renderCard={(item) => <RenderProfile item={item} venueName={venue.name} />}
                     keyExtractor={(item) => item.id}
                     onSwiped={() => setSwipedCount((count) => count + 1)}
-                    onSwipedRight={(cardIndex) => handleLike(profiles[cardIndex])}
+                    onSwipedRight={(cardIndex) => handleLike(deck[cardIndex])}
                     backgroundColor="transparent"
                     stackSize={3}
                     stackScale={8}
