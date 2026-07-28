@@ -4,12 +4,17 @@ import { useCallback, useState } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+// Re-enable alongside the commented-out language card below.
+// import { LanguagePicker } from "@/components/LanguagePicker";
+// import { useLocale } from "@/hooks/useLocale";
+import { useAuth } from "@/hooks/useAuth";
 import { ProfileService } from "@/services/profile";
 import { ApiError } from "@/utils/api";
 import { calculateAge, humanizeEnum } from "@/utils/format";
 import { Profile } from "@/utils/models";
 
 export default function ProfileScreen() {
+    const { logout } = useAuth();
     const [profile, setProfile] = useState<Profile | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -189,7 +194,7 @@ export default function ProfileScreen() {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    className="border border-dot rounded-xl py-3 mb-3"
+                    className="border border-dot rounded-xl py-3 mb-6"
                     onPress={() => router.push("/(authorized)/(profile)/preferences")}
                 >
                     <Text className="text-center font-semibold text-ink text-lg">
@@ -197,11 +202,18 @@ export default function ProfileScreen() {
                     </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                    className="border border-dot rounded-xl py-3"
-                    onPress={() => router.push("/(authorized)/(profile)/settings")}
-                >
-                    <Text className="text-center font-semibold text-ink text-lg">Settings</Text>
+                {/* Language is auto-detected from the phone's system language
+                    (see hooks/useLocale.tsx), so this manual override is hidden
+                    for now. Re-enable if users ask to pick a language in-app. */}
+                {/* <View className="bg-white rounded-2xl p-6 mb-6" style={cardShadow}>
+                    <Text className="text-xs font-semibold text-muted uppercase tracking-widest mb-3">
+                        {t.language.title}
+                    </Text>
+                    <LanguagePicker />
+                </View> */}
+
+                <TouchableOpacity className="bg-red-500 rounded-xl py-3" onPress={() => logout()}>
+                    <Text className="text-white text-center font-semibold text-lg">Log Out</Text>
                 </TouchableOpacity>
             </SafeAreaView>
         </ScrollView>
