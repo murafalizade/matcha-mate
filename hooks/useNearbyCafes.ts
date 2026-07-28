@@ -10,6 +10,13 @@ import { Venue } from "@/utils/models";
 
 const SEARCH_RADIUS_METERS = 5000;
 
+// The API can serialize decimal coordinates as strings, which react-native-maps
+// silently rejects, so coerce them to finite numbers before rendering markers.
+function toCoordinate(value: unknown): number | null {
+    const parsed = typeof value === "string" ? Number(value) : value;
+    return typeof parsed === "number" && Number.isFinite(parsed) ? parsed : null;
+}
+
 export function useNearbyCafes(): UseNearbyCafesResult {
     const [state, setState] = useState<NearbyCafesScreenState>("loading");
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -61,7 +68,13 @@ export function useNearbyCafes(): UseNearbyCafesResult {
     }, []);
 
     const filteredVenues = useMemo(() => {
-        const located = venues.filter((v) => v.latitude !== null && v.longitude !== null);
+        const located = venues
+            .map((v) => ({
+                ...v,
+                latitude: toCoordinate(v.latitude),
+                longitude: toCoordinate(v.longitude),
+            }))
+            .filter((v) => v.latitude !== null && v.longitude !== null);
         const q = query.trim().toLowerCase();
         if (!q) {
             return located;

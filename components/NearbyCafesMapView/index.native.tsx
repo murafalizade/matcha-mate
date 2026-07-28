@@ -35,6 +35,22 @@ export function NearbyCafesMapView({
         carouselRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.5 });
     };
 
+    const fitToVenues = () => {
+        if (filteredVenues.length === 0) {
+            return;
+        }
+        mapRef.current?.fitToCoordinates(
+            filteredVenues.map((venue) => ({
+                latitude: venue.latitude as number,
+                longitude: venue.longitude as number,
+            })),
+            {
+                edgePadding: { top: 80, right: 60, bottom: 220, left: 60 },
+                animated: false,
+            },
+        );
+    };
+
     const initialRegion: Region = {
         latitude: position?.latitude ?? 0,
         longitude: position?.longitude ?? 0,
@@ -51,6 +67,7 @@ export function NearbyCafesMapView({
                 customMapStyle={WARM_MAP_STYLE}
                 initialRegion={initialRegion}
                 showsUserLocation
+                onMapReady={fitToVenues}
             >
                 {filteredVenues.map((venue) => (
                     <Marker
