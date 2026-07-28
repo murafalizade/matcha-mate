@@ -132,7 +132,9 @@ export interface MatchPartner {
 
 export interface MatchChatSession {
     id: string;
-    expiresAt: string;
+    // Null until the first message starts the 10-minute countdown — a fresh
+    // match is PENDING with no clock running yet.
+    expiresAt: string | null;
     partner: MatchPartner;
 }
 
@@ -144,8 +146,8 @@ export interface MatchResult {
 export interface ChatSession {
     id: string;
     status: ChatSessionStatus;
-    startedAt: string;
-    expiresAt: string;
+    startedAt: string | null;
+    expiresAt: string | null;
     partner: MatchPartner;
     venue: { id: string; name: string };
 }
@@ -156,4 +158,17 @@ export interface ChatMessage {
     senderId: string;
     content: string;
     createdAt: string;
+}
+
+// Pushed on the /presence socket to BOTH matched users the instant a mutual
+// like completes — including whoever's own like just triggered it, so this
+// is the single source of truth for the match notification (not the
+// POST /interactions/like response, which only reaches the acting side).
+export interface MatchFoundPayload {
+    chatSessionId: string;
+    venueId: string;
+    venueName: string;
+    expiresAt: string | null;
+    partner: MatchPartner;
+    timestamp: number;
 }

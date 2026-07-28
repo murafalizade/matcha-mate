@@ -18,17 +18,23 @@ function detectDeviceLocale(): Locale {
 
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
     const [locale, setLocaleState] = useState<Locale>("en");
-    const [hasChosenLanguage, setHasChosenLanguage] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        Promise.all([Storage.getLocale(), Storage.getHasChosenLanguage()]).then(
-            ([stored, chosen]) => {
-                setLocaleState(isSupportedLocale(stored) ? stored : detectDeviceLocale());
-                setHasChosenLanguage(chosen);
-                setIsLoading(false);
-            },
-        );
+        Storage.getLocale().then((stored) => {
+            if (isSupportedLocale(stored)) {
+                setLocaleState(stored);
+            } else {
+                // First launch (or a stored value that's no longer supported) —
+                // detect the phone's language directly and persist it, same as
+                // a manual change would, so it stays stable across launches
+                // even if the device's system language changes later.
+                const detected = detectDeviceLocale();
+                setLocaleState(detected);
+                void Storage.setLocale(detected);
+            }
+            setIsLoading(false);
+        });
     }, []);
 
     const setLocale = (next: Locale) => {
@@ -36,19 +42,11 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
         void Storage.setLocale(next);
     };
 
-    const confirmLanguage = (next: Locale) => {
-        setLocale(next);
-        setHasChosenLanguage(true);
-        void Storage.setHasChosenLanguage();
-    };
-
     return (
         <LocaleContext.Provider
             value={{
                 locale,
                 setLocale,
-                hasChosenLanguage,
-                confirmLanguage,
                 t: TRANSLATIONS[locale],
                 isLoading,
             }}

@@ -2,19 +2,26 @@ import { useEffect, useRef, useState } from "react";
 import { AppState } from "react-native";
 import { Socket } from "socket.io-client";
 
-import { UsePresenceFeedResult } from "@/hooks/usePresenceFeed.types";
+import { MatchFoundHandler, UsePresenceFeedResult } from "@/hooks/usePresenceFeed.types";
 import { getAccessToken } from "@/utils/api";
-import { FeedProfile } from "@/utils/models";
+import { FeedProfile, MatchFoundPayload } from "@/utils/models";
 import { createSocket } from "@/utils/socket";
 
 const HEARTBEAT_INTERVAL_MS = 30_000;
 
-export function usePresenceFeed(venueId: string | null): UsePresenceFeedResult {
+export function usePresenceFeed(
+    venueId: string | null,
+    onMatchFound?: MatchFoundHandler,
+): UsePresenceFeedResult {
     const [profiles, setProfiles] = useState<FeedProfile[]>([]);
     const [connected, setConnected] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const socketRef = useRef<Socket | null>(null);
     const heartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    // Ref so a new `onMatchFound` identity each render doesn't force the
+    // socket effect to reconnect — only `venueId` should do that.
+    const onMatchFoundRef = useRef(onMatchFound);
+    onMatchFoundRef.current = onMatchFound;
 
     useEffect(() => {
         if (!venueId) {
@@ -88,6 +95,14 @@ export function usePresenceFeed(venueId: string | null): UsePresenceFeedResult {
                     return;
                 }
                 setProfiles((prev) => (prev ?? []).filter((p) => p.id !== payload.userId));
+            });
+            // Pushed to BOTH matched users, including whoever's own like just
+            // triggered it — this is the single source of truth for the match
+            // notification, not the POST /interactions/like response.
+            socket.on("match_found", (payload: MatchFoundPayload) => {
+                if (!cancelled) {
+                    onMatchFoundRef.current?.(payload);
+                }
             });
 
             socket.connect();
