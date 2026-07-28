@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import { FlatList, View } from "react-native";
+import { useEffect, useRef } from "react";
+import { FlatList, Text, View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 
 import { CafeCard, CAFE_CARD_WIDTH } from "@/components/CafeCard";
@@ -58,6 +58,30 @@ export function NearbyCafesMapView({
         longitudeDelta: 0.02,
     };
 
+    // Keep the viewport on the current results. Without this, searching for a
+    // cafe that isn't in the immediate area surfaces its card but leaves the
+    // map sitting at your own location, so the match looks like it's missing.
+    const resultKey = filteredVenues.map((v) => v.id).join(",");
+    useEffect(() => {
+        if (filteredVenues.length === 0) {
+            return;
+        }
+        mapRef.current?.fitToCoordinates(
+            filteredVenues.map((venue) => ({
+                latitude: venue.latitude as number,
+                longitude: venue.longitude as number,
+            })),
+            {
+                edgePadding: { top: 80, right: 80, bottom: 260, left: 80 },
+                animated: true,
+            },
+        );
+        carouselRef.current?.scrollToOffset({ offset: 0, animated: true });
+        // Intentionally keyed on the result *identity*, not the array reference —
+        // the parent rebuilds this array on every render.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [resultKey]);
+
     return (
         <View className="flex-1 -mt-2">
             <MapView
@@ -87,6 +111,25 @@ export function NearbyCafesMapView({
                     </Marker>
                 ))}
             </MapView>
+
+            {filteredVenues.length === 0 && (
+                <View className="absolute bottom-6 left-0 w-full px-6">
+                    <View
+                        className="bg-white rounded-2xl px-5 py-4"
+                        style={{
+                            shadowColor: "#4A2C2A",
+                            shadowOpacity: 0.1,
+                            shadowRadius: 20,
+                            shadowOffset: { width: 0, height: 8 },
+                        }}
+                    >
+                        <Text className="text-ink font-semibold text-center">No cafes found</Text>
+                        <Text className="text-muted text-sm text-center mt-1">
+                            Try a different name, or clear the search to see cafes near you.
+                        </Text>
+                    </View>
+                </View>
+            )}
 
             <View className="absolute bottom-6 left-0 w-full">
                 <FlatList

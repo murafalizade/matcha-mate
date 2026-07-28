@@ -36,15 +36,15 @@ export default function QRScanner({ onScan, onCancel }: QRScannerProps) {
     if (!hasPermission) {
         return (
             <View className="flex-1 items-center justify-center p-6 bg-cream">
-                <Text className="text-center text-base font-semibold mb-2">
+                <Text className="text-center text-base font-semibold mb-2 text-ink">
                     Camera permission is required
                 </Text>
-                <Text className="text-center text-gray-600">
+                <Text className="text-center text-muted">
                     Enable camera access in Settings and try again.
                 </Text>
                 {onCancel && (
                     <TouchableOpacity
-                        className="mt-6 px-4 py-3 rounded-xl bg-gray-900"
+                        className="mt-6 px-4 py-3 rounded-xl bg-espresso"
                         onPress={onCancel}
                     >
                         <Text className="text-white font-semibold">Go Back</Text>

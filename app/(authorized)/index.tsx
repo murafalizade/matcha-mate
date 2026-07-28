@@ -7,13 +7,14 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
 import { RenderProfile } from "@/components/Card";
+import { ConfirmModal } from "@/components/ConfirmModal";
 import { useAuth } from "@/hooks/useAuth";
 import { usePresenceFeed } from "@/hooks/usePresenceFeed";
 import { useVenue } from "@/hooks/useVenue";
 import { InteractionService } from "@/services/interaction";
 import { VenueService } from "@/services/venue";
 import { ApiError } from "@/utils/api";
-import { FeedProfile } from "@/utils/models";
+import { FeedProfile, MatchFoundPayload } from "@/utils/models";
 
 const BUTTON_ROW_HEIGHT = 120;
 // The tab bar's own content height (see (authorized)/_layout.tsx) — react-navigation
@@ -24,11 +25,30 @@ const TAB_BAR_HEIGHT = 78;
 export default function HomeScreen() {
     const { user } = useAuth();
     const { venue, clearCheckedInVenue } = useVenue();
-    const { profiles, error } = usePresenceFeed(venue?.id ?? null);
     const insets = useSafeAreaInsets();
     const swiperRef = useRef<Swiper<FeedProfile>>(null);
     const [swipedCount, setSwipedCount] = useState(0);
     const [leaving, setLeaving] = useState(false);
+    const [showLeaveModal, setShowLeaveModal] = useState(false);
+
+    // Pushed to BOTH matched users the instant a mutual like completes —
+    // including whoever's own like just triggered it — so this is the only
+    // place the match toast is shown (not the POST /interactions/like
+    // response, which never reaches the other, non-acting side).
+    const handleMatchFound = (payload: MatchFoundPayload) => {
+        Toast.show({
+            type: "success",
+            text1: "It's a match! 🎉",
+            text2: `You and ${payload.partner.firstName} both liked each other — tap to chat`,
+            visibilityTime: 6000,
+            onPress: () => {
+                Toast.hide();
+                router.push(`/(authorized)/(chats)/message?id=${payload.chatSessionId}`);
+            },
+        });
+    };
+
+    const { profiles, error } = usePresenceFeed(venue?.id ?? null, handleMatchFound);
 
     // The Swiper indexes cards by position, but `profiles` is a live socket feed
     // that can mutate (joins/leaves) mid-deck. Mirror it into an append-only local
@@ -55,20 +75,7 @@ export default function HomeScreen() {
             return;
         }
         try {
-            const result = await InteractionService.like(target.id, venue.id);
-            if (result.matched && result.chatSession) {
-                const chatSessionId = result.chatSession.id;
-                Toast.show({
-                    type: "success",
-                    text1: "It's a match! 🎉",
-                    text2: `You and ${result.chatSession.partner.firstName} both liked each other — tap to chat`,
-                    visibilityTime: 6000,
-                    onPress: () => {
-                        Toast.hide();
-                        router.push(`/(authorized)/(chats)/message?id=${chatSessionId}`);
-                    },
-                });
-            }
+            await InteractionService.like(target.id, venue.id);
         } catch (err) {
             Alert.alert(
                 "Something went wrong",
@@ -77,35 +84,23 @@ export default function HomeScreen() {
         }
     };
 
-    const handleLeaveVenue = () => {
+    const confirmLeaveVenue = async () => {
         if (!venue) {
             return;
         }
-        Alert.alert(
-            "Leave venue?",
-            `You'll stop seeing who's at ${venue.name} until you check in again.`,
-            [
-                { text: "Cancel", style: "cancel" },
-                {
-                    text: "Leave",
-                    style: "destructive",
-                    onPress: async () => {
-                        setLeaving(true);
-                        try {
-                            await VenueService.checkOut(venue.id);
-                            clearCheckedInVenue();
-                        } catch (err) {
-                            Alert.alert(
-                                "Something went wrong",
-                                err instanceof ApiError ? err.message : "Please try again.",
-                            );
-                        } finally {
-                            setLeaving(false);
-                        }
-                    },
-                },
-            ],
-        );
+        setLeaving(true);
+        try {
+            await VenueService.checkOut(venue.id);
+            clearCheckedInVenue();
+        } catch (err) {
+            Alert.alert(
+                "Something went wrong",
+                err instanceof ApiError ? err.message : "Please try again.",
+            );
+        } finally {
+            setLeaving(false);
+            setShowLeaveModal(false);
+        }
     };
 
     if (!venue) {
@@ -156,7 +151,7 @@ export default function HomeScreen() {
                     <MapPin color="#504443" size={14} />
                     <Text className="text-muted text-xs font-medium ml-1">{venue.name}</Text>
                     <Text className="text-muted text-xs mx-1.5">·</Text>
-                    <TouchableOpacity onPress={handleLeaveVenue} disabled={leaving}>
+                    <TouchableOpacity onPress={() => setShowLeaveModal(true)} disabled={leaving}>
                         <Text className="text-primary text-xs font-bold">
                             {leaving ? "Leaving…" : "Leave venue"}
                         </Text>
@@ -195,7 +190,20 @@ export default function HomeScreen() {
                 <Swiper
                     ref={swiperRef}
                     cards={deck}
-                    renderCard={(item) => <RenderProfile item={item} venueName={venue.name} />}
+                    // Remount whenever the deck grows. The Swiper tracks its own
+                    // `swipedAllCards`/`firstCardIndex` state internally and only
+                    // reads `cardIndex` in its constructor — so when you swipe the
+                    // last card it latches "all swiped" and renders nothing, and if
+                    // someone new joins a moment later our `deck` grows and we keep
+                    // it mounted while it stays latched: a blank area with the
+                    // buttons still showing, until the next tap forces its state
+                    // forward. Remounting resets that state, and `cardIndex` below
+                    // makes the fresh instance resume at the right card.
+                    key={deck.length}
+                    cardIndex={swipedCount}
+                    renderCard={(item) =>
+                        item ? <RenderProfile item={item} venueName={venue.name} /> : null
+                    }
                     keyExtractor={(item) => item.id}
                     onSwiped={() => setSwipedCount((count) => count + 1)}
                     onSwipedRight={(cardIndex) => handleLike(deck[cardIndex])}
@@ -210,7 +218,13 @@ export default function HomeScreen() {
                     verticalSwipe={false}
                     disableTopSwipe
                     disableBottomSwipe
-                    animateCardOpacity
+                    // Deliberately NOT using animateCardOpacity: the top
+                    // card's opacity is driven by the gesture's pan value,
+                    // and when a swipe's internal pan-reset races a parent
+                    // re-render (our onSwiped state update, or a live feed
+                    // update swapping the cards prop) the next card can get
+                    // stuck fully transparent until the following swipe —
+                    // the "invisible 3rd/4th card" bug.
                     swipeAnimationDuration={300}
                     stackAnimationFriction={8}
                     stackAnimationTension={60}
@@ -236,6 +250,17 @@ export default function HomeScreen() {
                     </TouchableOpacity>
                 </View>
             )}
+
+            <ConfirmModal
+                visible={showLeaveModal}
+                title="Leave venue?"
+                message={`You'll stop seeing who's at ${venue.name} until you check in again.`}
+                confirmLabel="Leave"
+                destructive
+                loading={leaving}
+                onConfirm={confirmLeaveVenue}
+                onCancel={() => setShowLeaveModal(false)}
+            />
         </View>
     );
 }

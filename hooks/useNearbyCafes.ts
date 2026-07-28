@@ -8,7 +8,13 @@ import { ApiError } from "@/utils/api";
 import { distanceInMeters } from "@/utils/geo";
 import { Venue } from "@/utils/models";
 
-const SEARCH_RADIUS_METERS = 5000;
+// What counts as "nearby" for the default (unsearched) map view.
+const NEARBY_RADIUS_METERS = 5000;
+// How far out we actually fetch. Search runs against everything we've loaded,
+// not just what's nearby — otherwise typing a venue's exact name returns
+// nothing whenever it happens to sit a few km further out, which reads as a
+// broken search. The nearby endpoint caps this at 50km.
+const FETCH_RADIUS_METERS = 50000;
 
 // The API can serialize decimal coordinates as strings, which react-native-maps
 // silently rejects, so coerce them to finite numbers before rendering markers.
@@ -44,7 +50,7 @@ export function useNearbyCafes(): UseNearbyCafesResult {
                 };
                 const nearby = await VenueService.getNearby({
                     ...here,
-                    radiusMeters: SEARCH_RADIUS_METERS,
+                    radiusMeters: FETCH_RADIUS_METERS,
                 });
                 if (cancelled) {
                     return;
@@ -76,11 +82,40 @@ export function useNearbyCafes(): UseNearbyCafesResult {
             }))
             .filter((v) => v.latitude !== null && v.longitude !== null);
         const q = query.trim().toLowerCase();
+
         if (!q) {
-            return located;
+            // Default view stays "what's actually around me", even though we
+            // fetched a much wider set to make search useful.
+            if (!position) {
+                return located;
+            }
+            return located.filter(
+                (v) =>
+                    distanceInMeters(position, {
+                        latitude: v.latitude as number,
+                        longitude: v.longitude as number,
+                    }) <= NEARBY_RADIUS_METERS,
+            );
         }
-        return located.filter((v) => v.name.toLowerCase().includes(q));
-    }, [venues, query]);
+
+        // Searching deliberately ignores the nearby radius and sorts by
+        // distance, so the closest match is the first card you see.
+        const matches = located.filter((v) => v.name.toLowerCase().includes(q));
+        if (!position) {
+            return matches;
+        }
+        return matches.sort(
+            (a, b) =>
+                distanceInMeters(position, {
+                    latitude: a.latitude as number,
+                    longitude: a.longitude as number,
+                }) -
+                distanceInMeters(position, {
+                    latitude: b.latitude as number,
+                    longitude: b.longitude as number,
+                }),
+        );
+    }, [venues, query, position]);
 
     const distanceById = useMemo(() => {
         const map = new Map<string, number>();
