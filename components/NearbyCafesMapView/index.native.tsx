@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FlatList, Text, View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 
@@ -82,6 +82,16 @@ export function NearbyCafesMapView({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [resultKey]);
 
+    // Android caches each custom marker as a bitmap and only refreshes it while
+    // tracksViewChanges is on. Leaving it on permanently tanks map performance,
+    // so keep it on just long enough for the first real snapshot, then freeze.
+    const [tracksViewChanges, setTracksViewChanges] = useState(true);
+    useEffect(() => {
+        setTracksViewChanges(true);
+        const timer = setTimeout(() => setTracksViewChanges(false), 800);
+        return () => clearTimeout(timer);
+    }, [resultKey, selectedId]);
+
     return (
         <View className="flex-1 -mt-2">
             <MapView
@@ -96,6 +106,7 @@ export function NearbyCafesMapView({
                 {filteredVenues.map((venue) => (
                     <Marker
                         key={venue.id}
+                        tracksViewChanges={tracksViewChanges}
                         coordinate={{
                             latitude: venue.latitude as number,
                             longitude: venue.longitude as number,
