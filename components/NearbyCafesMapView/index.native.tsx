@@ -11,6 +11,13 @@ import { Venue } from "@/utils/models";
 
 const CARD_GAP = 16;
 
+// TEMPORARY DIAGNOSTIC — remove once the missing-pin issue is settled.
+// true  = draw Google's built-in red pin (no custom child view)
+// false = draw our custom <CafeMarker /> child
+// If pins appear with true but not false, the bug is Android's custom-marker
+// child rendering, not the coordinates or the camera region.
+const DEBUG_USE_PLAIN_PINS = true;
+
 export function NearbyCafesMapView({
     position,
     filteredVenues,
@@ -92,6 +99,24 @@ export function NearbyCafesMapView({
         return () => clearTimeout(timer);
     }, [resultKey, selectedId]);
 
+    // TEMPORARY DIAGNOSTIC — remove with DEBUG_USE_PLAIN_PINS.
+    useEffect(() => {
+        console.log("[map] venues:", filteredVenues.length, "position:", position);
+        console.log(
+            "[map] first 3 coords:",
+            JSON.stringify(
+                filteredVenues.slice(0, 3).map((v) => ({
+                    name: v.name,
+                    lat: v.latitude,
+                    latType: typeof v.latitude,
+                    lng: v.longitude,
+                    lngType: typeof v.longitude,
+                })),
+            ),
+        );
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [resultKey]);
+
     return (
         <View className="flex-1 -mt-2">
             <MapView
@@ -117,8 +142,11 @@ export function NearbyCafesMapView({
                                 filteredVenues.findIndex((v) => v.id === venue.id),
                             )
                         }
+                        pinColor={DEBUG_USE_PLAIN_PINS ? "red" : undefined}
                     >
-                        <CafeMarker name={venue.name} selected={venue.id === selectedId} />
+                        {DEBUG_USE_PLAIN_PINS ? null : (
+                            <CafeMarker name={venue.name} selected={venue.id === selectedId} />
+                        )}
                     </Marker>
                 ))}
             </MapView>
