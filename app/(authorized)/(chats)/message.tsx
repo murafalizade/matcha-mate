@@ -42,15 +42,19 @@ export default function MessageScreen() {
 
     // The countdown is derived from the session's own expiresAt rather than a
     // local fixed timer — it needs to reflect the server's clock, not the
-    // moment this screen happened to mount.
+    // moment this screen happened to mount. A fresh match is PENDING with no
+    // expiresAt at all — the clock only starts once countdown_started arrives
+    // (updating session.expiresAt), so there's nothing to tick until then.
     useEffect(() => {
-        if (!session) {
+        if (!session?.expiresAt) {
+            setTimeLeft(null);
             return;
         }
+        const expiresAt = session.expiresAt;
         const tick = () => {
             const secondsLeft = Math.max(
                 0,
-                Math.floor((new Date(session.expiresAt).getTime() - Date.now()) / 1000),
+                Math.floor((new Date(expiresAt).getTime() - Date.now()) / 1000),
             );
             setTimeLeft(secondsLeft);
         };
@@ -81,19 +85,21 @@ export default function MessageScreen() {
     return (
         <SafeAreaView className="flex-1 bg-cream">
             {/* Header */}
-            <View className="flex-row items-center px-4 py-3 border-b border-gray-200">
+            <View className="flex-row items-center px-4 py-3 border-b border-dot/40">
                 <TouchableOpacity
                     onPress={() => router.push("/(authorized)/(chats)")}
                     className="mr-3"
                 >
-                    <Ionicons name="arrow-back" size={24} color="black" />
+                    <Ionicons name="arrow-back" size={24} color="#321716" />
                 </TouchableOpacity>
-                <Text className="text-lg font-semibold flex-1">
+                <Text className="text-lg font-semibold flex-1 text-ink">
                     {session
                         ? `Chat with ${session.partner.firstName} ${session.partner.lastName}`
                         : "Chat"}
                 </Text>
-                {!ended && (
+                {/* A PENDING chat (no countdown yet) can't be ended server-side —
+                    there's nothing running yet, so just hide the action. */}
+                {!ended && session?.expiresAt && (
                     <TouchableOpacity onPress={endChat}>
                         <Text className="text-red-500 font-medium">End</Text>
                     </TouchableOpacity>
@@ -103,13 +109,19 @@ export default function MessageScreen() {
             {error && <Text className="text-sm text-red-500 text-center mt-2">{error}</Text>}
 
             {/* Countdown */}
-            {timeLeft !== null && (
-                <Text className="text-sm text-gray-500 text-center mt-2 mb-1">
-                    Time remaining: {formatTime(timeLeft)}
-                </Text>
-            )}
+            {!ended &&
+                session &&
+                (timeLeft !== null ? (
+                    <Text className="text-sm text-muted text-center mt-2 mb-1">
+                        Time remaining: {formatTime(timeLeft)}
+                    </Text>
+                ) : (
+                    <Text className="text-sm text-muted text-center mt-2 mb-1">
+                        Say hi to start your 10-minute chat!
+                    </Text>
+                ))}
             {partnerTyping && !ended && (
-                <Text className="text-xs text-gray-400 text-center mb-1">
+                <Text className="text-xs text-muted text-center mb-1">
                     {session?.partner.firstName} is typing…
                 </Text>
             )}
@@ -130,12 +142,12 @@ export default function MessageScreen() {
                                 className={`mb-3 max-w-[75%] px-4 py-2 rounded-xl ${
                                     item.senderId === user?.id
                                         ? "bg-primary self-end"
-                                        : "bg-gray-200 self-start"
+                                        : "bg-white self-start border border-dot/40"
                                 }`}
                             >
                                 <Text
                                     className={`${
-                                        item.senderId === user?.id ? "text-white" : "text-black"
+                                        item.senderId === user?.id ? "text-white" : "text-ink"
                                     } text-base`}
                                 >
                                     {item.content}
@@ -145,10 +157,11 @@ export default function MessageScreen() {
                     />
 
                     {/* Input Bar */}
-                    <View className="flex-row items-center border-t border-gray-200 px-4 py-4 bg-white mb-0">
+                    <View className="flex-row items-center border-t border-dot/40 px-4 py-4 bg-white mb-0">
                         <TextInput
-                            className="flex-1 border border-gray-300 rounded-full px-4 py-2 mr-2"
+                            className="flex-1 border border-dot rounded-full px-4 py-2 mr-2 bg-panel text-ink"
                             placeholder="Type a message..."
+                            placeholderTextColor="#504443"
                             value={input}
                             onChangeText={handleChangeText}
                             editable={!ended}

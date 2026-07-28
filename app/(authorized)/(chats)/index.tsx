@@ -216,9 +216,11 @@ export default function ChatsScreen() {
                                                 {item.partner.firstName} {item.partner.lastName}
                                             </Text>
                                             <Text className="text-xs text-muted ml-2">
-                                                {isActive
+                                                {item.expiresAt
                                                     ? formatTimeLeft(item.expiresAt)
-                                                    : item.status}
+                                                    : item.status === "PENDING"
+                                                      ? "Say hi!"
+                                                      : item.status}
                                             </Text>
                                         </View>
                                         <Text className="text-muted" numberOfLines={1}>
