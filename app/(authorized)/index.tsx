@@ -8,6 +8,7 @@ import Toast from "react-native-toast-message";
 
 import { RenderProfile } from "@/components/Card";
 import { ConfirmModal } from "@/components/ConfirmModal";
+import { SwipeLabel } from "@/components/SwipeLabel";
 import { useAuth } from "@/hooks/useAuth";
 import { usePresenceFeed } from "@/hooks/usePresenceFeed";
 import { useVenue } from "@/hooks/useVenue";
@@ -224,10 +225,50 @@ export default function HomeScreen() {
                     // re-render (our onSwiped state update, or a live feed
                     // update swapping the cards prop) the next card can get
                     // stuck fully transparent until the following swipe —
-                    // the "invisible 3rd/4th card" bug.
-                    swipeAnimationDuration={300}
-                    stackAnimationFriction={8}
-                    stackAnimationTension={60}
+                    // the "invisible 3rd/4th card" bug. animateOverlayLabelsOpacity
+                    // is unrelated: it fades the drag-feedback badge below via its
+                    // own interpolation of the pan value, and (unlike the card's
+                    // opacity) the badge unmounts outright whenever the drag resets,
+                    // so it can't get stuck invisible the same way.
+                    animateOverlayLabelsOpacity
+                    // Each badge is anchored to the corner NEAREST the drag direction
+                    // (NOPE top-right while dragging left, LIKE top-left while dragging
+                    // right) rather than the far corner. The overlay is a child of the
+                    // same transformed view as the card, so it translates along with
+                    // it — anchoring to the far corner made the badge drift toward
+                    // (and past) the screen edge by the time the drag distance was
+                    // large enough for it to reach full opacity, confirmed visually
+                    // via Playwright: at the library's own fade-in threshold the badge
+                    // was already clipped off-screen.
+                    overlayLabels={{
+                        left: {
+                            element: <SwipeLabel kind="pass" />,
+                            style: {
+                                wrapper: {
+                                    alignItems: "flex-end",
+                                    justifyContent: "flex-start",
+                                    paddingTop: 48,
+                                    paddingRight: 24,
+                                },
+                            },
+                        },
+                        right: {
+                            element: <SwipeLabel kind="like" />,
+                            style: {
+                                wrapper: {
+                                    alignItems: "flex-start",
+                                    justifyContent: "flex-start",
+                                    paddingTop: 48,
+                                    paddingLeft: 24,
+                                },
+                            },
+                        },
+                    }}
+                    swipeAnimationDuration={220}
+                    stackAnimationFriction={10}
+                    stackAnimationTension={90}
+                    topCardResetAnimationFriction={10}
+                    topCardResetAnimationTension={90}
                 />
             )}
 
