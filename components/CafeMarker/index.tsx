@@ -2,50 +2,58 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Text, View } from "react-native";
 
 import { CafeMarkerProps } from "@/components/CafeMarker/types";
+import { CARAMEL, ESPRESSO, INK, WHITE } from "@/constants/colors";
 
-// Styled with plain inline styles rather than NativeWind classNames on purpose.
-// Android renders custom Marker children by snapshotting the view into a bitmap;
-// if the view still measures as zero-sized when that snapshot is taken (which is
-// what happens while NativeWind resolves classNames on a later commit) the pin
-// is cached blank and never appears. Inline styles are resolved synchronously on
-// the first commit, so the snapshot always has real dimensions.
+const MARKER_CONTAINER_WIDTH = 120;
+const PIN_SIZE = 36;
+const PIN_BORDER_RADIUS = 18;
+const PIN_BORDER_WIDTH = 2;
+const PIN_ELEVATION = 4;
+const PIN_SHADOW_OPACITY = 0.2;
+const PIN_SHADOW_RADIUS = 6;
+const PIN_SHADOW_OFFSET = { width: 0, height: 3 };
+const LABEL_MARGIN_TOP = 4;
+const LABEL_PADDING_HORIZONTAL = 8;
+const LABEL_PADDING_VERTICAL = 2;
+const LABEL_BORDER_RADIUS = 4;
+const LABEL_ELEVATION = 2;
+const LABEL_FONT_SIZE = 12;
+
 export function CafeMarker({ name, selected }: CafeMarkerProps) {
     return (
-        <View style={{ alignItems: "center", width: 120 }}>
+        <View style={{ alignItems: "center", width: MARKER_CONTAINER_WIDTH }}>
             <View
                 style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 18,
+                    width: PIN_SIZE,
+                    height: PIN_SIZE,
+                    borderRadius: PIN_BORDER_RADIUS,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderWidth: 2,
-                    borderColor: "#FFFFFF",
-                    // caramel / espresso from tailwind.config.js
-                    backgroundColor: selected ? "#CD8F62" : "#4A2C2A",
-                    // Android ignores shadow* props; elevation is its equivalent.
-                    elevation: 4,
-                    shadowColor: "#4A2C2A",
-                    shadowOpacity: 0.2,
-                    shadowRadius: 6,
-                    shadowOffset: { width: 0, height: 3 },
+                    borderWidth: PIN_BORDER_WIDTH,
+                    borderColor: WHITE,
+                    backgroundColor: selected ? CARAMEL : ESPRESSO,
+                    elevation: PIN_ELEVATION,
+                    shadowColor: ESPRESSO,
+                    shadowOpacity: PIN_SHADOW_OPACITY,
+                    shadowRadius: PIN_SHADOW_RADIUS,
+                    shadowOffset: PIN_SHADOW_OFFSET,
                 }}
             >
-                <MaterialCommunityIcons name="coffee" size={18} color="white" />
+                <MaterialCommunityIcons name="coffee" size={18} color={WHITE} />
             </View>
             <View
                 style={{
-                    marginTop: 4,
-                    backgroundColor: "#FFFFFF",
-                    paddingHorizontal: 8,
-                    paddingVertical: 2,
-                    borderRadius: 4,
-                    elevation: 2,
+                    marginTop: LABEL_MARGIN_TOP,
+                    backgroundColor: WHITE,
+                    paddingHorizontal: LABEL_PADDING_HORIZONTAL,
+                    paddingVertical: LABEL_PADDING_VERTICAL,
+                    borderRadius: LABEL_BORDER_RADIUS,
+                    elevation: LABEL_ELEVATION,
                 }}
             >
                 <Text
                     numberOfLines={1}
-                    style={{ fontSize: 12, fontWeight: "700", color: "#321716" }}
+                    style={{ fontSize: LABEL_FONT_SIZE, fontWeight: "700", color: INK }}
                 >
                     {name}
                 </Text>

@@ -1,6 +1,9 @@
 import { ActivityIndicator, Modal, Text, TouchableOpacity, View } from "react-native";
 
 import { ConfirmModalProps } from "@/components/ConfirmModal/types";
+import { CARD_SHADOW } from "@/constants/styles";
+
+const MODAL_SHADOW = { ...CARD_SHADOW, shadowOpacity: 0.15 };
 
 export const ConfirmModal = ({
     visible,
@@ -16,15 +19,7 @@ export const ConfirmModal = ({
     return (
         <Modal transparent visible={visible} animationType="fade" onRequestClose={onCancel}>
             <View className="flex-1 justify-center items-center bg-black/40 px-8">
-                <View
-                    className="bg-white rounded-2xl p-6 w-full"
-                    style={{
-                        shadowColor: "#4A2C2A",
-                        shadowOpacity: 0.15,
-                        shadowRadius: 30,
-                        shadowOffset: { width: 0, height: 10 },
-                    }}
-                >
+                <View className="bg-white rounded-2xl p-6 w-full" style={MODAL_SHADOW}>
                     <Text className="text-xl font-bold text-ink mb-2">{title}</Text>
                     <Text className="text-muted mb-6">{message}</Text>
                     <View className="flex-row gap-3">

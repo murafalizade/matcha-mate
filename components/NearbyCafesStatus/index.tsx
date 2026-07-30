@@ -1,12 +1,13 @@
 import { ActivityIndicator, Text, View } from "react-native";
 
 import { NearbyCafesStatusProps } from "@/components/NearbyCafesStatus/types";
+import { CARAMEL } from "@/constants/colors";
 
 export function NearbyCafesStatus({ state, errorMessage }: NearbyCafesStatusProps) {
     if (state === "loading") {
         return (
             <View className="flex-1 bg-cream items-center justify-center">
-                <ActivityIndicator color="#CD8F62" size="large" />
+                <ActivityIndicator color={CARAMEL} size="large" />
             </View>
         );
     }

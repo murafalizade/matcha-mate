@@ -4,7 +4,12 @@ import React from "react";
 import { Image, Text, View } from "react-native";
 
 import { RenderProfileProps } from "@/components/Card/types";
+import { INK } from "@/constants/colors";
 import { calculateAge, humanizeEnum } from "@/utils/format";
+
+const GRADIENT_COLORS = ["transparent", "rgba(0,0,0,0.65)"] as const;
+const GRADIENT_HEIGHT = "55%";
+const GRADIENT_PADDING = 20;
 
 export const RenderProfile = ({ item, venueName }: RenderProfileProps) => {
     const age = calculateAge(item.birthDate);
@@ -23,15 +28,15 @@ export const RenderProfile = ({ item, venueName }: RenderProfileProps) => {
                 />
 
                 <LinearGradient
-                    colors={["transparent", "rgba(0,0,0,0.65)"]}
+                    colors={GRADIENT_COLORS}
                     style={{
                         position: "absolute",
                         bottom: 0,
                         left: 0,
                         right: 0,
-                        height: "55%",
+                        height: GRADIENT_HEIGHT,
                         justifyContent: "flex-end",
-                        padding: 20,
+                        padding: GRADIENT_PADDING,
                     }}
                 >
                     <Text className="text-white text-3xl font-bold">
@@ -46,7 +51,7 @@ export const RenderProfile = ({ item, venueName }: RenderProfileProps) => {
 
             <View className="p-5">
                 <View className="flex-row items-center gap-2 mb-2">
-                    <Coffee color="#321716" size={18} />
+                    <Coffee color={INK} size={18} />
                     <Text className="text-ink text-base">{venueName}</Text>
                 </View>
 

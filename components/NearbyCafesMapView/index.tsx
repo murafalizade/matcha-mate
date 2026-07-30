@@ -4,9 +4,6 @@ import { CafeCard } from "@/components/CafeCard";
 import { NearbyCafesMapViewProps } from "@/components/NearbyCafesMapView/types";
 import { formatDistance } from "@/utils/geo";
 
-// react-native-maps has no web implementation, so this universal/default
-// variant (used on web) renders the same real venue data as a plain list.
-// index.native.tsx overrides it on iOS/Android with the real MapView.
 export function NearbyCafesMapView({
     filteredVenues,
     distanceById,

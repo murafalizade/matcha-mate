@@ -6,17 +6,18 @@ import { CafeCard, CAFE_CARD_WIDTH } from "@/components/CafeCard";
 import { CafeMarker } from "@/components/CafeMarker";
 import { NearbyCafesMapViewProps } from "@/components/NearbyCafesMapView/types";
 import { WARM_MAP_STYLE } from "@/constants/mapStyle";
+import { CARD_SHADOW } from "@/constants/styles";
 import { formatDistance } from "@/utils/geo";
 import { Venue } from "@/utils/models";
 
 const CARD_GAP = 16;
-
-// TEMPORARY DIAGNOSTIC — remove once the missing-pin issue is settled.
-// true  = draw Google's built-in red pin (no custom child view)
-// false = draw our custom <CafeMarker /> child
-// If pins appear with true but not false, the bug is Android's custom-marker
-// child rendering, not the coordinates or the camera region.
-const DEBUG_USE_PLAIN_PINS = true;
+const FOCUS_ZOOM_DELTA = 0.01;
+const INITIAL_ZOOM_DELTA = 0.02;
+const FOCUS_ANIMATION_DURATION_MS = 300;
+const CAROUSEL_SCROLL_VIEW_POSITION = 0.5;
+const FIT_EDGE_PADDING_INITIAL = { top: 80, right: 60, bottom: 220, left: 60 };
+const FIT_EDGE_PADDING_SEARCH = { top: 80, right: 80, bottom: 260, left: 80 };
+const MARKER_REFRESH_TIMEOUT_MS = 800;
 
 export function NearbyCafesMapView({
     position,
@@ -34,12 +35,16 @@ export function NearbyCafesMapView({
             {
                 latitude: venue.latitude as number,
                 longitude: venue.longitude as number,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01,
+                latitudeDelta: FOCUS_ZOOM_DELTA,
+                longitudeDelta: FOCUS_ZOOM_DELTA,
             },
-            300,
+            FOCUS_ANIMATION_DURATION_MS,
         );
-        carouselRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.5 });
+        carouselRef.current?.scrollToIndex({
+            index,
+            animated: true,
+            viewPosition: CAROUSEL_SCROLL_VIEW_POSITION,
+        });
     };
 
     const fitToVenues = () => {
@@ -52,7 +57,7 @@ export function NearbyCafesMapView({
                 longitude: venue.longitude as number,
             })),
             {
-                edgePadding: { top: 80, right: 60, bottom: 220, left: 60 },
+                edgePadding: FIT_EDGE_PADDING_INITIAL,
                 animated: false,
             },
         );
@@ -61,13 +66,10 @@ export function NearbyCafesMapView({
     const initialRegion: Region = {
         latitude: position?.latitude ?? 0,
         longitude: position?.longitude ?? 0,
-        latitudeDelta: 0.02,
-        longitudeDelta: 0.02,
+        latitudeDelta: INITIAL_ZOOM_DELTA,
+        longitudeDelta: INITIAL_ZOOM_DELTA,
     };
 
-    // Keep the viewport on the current results. Without this, searching for a
-    // cafe that isn't in the immediate area surfaces its card but leaves the
-    // map sitting at your own location, so the match looks like it's missing.
     const resultKey = filteredVenues.map((v) => v.id).join(",");
     useEffect(() => {
         if (filteredVenues.length === 0) {
@@ -79,43 +81,20 @@ export function NearbyCafesMapView({
                 longitude: venue.longitude as number,
             })),
             {
-                edgePadding: { top: 80, right: 80, bottom: 260, left: 80 },
+                edgePadding: FIT_EDGE_PADDING_SEARCH,
                 animated: true,
             },
         );
         carouselRef.current?.scrollToOffset({ offset: 0, animated: true });
-        // Intentionally keyed on the result *identity*, not the array reference —
-        // the parent rebuilds this array on every render.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [resultKey]);
 
-    // Android caches each custom marker as a bitmap and only refreshes it while
-    // tracksViewChanges is on. Leaving it on permanently tanks map performance,
-    // so keep it on just long enough for the first real snapshot, then freeze.
     const [tracksViewChanges, setTracksViewChanges] = useState(true);
     useEffect(() => {
         setTracksViewChanges(true);
-        const timer = setTimeout(() => setTracksViewChanges(false), 800);
+        const timer = setTimeout(() => setTracksViewChanges(false), MARKER_REFRESH_TIMEOUT_MS);
         return () => clearTimeout(timer);
     }, [resultKey, selectedId]);
-
-    // TEMPORARY DIAGNOSTIC — remove with DEBUG_USE_PLAIN_PINS.
-    useEffect(() => {
-        console.log("[map] venues:", filteredVenues.length, "position:", position);
-        console.log(
-            "[map] first 3 coords:",
-            JSON.stringify(
-                filteredVenues.slice(0, 3).map((v) => ({
-                    name: v.name,
-                    lat: v.latitude,
-                    latType: typeof v.latitude,
-                    lng: v.longitude,
-                    lngType: typeof v.longitude,
-                })),
-            ),
-        );
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [resultKey]);
 
     return (
         <View className="flex-1 -mt-2">
@@ -142,26 +121,15 @@ export function NearbyCafesMapView({
                                 filteredVenues.findIndex((v) => v.id === venue.id),
                             )
                         }
-                        pinColor={DEBUG_USE_PLAIN_PINS ? "red" : undefined}
                     >
-                        {DEBUG_USE_PLAIN_PINS ? null : (
-                            <CafeMarker name={venue.name} selected={venue.id === selectedId} />
-                        )}
+                        <CafeMarker name={venue.name} selected={venue.id === selectedId} />
                     </Marker>
                 ))}
             </MapView>
 
             {filteredVenues.length === 0 && (
                 <View className="absolute bottom-6 left-0 w-full px-6">
-                    <View
-                        className="bg-white rounded-2xl px-5 py-4"
-                        style={{
-                            shadowColor: "#4A2C2A",
-                            shadowOpacity: 0.1,
-                            shadowRadius: 20,
-                            shadowOffset: { width: 0, height: 8 },
-                        }}
-                    >
+                    <View className="bg-white rounded-2xl px-5 py-4" style={CARD_SHADOW}>
                         <Text className="text-ink font-semibold text-center">No cafes found</Text>
                         <Text className="text-muted text-sm text-center mt-1">
                             Try a different name, or clear the search to see cafes near you.

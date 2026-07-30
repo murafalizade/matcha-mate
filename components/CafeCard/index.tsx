@@ -2,6 +2,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Text, TouchableOpacity, View } from "react-native";
 
 import { CafeCardProps } from "@/components/CafeCard/types";
+import { CARAMEL } from "@/constants/colors";
 
 export const CAFE_CARD_WIDTH = 240;
 
@@ -16,7 +17,7 @@ export function CafeCard({ venue, distanceLabel, selected, onPress }: CafeCardPr
             activeOpacity={0.85}
         >
             <View className="w-14 h-14 rounded-xl bg-panel items-center justify-center">
-                <MaterialCommunityIcons name="coffee-outline" size={26} color="#CD8F62" />
+                <MaterialCommunityIcons name="coffee-outline" size={26} color={CARAMEL} />
             </View>
             <View className="flex-1 justify-center">
                 <Text className="font-bold text-ink" numberOfLines={1}>

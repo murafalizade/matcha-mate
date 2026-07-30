@@ -3,11 +3,10 @@ import React, { useEffect, useState, useRef } from "react";
 import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 
 import { QRScannerProps } from "@/components/QRScanner/types";
+import { CARAMEL } from "@/constants/colors";
 
 export default function QRScanner({ onScan, onCancel }: QRScannerProps) {
     const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-    // A single CameraView keeps firing onBarcodeScanned for the same code
-    // while it's in frame — latch after the first read so onScan fires once.
     const scannedRef = useRef(false);
 
     const handleBarcodeScanned = (result: BarcodeScanningResult) => {
@@ -27,7 +26,7 @@ export default function QRScanner({ onScan, onCancel }: QRScannerProps) {
     if (hasPermission === null) {
         return (
             <View className="flex-1 items-center justify-center bg-cream">
-                <ActivityIndicator color="#CD8F62" />
+                <ActivityIndicator color={CARAMEL} />
                 <Text className="text-ink mt-2">Requesting camera permission…</Text>
             </View>
         );
@@ -64,9 +63,7 @@ export default function QRScanner({ onScan, onCancel }: QRScannerProps) {
                 }}
             />
 
-            {/* Overlay UI */}
             <View className="absolute inset-0 items-center justify-between py-10">
-                {/* Optional Frame */}
                 <View className="w-64 h-64 border-white border-2 rounded-lg" />
 
                 <View className="items-center">

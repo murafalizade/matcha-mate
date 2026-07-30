@@ -2,6 +2,7 @@ import { Compass, Map, MessageCircle, User } from "lucide-react-native";
 import { View } from "react-native";
 
 import { TabBarIconName, TabBarIconProps } from "@/components/TabBarIcon/types";
+import { MUTED } from "@/constants/colors";
 
 const ICONS: Record<TabBarIconName, typeof Compass> = {
     discovery: Compass,
@@ -21,5 +22,5 @@ export function TabBarIcon({ name, focused }: TabBarIconProps) {
         );
     }
 
-    return <Icon color="#504443" size={22} />;
+    return <Icon color={MUTED} size={22} />;
 }

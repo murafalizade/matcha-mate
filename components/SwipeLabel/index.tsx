@@ -3,9 +3,8 @@ import React from "react";
 import { Text, View } from "react-native";
 
 import { SwipeLabelProps } from "@/components/SwipeLabel/types";
+import { MUTED, WHITE } from "@/constants/colors";
 
-// No red here on purpose — this app reserves red for destructive/error
-// states (logout, error text), not a generic Tinder-style reject color.
 const CONFIG = {
     like: {
         text: "LIKE",
@@ -13,8 +12,8 @@ const CONFIG = {
         containerClassName: "bg-primary border-2 border-white",
         textClassName: "text-white",
         Icon: Heart,
-        iconColor: "white",
-        iconFill: "white",
+        iconColor: WHITE,
+        iconFill: WHITE,
     },
     pass: {
         text: "NOPE",
@@ -22,7 +21,7 @@ const CONFIG = {
         containerClassName: "bg-white border-2 border-muted",
         textClassName: "text-muted",
         Icon: X,
-        iconColor: "#504443",
+        iconColor: MUTED,
         iconFill: "none",
     },
 } as const;
