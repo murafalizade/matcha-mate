@@ -8,6 +8,8 @@ export default function UnAuthorizedLayout() {
             <Stack.Screen name="qr-code" options={{ headerShown: false }} />
             <Stack.Screen name="create-profile" options={{ headerShown: false }} />
             <Stack.Screen name="login" options={{ headerShown: false }} />
+            <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
+            <Stack.Screen name="reset-password" options={{ headerShown: false }} />
         </Stack>
     );
 }
