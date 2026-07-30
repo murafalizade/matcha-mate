@@ -62,6 +62,23 @@ export const en: Translations = {
         agreementRequiredBody: "You must agree to the Terms of Service.",
         registrationFailedTitle: "Registration failed",
     },
+    forgotPassword: {
+        title: "Forgot Password",
+        subtitle: "Enter your email and we'll help you get back into your account.",
+        emailPlaceholder: "Enter your email",
+        submit: "Send Reset Instructions",
+        checkEmailMessage:
+            "If an account is registered with that email address, you will receive password recovery instructions shortly.",
+        backToLogin: "Back to Login",
+    },
+    resetPassword: {
+        title: "Reset Password",
+        subtitle: "Choose a new password for your account.",
+        newPasswordPlaceholder: "New password",
+        confirmPasswordPlaceholder: "Confirm new password",
+        submit: "Reset Password",
+        successMessage: "Your password has been reset. Please log in.",
+    },
     language: {
         title: "Language",
         english: "English",

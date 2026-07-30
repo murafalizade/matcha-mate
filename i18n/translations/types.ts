@@ -58,6 +58,22 @@ export interface Translations {
         agreementRequiredBody: string;
         registrationFailedTitle: string;
     };
+    forgotPassword: {
+        title: string;
+        subtitle: string;
+        emailPlaceholder: string;
+        submit: string;
+        checkEmailMessage: string;
+        backToLogin: string;
+    };
+    resetPassword: {
+        title: string;
+        subtitle: string;
+        newPasswordPlaceholder: string;
+        confirmPasswordPlaceholder: string;
+        submit: string;
+        successMessage: string;
+    };
     language: {
         title: string;
         english: string;

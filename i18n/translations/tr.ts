@@ -64,6 +64,23 @@ export const tr: Translations = {
         agreementRequiredBody: "Kullanım Şartları'nı kabul etmelisin.",
         registrationFailedTitle: "Kayıt başarısız oldu",
     },
+    forgotPassword: {
+        title: "Şifremi Unuttum",
+        subtitle: "E-postanı gir, hesabına tekrar erişmene yardımcı olalım.",
+        emailPlaceholder: "E-postanı gir",
+        submit: "Sıfırlama Talimatı Gönder",
+        checkEmailMessage:
+            "Bu e-posta adresiyle kayıtlı bir hesap varsa, kısa süre içinde şifre sıfırlama talimatlarını alacaksın.",
+        backToLogin: "Girişe Dön",
+    },
+    resetPassword: {
+        title: "Şifreyi Sıfırla",
+        subtitle: "Hesabın için yeni bir şifre belirle.",
+        newPasswordPlaceholder: "Yeni şifre",
+        confirmPasswordPlaceholder: "Yeni şifreni onayla",
+        submit: "Şifreyi Sıfırla",
+        successMessage: "Şifren sıfırlandı. Lütfen tekrar giriş yap.",
+    },
     language: {
         title: "Dil",
         english: "İngilizce",

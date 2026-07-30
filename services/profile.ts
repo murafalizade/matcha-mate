@@ -17,7 +17,6 @@ export const ProfileService = {
         return apiGet<Interest[]>("/profiles/interests");
     },
 
-    // Requires an active venue check-in (400 otherwise).
     getFeed(params?: GetFeedParams): Promise<FeedResponse> {
         return apiGet<FeedResponse>("/profiles/feed", { params });
     },
@@ -28,8 +27,6 @@ export const ProfileService = {
 
     uploadImage(file: ImagePickerFile): Promise<ProfileImageUploadResponse> {
         const formData = new FormData();
-        // React Native's FormData accepts a {uri, name, type} object in place
-        // of a Blob — the DOM FormData type doesn't know about that shape.
         formData.append("profileImage", file as unknown as Blob);
         return apiPost<ProfileImageUploadResponse>("/profiles/me/image", formData, {
             headers: { "Content-Type": "multipart/form-data" },

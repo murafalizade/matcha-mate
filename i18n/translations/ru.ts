@@ -64,6 +64,23 @@ export const ru: Translations = {
         agreementRequiredBody: "Вы должны согласиться с Условиями использования.",
         registrationFailedTitle: "Не удалось зарегистрироваться",
     },
+    forgotPassword: {
+        title: "Забыли пароль",
+        subtitle: "Введите свой email, и мы поможем вам восстановить доступ к аккаунту.",
+        emailPlaceholder: "Введите email",
+        submit: "Отправить инструкции",
+        checkEmailMessage:
+            "Если аккаунт с таким email зарегистрирован, вы вскоре получите инструкции по восстановлению пароля.",
+        backToLogin: "Назад ко входу",
+    },
+    resetPassword: {
+        title: "Сброс пароля",
+        subtitle: "Придумайте новый пароль для вашего аккаунта.",
+        newPasswordPlaceholder: "Новый пароль",
+        confirmPasswordPlaceholder: "Подтвердите новый пароль",
+        submit: "Сбросить пароль",
+        successMessage: "Пароль успешно изменён. Пожалуйста, войдите снова.",
+    },
     language: {
         title: "Язык",
         english: "Английский",
