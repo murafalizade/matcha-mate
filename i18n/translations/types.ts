@@ -74,6 +74,11 @@ export interface Translations {
         submit: string;
         successMessage: string;
     };
+    legal: {
+        privacyPolicy: string;
+        termsOfService: string;
+        safetyGuidelines: string;
+    };
     language: {
         title: string;
         english: string;

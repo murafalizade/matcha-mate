@@ -81,6 +81,11 @@ export const tr: Translations = {
         submit: "Şifreyi Sıfırla",
         successMessage: "Şifren sıfırlandı. Lütfen tekrar giriş yap.",
     },
+    legal: {
+        privacyPolicy: "Gizlilik Politikası",
+        termsOfService: "Kullanım Şartları",
+        safetyGuidelines: "Güvenlik Rehberi",
+    },
     language: {
         title: "Dil",
         english: "İngilizce",

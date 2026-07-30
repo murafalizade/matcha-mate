@@ -17,6 +17,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { LegalLinks } from "@/components/LegalLinks";
 import { MultiSelectChips } from "@/components/MultiSelectChips";
 import { RadioGroup } from "@/components/RadioGroup";
 import { IMAGE_BORDER, INK, MUTED } from "@/constants/colors";
@@ -365,6 +366,10 @@ export default function CreateProfileScreen() {
                     </View>
                     <Text className="text-muted">{t.createProfile.agreeTerms}</Text>
                 </TouchableOpacity>
+
+                <View className="mb-6">
+                    <LegalLinks />
+                </View>
 
                 <View className="flex-row justify-center mb-4">
                     <Text className="text-muted">{t.createProfile.alreadyHaveAccount}</Text>

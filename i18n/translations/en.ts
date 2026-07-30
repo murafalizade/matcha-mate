@@ -79,6 +79,11 @@ export const en: Translations = {
         submit: "Reset Password",
         successMessage: "Your password has been reset. Please log in.",
     },
+    legal: {
+        privacyPolicy: "Privacy Policy",
+        termsOfService: "Terms of Service",
+        safetyGuidelines: "Safety Guidelines",
+    },
     language: {
         title: "Language",
         english: "English",

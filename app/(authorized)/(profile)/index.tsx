@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { LegalLinks } from "@/components/LegalLinks";
 import { CARAMEL, IMAGE_BORDER } from "@/constants/colors";
 import { CARD_SHADOW } from "@/constants/styles";
 import { useAuth } from "@/hooks/useAuth";
@@ -198,9 +199,14 @@ export default function ProfileScreen() {
                     </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity className="bg-red-500 rounded-xl py-3" onPress={() => logout()}>
+                <TouchableOpacity
+                    className="bg-red-500 rounded-xl py-3 mb-6"
+                    onPress={() => logout()}
+                >
                     <Text className="text-white text-center font-semibold text-lg">Log Out</Text>
                 </TouchableOpacity>
+
+                <LegalLinks />
             </SafeAreaView>
         </ScrollView>
     );

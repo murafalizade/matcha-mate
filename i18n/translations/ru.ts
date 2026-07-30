@@ -81,6 +81,11 @@ export const ru: Translations = {
         submit: "Сбросить пароль",
         successMessage: "Пароль успешно изменён. Пожалуйста, войдите снова.",
     },
+    legal: {
+        privacyPolicy: "Политика конфиденциальности",
+        termsOfService: "Условия использования",
+        safetyGuidelines: "Рекомендации по безопасности",
+    },
     language: {
         title: "Язык",
         english: "Английский",

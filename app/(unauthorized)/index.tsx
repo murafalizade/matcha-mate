@@ -4,6 +4,7 @@ import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { LegalLinks } from "@/components/LegalLinks";
 import { INK } from "@/constants/colors";
 import { useLocale } from "@/hooks/useLocale";
 
@@ -47,6 +48,9 @@ export default function WelcomeScreen() {
                     </TouchableOpacity>
 
                     <Text className="text-center text-xs text-muted mt-5">{t.welcome.terms}</Text>
+                    <View className="mt-2">
+                        <LegalLinks />
+                    </View>
                 </View>
             </View>
         </SafeAreaView>
