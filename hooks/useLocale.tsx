@@ -1,20 +1,11 @@
-import * as Localization from "expo-localization";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 import { LocaleContextValue } from "@/hooks/useLocale.types";
-import { Locale, SUPPORTED_LOCALES, TRANSLATIONS } from "@/i18n/translations";
+import { Locale, TRANSLATIONS } from "@/i18n/translations";
+import { detectDeviceLocale, isSupportedLocale } from "@/utils/locale";
 import { Storage } from "@/utils/storage";
 
 const LocaleContext = createContext<LocaleContextValue | null>(null);
-
-function isSupportedLocale(value: string | null | undefined): value is Locale {
-    return SUPPORTED_LOCALES.includes(value as Locale);
-}
-
-function detectDeviceLocale(): Locale {
-    const languageCode = Localization.getLocales()[0]?.languageCode;
-    return isSupportedLocale(languageCode) ? languageCode : "en";
-}
 
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
     const [locale, setLocaleState] = useState<Locale>("en");
@@ -25,10 +16,6 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
             if (isSupportedLocale(stored)) {
                 setLocaleState(stored);
             } else {
-                // First launch (or a stored value that's no longer supported) —
-                // detect the phone's language directly and persist it, same as
-                // a manual change would, so it stays stable across launches
-                // even if the device's system language changes later.
                 const detected = detectDeviceLocale();
                 setLocaleState(detected);
                 void Storage.setLocale(detected);

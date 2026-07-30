@@ -5,23 +5,11 @@ import { UseNearbyCafesResult } from "@/hooks/useNearbyCafes.types";
 import { VenueService } from "@/services/venue";
 import { NearbyCafesScreenState } from "@/types/nearby-cafes";
 import { ApiError } from "@/utils/api";
-import { distanceInMeters } from "@/utils/geo";
+import { distanceInMeters, toCoordinate } from "@/utils/geo";
 import { Venue } from "@/utils/models";
 
-// What counts as "nearby" for the default (unsearched) map view.
 const NEARBY_RADIUS_METERS = 5000;
-// How far out we actually fetch. Search runs against everything we've loaded,
-// not just what's nearby — otherwise typing a venue's exact name returns
-// nothing whenever it happens to sit a few km further out, which reads as a
-// broken search. The nearby endpoint caps this at 50km.
 const FETCH_RADIUS_METERS = 50000;
-
-// The API can serialize decimal coordinates as strings, which react-native-maps
-// silently rejects, so coerce them to finite numbers before rendering markers.
-function toCoordinate(value: unknown): number | null {
-    const parsed = typeof value === "string" ? Number(value) : value;
-    return typeof parsed === "number" && Number.isFinite(parsed) ? parsed : null;
-}
 
 export function useNearbyCafes(): UseNearbyCafesResult {
     const [state, setState] = useState<NearbyCafesScreenState>("loading");
@@ -84,8 +72,6 @@ export function useNearbyCafes(): UseNearbyCafesResult {
         const q = query.trim().toLowerCase();
 
         if (!q) {
-            // Default view stays "what's actually around me", even though we
-            // fetched a much wider set to make search useful.
             if (!position) {
                 return located;
             }
@@ -98,8 +84,6 @@ export function useNearbyCafes(): UseNearbyCafesResult {
             );
         }
 
-        // Searching deliberately ignores the nearby radius and sorts by
-        // distance, so the closest match is the first card you see.
         const matches = located.filter((v) => v.name.toLowerCase().includes(q));
         if (!position) {
             return matches;

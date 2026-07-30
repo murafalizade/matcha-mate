@@ -25,3 +25,8 @@ export function formatDistance(meters: number): string {
     }
     return `${(meters / 1000).toFixed(1)} km away`;
 }
+
+export function toCoordinate(value: unknown): number | null {
+    const parsed = typeof value === "string" ? Number(value) : value;
+    return typeof parsed === "number" && Number.isFinite(parsed) ? parsed : null;
+}
