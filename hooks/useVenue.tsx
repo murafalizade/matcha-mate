@@ -12,10 +12,6 @@ export function VenueProvider({ children }: { children: React.ReactNode }) {
     const [venue, setVenue] = useState<Venue | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    // The client only ever learns about a check-in via the QR-scan flow, so
-    // without this, relaunching the app (or just a Fast Refresh) forgets it
-    // even though the backend still considers the user checked in — this
-    // restores that state from the server instead of always starting blank.
     useEffect(() => {
         if (isAuthLoading) {
             return;
@@ -34,9 +30,7 @@ export function VenueProvider({ children }: { children: React.ReactNode }) {
                     setVenue(current);
                 }
             })
-            .catch(() => {
-                // Non-fatal — just starts unchecked-in, same as before this existed.
-            })
+            .catch(() => {})
             .finally(() => {
                 if (!cancelled) {
                     setIsLoading(false);

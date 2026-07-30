@@ -65,9 +65,6 @@ export function useChatSession(chatSessionId: string | null): UseChatSessionResu
             },
         );
 
-        // Fired the moment either side's first message starts the 10-minute
-        // clock on a previously-PENDING chat — update the session in place so
-        // the countdown UI picks it up instead of waiting for a full rejoin.
         socket.on(
             "countdown_started",
             (payload: { chatSessionId: string; startedAt: string; expiresAt: string }) => {

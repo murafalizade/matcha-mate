@@ -23,8 +23,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         setUnauthorizedHandler(() => {
-            // Access tokens aren't refreshed (see MOBILE_INTEGRATION_GUIDE.md §1,
-            // Option C) — any 401 means the session is gone, so log out.
             if (userRef.current) {
                 void logout();
             }

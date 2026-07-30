@@ -18,8 +18,6 @@ export function usePresenceFeed(
     const [error, setError] = useState<string | null>(null);
     const socketRef = useRef<Socket | null>(null);
     const heartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null);
-    // Ref so a new `onMatchFound` identity each render doesn't force the
-    // socket effect to reconnect — only `venueId` should do that.
     const onMatchFoundRef = useRef(onMatchFound);
     onMatchFoundRef.current = onMatchFound;
 
@@ -82,9 +80,6 @@ export function usePresenceFeed(
                 if (cancelled) {
                     return;
                 }
-                // Appended, not prepended — the discovery feed is a swipeable
-                // deck indexed by position, so inserting at the front would
-                // shift whichever card the user is currently looking at.
                 setProfiles((prev) => [
                     ...(prev ?? []).filter((p) => p.id !== payload.user.id),
                     payload.user,
@@ -96,9 +91,6 @@ export function usePresenceFeed(
                 }
                 setProfiles((prev) => (prev ?? []).filter((p) => p.id !== payload.userId));
             });
-            // Pushed to BOTH matched users, including whoever's own like just
-            // triggered it — this is the single source of truth for the match
-            // notification, not the POST /interactions/like response.
             socket.on("match_found", (payload: MatchFoundPayload) => {
                 if (!cancelled) {
                     onMatchFoundRef.current?.(payload);
@@ -119,8 +111,6 @@ export function usePresenceFeed(
 
         connect();
 
-        // Presence is a live "who's here right now" feed — there's no point
-        // holding the socket open while the app is backgrounded.
         const subscription = AppState.addEventListener("change", (state) => {
             if (state === "active" && !socketRef.current) {
                 connect();
