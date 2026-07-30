@@ -1,6 +1,3 @@
-// Custom Google Maps style: desaturated warm "latte beige" look matching the
-// Digital Hygge design system, so the map reads as part of the app rather
-// than a default Google Maps embed. Only applies with PROVIDER_GOOGLE.
 export const WARM_MAP_STYLE = [
     { elementType: "geometry", stylers: [{ color: "#fbf2f0" }] },
     { elementType: "labels.icon", stylers: [{ visibility: "off" }] },

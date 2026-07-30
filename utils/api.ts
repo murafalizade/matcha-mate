@@ -3,6 +3,7 @@ import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import { ApiEnvelope, FieldError } from "@/utils/api.types";
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:8000";
+const API_TIMEOUT_MS = 15000;
 
 export class ApiError extends Error {
     statusCode: number;
@@ -18,7 +19,7 @@ export class ApiError extends Error {
 
 export const api = axios.create({
     baseURL: `${API_BASE_URL}/api/v1`,
-    timeout: 15000,
+    timeout: API_TIMEOUT_MS,
 });
 
 let accessToken: string | null = null;
@@ -44,11 +45,8 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-    // Deliberately returns the unwrapped `data` payload instead of an AxiosResponse —
-    // apiGet/apiPost/etc. above cast the result back to the caller's expected type.
     (response): any => {
         const envelope = response.data as ApiEnvelope<unknown>;
-        // Paginated responses carry metadata alongside `data` — keep the shape, unwrap otherwise.
         if (envelope && typeof envelope === "object" && "pagination" in envelope) {
             return { ...(envelope.data as object), pagination: envelope.pagination };
         }
@@ -66,9 +64,6 @@ api.interceptors.response.use(
     },
 );
 
-// The response interceptor above unwraps the `{ data }` envelope, so the
-// resolved value is already `T`, not an AxiosResponse<T> — these helpers
-// give call sites the correct static type instead of every caller casting.
 export function apiGet<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     return api.get(url, config) as unknown as Promise<T>;
 }

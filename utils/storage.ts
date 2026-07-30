@@ -8,9 +8,6 @@ const USER_KEY = "auth_user";
 const LOCALE_KEY = "locale";
 const ONBOARDING_SEEN_KEY = "onboarding_seen";
 
-// expo-secure-store has no web implementation (no Keychain/Keystore
-// equivalent there) — fall back to localStorage on web, Keychain/Keystore
-// on native.
 const kv =
     Platform.OS === "web"
         ? {
