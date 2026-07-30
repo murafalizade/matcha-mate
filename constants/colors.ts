@@ -1,0 +1,10 @@
+export const PRIMARY = "#D9704A";
+export const ESPRESSO = "#4A2C2A";
+export const CARAMEL = "#CD8F62";
+export const CREAM = "#FFF8F0";
+export const INK = "#321716";
+export const MUTED = "#504443";
+export const PANEL = "#FBF2F0";
+export const DOT = "#D4C3C1";
+export const IMAGE_BORDER = "#F5ECEB";
+export const WHITE = "#FFFFFF";

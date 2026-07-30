@@ -1,5 +1,3 @@
-import { capitalize, humanizeEnum } from "@/utils/format";
-
 export type Gender = "MALE" | "FEMALE" | "OTHER";
 export type Role = "USER" | "ADMIN" | "CAFE_MANAGER";
 export type ChatSessionStatus = "PENDING" | "ACTIVE" | "ENDED" | "EXPIRED";
@@ -15,28 +13,6 @@ export type LookingFor =
     | "COFFEE_CHAT"
     | "EVENTS_COMPANION";
 
-const GENDERS: Gender[] = ["MALE", "FEMALE", "OTHER"];
-export const GENDER_OPTIONS = GENDERS.map((value) => ({
-    value,
-    label: capitalize(humanizeEnum(value)),
-}));
-
-const LOOKING_FOR_VALUES: LookingFor[] = [
-    "ROMANTIC_RELATIONSHIP",
-    "CASUAL_DATING",
-    "FRIENDSHIP",
-    "NETWORKING",
-    "ACTIVITY_PARTNER",
-    "STUDY_BUDDY",
-    "LANGUAGE_EXCHANGE",
-    "COFFEE_CHAT",
-    "EVENTS_COMPANION",
-];
-export const LOOKING_FOR_OPTIONS = LOOKING_FOR_VALUES.map((value) => ({
-    value,
-    label: capitalize(humanizeEnum(value)),
-}));
-
 export interface Interest {
     id: string;
     name: string;
@@ -51,7 +27,6 @@ export interface Preference {
     lookingFor: LookingFor[] | null;
 }
 
-// Matches UserResponseDto — returned by auth endpoints
 export interface AuthUser {
     id: string;
     email: string;
@@ -65,7 +40,6 @@ export interface AuthUser {
     createdAt: string;
 }
 
-// Matches ProfileResponseDto — GET/PATCH /profiles/me
 export interface Profile {
     id: string;
     firstName: string;
@@ -81,7 +55,6 @@ export interface Profile {
     updatedAt: string;
 }
 
-// Matches ProfileForFeedDto — GET /profiles/feed
 export interface FeedProfile {
     id: string;
     firstName: string;
@@ -132,8 +105,6 @@ export interface MatchPartner {
 
 export interface MatchChatSession {
     id: string;
-    // Null until the first message starts the 10-minute countdown — a fresh
-    // match is PENDING with no clock running yet.
     expiresAt: string | null;
     partner: MatchPartner;
 }
@@ -160,10 +131,6 @@ export interface ChatMessage {
     createdAt: string;
 }
 
-// Pushed on the /presence socket to BOTH matched users the instant a mutual
-// like completes — including whoever's own like just triggered it, so this
-// is the single source of truth for the match notification (not the
-// POST /interactions/like response, which only reaches the acting side).
 export interface MatchFoundPayload {
     chatSessionId: string;
     venueId: string;
