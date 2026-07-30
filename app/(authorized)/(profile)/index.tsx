@@ -4,14 +4,15 @@ import { useCallback, useState } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-// Re-enable alongside the commented-out language card below.
-// import { LanguagePicker } from "@/components/LanguagePicker";
-// import { useLocale } from "@/hooks/useLocale";
+import { CARAMEL, IMAGE_BORDER } from "@/constants/colors";
+import { CARD_SHADOW } from "@/constants/styles";
 import { useAuth } from "@/hooks/useAuth";
 import { ProfileService } from "@/services/profile";
 import { ApiError } from "@/utils/api";
 import { calculateAge, humanizeEnum } from "@/utils/format";
 import { Profile } from "@/utils/models";
+
+const PROFILE_CONTENT_PADDING = 20;
 
 export default function ProfileScreen() {
     const { logout } = useAuth();
@@ -19,8 +20,6 @@ export default function ProfileScreen() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Re-fetch every time this tab regains focus so edits made on the
-    // edit/preferences screens show up without lifting state between them.
     useFocusEffect(
         useCallback(() => {
             let cancelled = false;
@@ -51,7 +50,7 @@ export default function ProfileScreen() {
     if (loading) {
         return (
             <View className="flex-1 items-center justify-center bg-cream">
-                <ActivityIndicator color="#CD8F62" size="large" />
+                <ActivityIndicator color={CARAMEL} size="large" />
             </View>
         );
     }
@@ -65,15 +64,12 @@ export default function ProfileScreen() {
     }
 
     const age = calculateAge(profile.birthDate);
-    const cardShadow = {
-        shadowColor: "#4A2C2A",
-        shadowOpacity: 0.08,
-        shadowRadius: 30,
-        shadowOffset: { width: 0, height: 10 },
-    };
 
     return (
-        <ScrollView className="flex-1 bg-cream" contentContainerStyle={{ padding: 20 }}>
+        <ScrollView
+            className="flex-1 bg-cream"
+            contentContainerStyle={{ padding: PROFILE_CONTENT_PADDING }}
+        >
             <SafeAreaView>
                 <View className="items-center mb-6">
                     <Image
@@ -83,7 +79,7 @@ export default function ProfileScreen() {
                                 : require("../../../assets/images/test.jpeg")
                         }
                         className="w-24 h-24 rounded-full mb-3 border-4"
-                        style={{ borderColor: "#F5ECEB" }}
+                        style={{ borderColor: IMAGE_BORDER }}
                     />
                     <Text className="text-xl font-bold text-ink">
                         {profile.firstName} {profile.lastName}
@@ -91,7 +87,7 @@ export default function ProfileScreen() {
                     <Text className="text-muted">{profile.email}</Text>
                 </View>
 
-                <View className="bg-white rounded-2xl p-6 mb-6" style={cardShadow}>
+                <View className="bg-white rounded-2xl p-6 mb-6" style={CARD_SHADOW}>
                     <View className="mb-4">
                         <Text className="text-xs font-semibold text-muted uppercase tracking-widest mb-1">
                             Age
@@ -138,7 +134,7 @@ export default function ProfileScreen() {
                     </View>
                 </View>
 
-                <View className="bg-white rounded-2xl p-6 mb-6" style={cardShadow}>
+                <View className="bg-white rounded-2xl p-6 mb-6" style={CARD_SHADOW}>
                     <Text className="text-xs font-semibold text-muted uppercase tracking-widest mb-2">
                         Looking For
                     </Text>
@@ -201,16 +197,6 @@ export default function ProfileScreen() {
                         Edit Preferences
                     </Text>
                 </TouchableOpacity>
-
-                {/* Language is auto-detected from the phone's system language
-                    (see hooks/useLocale.tsx), so this manual override is hidden
-                    for now. Re-enable if users ask to pick a language in-app. */}
-                {/* <View className="bg-white rounded-2xl p-6 mb-6" style={cardShadow}>
-                    <Text className="text-xs font-semibold text-muted uppercase tracking-widest mb-3">
-                        {t.language.title}
-                    </Text>
-                    <LanguagePicker />
-                </View> */}
 
                 <TouchableOpacity className="bg-red-500 rounded-xl py-3" onPress={() => logout()}>
                     <Text className="text-white text-center font-semibold text-lg">Log Out</Text>

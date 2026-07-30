@@ -13,6 +13,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { INK, MUTED } from "@/constants/colors";
+import { INPUT_ICON_LEFT, INPUT_ICON_RIGHT } from "@/constants/styles";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocale } from "@/hooks/useLocale";
 import { loginSchema } from "@/schemas/login";
@@ -41,8 +43,6 @@ export default function LoginScreen() {
         setSubmitting(true);
         try {
             await login(data);
-            // Successful login flips `isAuth`; the root layout's route guard
-            // handles navigating away from this screen.
         } catch (err) {
             setServerError(err instanceof ApiError ? err.message : t.common.genericError);
         } finally {
@@ -56,7 +56,7 @@ export default function LoginScreen() {
                 className="w-10 h-10 rounded-full items-center justify-center ml-3 mt-1"
                 onPress={() => router.back()}
             >
-                <ArrowLeft color="#321716" size={22} />
+                <ArrowLeft color={INK} size={22} />
             </TouchableOpacity>
 
             <ScrollView
@@ -64,7 +64,6 @@ export default function LoginScreen() {
                 className="px-6"
                 keyboardShouldPersistTaps="handled"
             >
-                {/* Header */}
                 <View className="items-center mt-2 mb-8">
                     <View className="w-20 h-20 rounded-full bg-espresso items-center justify-center mb-4">
                         <Coffee color="white" size={36} />
@@ -73,7 +72,6 @@ export default function LoginScreen() {
                     <Text className="text-muted">{t.login.subtitle}</Text>
                 </View>
 
-                {/* Email */}
                 <Controller
                     control={control}
                     name="email"
@@ -83,15 +81,11 @@ export default function LoginScreen() {
                                 {t.login.email}
                             </Text>
                             <View className="relative justify-center">
-                                <Mail
-                                    color="#504443"
-                                    size={18}
-                                    style={{ position: "absolute", left: 16, zIndex: 1 }}
-                                />
+                                <Mail color={MUTED} size={18} style={INPUT_ICON_LEFT} />
                                 <TextInput
                                     className="border border-dot rounded-xl pl-11 pr-4 py-4 bg-panel text-ink"
                                     placeholder={t.login.emailPlaceholder}
-                                    placeholderTextColor="#504443"
+                                    placeholderTextColor={MUTED}
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value}
@@ -109,7 +103,6 @@ export default function LoginScreen() {
                     )}
                 />
 
-                {/* Password */}
                 <Controller
                     control={control}
                     name="password"
@@ -119,15 +112,11 @@ export default function LoginScreen() {
                                 {t.login.password}
                             </Text>
                             <View className="relative justify-center">
-                                <Lock
-                                    color="#504443"
-                                    size={18}
-                                    style={{ position: "absolute", left: 16, zIndex: 1 }}
-                                />
+                                <Lock color={MUTED} size={18} style={INPUT_ICON_LEFT} />
                                 <TextInput
                                     className="border border-dot rounded-xl pl-11 pr-11 py-4 bg-panel text-ink"
                                     placeholder={t.login.passwordPlaceholder}
-                                    placeholderTextColor="#504443"
+                                    placeholderTextColor={MUTED}
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value}
@@ -135,13 +124,13 @@ export default function LoginScreen() {
                                     secureTextEntry={!showPassword}
                                 />
                                 <TouchableOpacity
-                                    style={{ position: "absolute", right: 16, zIndex: 1 }}
+                                    style={INPUT_ICON_RIGHT}
                                     onPress={() => setShowPassword((prev) => !prev)}
                                 >
                                     {showPassword ? (
-                                        <EyeOff color="#504443" size={18} />
+                                        <EyeOff color={MUTED} size={18} />
                                     ) : (
-                                        <Eye color="#504443" size={18} />
+                                        <Eye color={MUTED} size={18} />
                                     )}
                                 </TouchableOpacity>
                             </View>
@@ -154,8 +143,10 @@ export default function LoginScreen() {
                     )}
                 />
 
-                {/* Forgot password */}
-                <TouchableOpacity className="mb-8 mt-2">
+                <TouchableOpacity
+                    className="mb-8 mt-2"
+                    onPress={() => router.push("/(unauthorized)/forgot-password")}
+                >
                     <Text className="text-caramel text-right font-medium">
                         {t.login.forgotPassword}
                     </Text>
@@ -165,7 +156,6 @@ export default function LoginScreen() {
                     <Text className="text-red-500 text-center mb-4">{serverError}</Text>
                 )}
 
-                {/* Login button */}
                 <TouchableOpacity
                     className="h-14 bg-caramel rounded-xl items-center justify-center"
                     onPress={handleSubmit(onSubmit)}
@@ -180,7 +170,6 @@ export default function LoginScreen() {
                     )}
                 </TouchableOpacity>
 
-                {/* Register link */}
                 <View className="mt-6 mb-8 flex-row justify-center">
                     <Text className="text-muted">{t.login.noAccount}</Text>
                     <TouchableOpacity onPress={() => router.push("/(unauthorized)/create-profile")}>

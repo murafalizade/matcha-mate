@@ -13,14 +13,17 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { ExpireModal } from "@/components/ExpireModal";
+import { INK, MUTED } from "@/constants/colors";
 import { useAuth } from "@/hooks/useAuth";
 import { useChatSession } from "@/hooks/useChatSession";
+import { formatCountdown } from "@/utils/format";
 
-function formatTime(seconds: number): string {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m}:${s < 10 ? "0" : ""}${s}`;
-}
+const TYPING_TIMEOUT_MS = 1500;
+const COUNTDOWN_TICK_MS = 1000;
+const KEYBOARD_VERTICAL_OFFSET = 80;
+const MESSAGE_LIST_PADDING_HORIZONTAL = 16;
+const MESSAGE_LIST_PADDING_BOTTOM = 12;
+const MESSAGE_MAX_LENGTH = 500;
 
 export default function MessageScreen() {
     const { id: chatSessionId } = useLocalSearchParams<{ id: string }>();
@@ -40,11 +43,6 @@ export default function MessageScreen() {
     const [timeLeft, setTimeLeft] = useState<number | null>(null);
     const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    // The countdown is derived from the session's own expiresAt rather than a
-    // local fixed timer — it needs to reflect the server's clock, not the
-    // moment this screen happened to mount. A fresh match is PENDING with no
-    // expiresAt at all — the clock only starts once countdown_started arrives
-    // (updating session.expiresAt), so there's nothing to tick until then.
     useEffect(() => {
         if (!session?.expiresAt) {
             setTimeLeft(null);
@@ -59,7 +57,7 @@ export default function MessageScreen() {
             setTimeLeft(secondsLeft);
         };
         tick();
-        const interval = setInterval(tick, 1000);
+        const interval = setInterval(tick, COUNTDOWN_TICK_MS);
         return () => clearInterval(interval);
     }, [session]);
 
@@ -71,7 +69,7 @@ export default function MessageScreen() {
         if (typingTimeoutRef.current) {
             clearTimeout(typingTimeoutRef.current);
         }
-        typingTimeoutRef.current = setTimeout(() => setTyping(false), 1500);
+        typingTimeoutRef.current = setTimeout(() => setTyping(false), TYPING_TIMEOUT_MS);
     };
 
     const handleSend = () => {
@@ -84,21 +82,18 @@ export default function MessageScreen() {
 
     return (
         <SafeAreaView className="flex-1 bg-cream">
-            {/* Header */}
             <View className="flex-row items-center px-4 py-3 border-b border-dot/40">
                 <TouchableOpacity
                     onPress={() => router.push("/(authorized)/(chats)")}
                     className="mr-3"
                 >
-                    <Ionicons name="arrow-back" size={24} color="#321716" />
+                    <Ionicons name="arrow-back" size={24} color={INK} />
                 </TouchableOpacity>
                 <Text className="text-lg font-semibold flex-1 text-ink">
                     {session
                         ? `Chat with ${session.partner.firstName} ${session.partner.lastName}`
                         : "Chat"}
                 </Text>
-                {/* A PENDING chat (no countdown yet) can't be ended server-side —
-                    there's nothing running yet, so just hide the action. */}
                 {!ended && session?.expiresAt && (
                     <TouchableOpacity onPress={endChat}>
                         <Text className="text-red-500 font-medium">End</Text>
@@ -108,12 +103,11 @@ export default function MessageScreen() {
 
             {error && <Text className="text-sm text-red-500 text-center mt-2">{error}</Text>}
 
-            {/* Countdown */}
             {!ended &&
                 session &&
                 (timeLeft !== null ? (
                     <Text className="text-sm text-muted text-center mt-2 mb-1">
-                        Time remaining: {formatTime(timeLeft)}
+                        Time remaining: {formatCountdown(timeLeft)}
                     </Text>
                 ) : (
                     <Text className="text-sm text-muted text-center mt-2 mb-1">
@@ -126,17 +120,19 @@ export default function MessageScreen() {
                 </Text>
             )}
 
-            {/* Messages + Input container */}
             <KeyboardAvoidingView
                 className="flex-1"
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
-                keyboardVerticalOffset={80}
+                keyboardVerticalOffset={KEYBOARD_VERTICAL_OFFSET}
             >
                 <View className="flex-1 justify-between mt-3">
                     <FlatList
                         data={messages}
                         keyExtractor={(item) => item.id}
-                        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 12 }}
+                        contentContainerStyle={{
+                            paddingHorizontal: MESSAGE_LIST_PADDING_HORIZONTAL,
+                            paddingBottom: MESSAGE_LIST_PADDING_BOTTOM,
+                        }}
                         renderItem={({ item }) => (
                             <View
                                 className={`mb-3 max-w-[75%] px-4 py-2 rounded-xl ${
@@ -156,16 +152,15 @@ export default function MessageScreen() {
                         )}
                     />
 
-                    {/* Input Bar */}
                     <View className="flex-row items-center border-t border-dot/40 px-4 py-4 bg-white mb-0">
                         <TextInput
                             className="flex-1 border border-dot rounded-full px-4 py-2 mr-2 bg-panel text-ink"
                             placeholder="Type a message..."
-                            placeholderTextColor="#504443"
+                            placeholderTextColor={MUTED}
                             value={input}
                             onChangeText={handleChangeText}
                             editable={!ended}
-                            maxLength={500}
+                            maxLength={MESSAGE_MAX_LENGTH}
                         />
                         <TouchableOpacity
                             className="bg-primary rounded-full px-4 py-2"

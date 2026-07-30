@@ -15,12 +15,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { MultiSelectChips } from "@/components/MultiSelectChips";
 import { RadioGroup } from "@/components/RadioGroup";
+import { CARAMEL } from "@/constants/colors";
+import { GENDER_OPTIONS, LOOKING_FOR_OPTIONS } from "@/constants/options";
+import { CARD_SHADOW } from "@/constants/styles";
 import { preferencesSchema } from "@/schemas/preferences";
 import { PreferenceService } from "@/services/preference";
 import { ProfileService } from "@/services/profile";
 import { PreferencesFormData } from "@/types/preferences";
 import { ApiError } from "@/utils/api";
-import { GENDER_OPTIONS, LOOKING_FOR_OPTIONS } from "@/utils/models";
+
+const CONTENT_PADDING = 20;
+const DEFAULT_MIN_AGE = "18";
+const DEFAULT_MAX_AGE = "35";
 
 export default function PreferencesScreen() {
     const [loading, setLoading] = useState(true);
@@ -33,7 +39,12 @@ export default function PreferencesScreen() {
         formState: { errors },
     } = useForm<PreferencesFormData>({
         resolver: yupResolver(preferencesSchema),
-        defaultValues: { minAge: "18", maxAge: "35", preferredGender: "OTHER", lookingFor: [] },
+        defaultValues: {
+            minAge: DEFAULT_MIN_AGE,
+            maxAge: DEFAULT_MAX_AGE,
+            preferredGender: "OTHER",
+            lookingFor: [],
+        },
     });
 
     useEffect(() => {
@@ -89,7 +100,7 @@ export default function PreferencesScreen() {
     if (loading) {
         return (
             <View className="flex-1 items-center justify-center bg-cream">
-                <ActivityIndicator color="#CD8F62" size="large" />
+                <ActivityIndicator color={CARAMEL} size="large" />
             </View>
         );
     }
@@ -97,22 +108,18 @@ export default function PreferencesScreen() {
     return (
         <ScrollView
             className="flex-1 bg-cream"
-            contentContainerStyle={{ padding: 20, flexGrow: 1, justifyContent: "center" }}
+            contentContainerStyle={{
+                padding: CONTENT_PADDING,
+                flexGrow: 1,
+                justifyContent: "center",
+            }}
         >
             <SafeAreaView edges={["bottom"]}>
                 <Text className="text-2xl font-bold mb-6 text-center text-ink">
                     Discovery Preferences
                 </Text>
 
-                <View
-                    className="bg-white rounded-2xl p-6 mb-6"
-                    style={{
-                        shadowColor: "#4A2C2A",
-                        shadowOpacity: 0.08,
-                        shadowRadius: 30,
-                        shadowOffset: { width: 0, height: 10 },
-                    }}
-                >
+                <View className="bg-white rounded-2xl p-6 mb-6" style={CARD_SHADOW}>
                     <View className="flex-row space-x-4 mb-4">
                         <Controller
                             control={control}

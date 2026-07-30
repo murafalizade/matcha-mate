@@ -13,20 +13,19 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { CARAMEL, INK, MUTED } from "@/constants/colors";
+import { CARD_SHADOW, INPUT_ICON_LEFT } from "@/constants/styles";
 import { ChatService } from "@/services/chat";
 import { ApiError } from "@/utils/api";
+import { formatCountdown } from "@/utils/format";
 import { ChatSession } from "@/utils/models";
 
-function formatTimeLeft(expiresAt: string): string {
-    const ms = new Date(expiresAt).getTime() - Date.now();
-    if (ms <= 0) {
-        return "Expired";
-    }
-    const totalSeconds = Math.floor(ms / 1000);
-    const m = Math.floor(totalSeconds / 60);
-    const s = totalSeconds % 60;
-    return `${m}:${s < 10 ? "0" : ""}${s} left`;
-}
+const RECENT_MATCHES_LIMIT = 8;
+const RECENT_AVATAR_WRAPPER_WIDTH = 64;
+const RECENT_LIST_GAP = 16;
+const LIST_CONTENT_PADDING_HORIZONTAL = 24;
+const LIST_CONTENT_PADDING_BOTTOM = 24;
+const CHAT_BADGE_ICON_SIZE = 12;
 
 export default function ChatsScreen() {
     const [sessions, setSessions] = useState<ChatSession[]>([]);
@@ -47,10 +46,6 @@ export default function ChatsScreen() {
         }
     }, []);
 
-    // Re-fetch every time this tab regains focus — otherwise a chat created
-    // while browsing Discovery wouldn't show up until the app is relaunched,
-    // since tab screens stay mounted (and this effect wouldn't rerun) when
-    // you just switch tabs.
     useFocusEffect(
         useCallback(() => {
             load();
@@ -74,27 +69,23 @@ export default function ChatsScreen() {
         );
     }, [sessions, query]);
 
-    const recentPartners = useMemo(() => sessions.slice(0, 8), [sessions]);
+    const recentPartners = useMemo(() => sessions.slice(0, RECENT_MATCHES_LIMIT), [sessions]);
 
     return (
         <View className="flex-1 bg-cream">
             <SafeAreaView className="flex-1" edges={["top"]}>
                 <View className="flex-row items-center justify-center px-6 pt-4 pb-2">
-                    <Coffee color="#321716" size={22} />
+                    <Coffee color={INK} size={22} />
                     <Text className="text-xl font-bold text-ink ml-2">Social Coffee</Text>
                 </View>
 
                 <View className="px-6 mb-4">
                     <View className="relative flex-row items-center">
-                        <Search
-                            color="#504443"
-                            size={18}
-                            style={{ position: "absolute", left: 16, zIndex: 1 }}
-                        />
+                        <Search color={MUTED} size={18} style={INPUT_ICON_LEFT} />
                         <TextInput
                             className="w-full pl-11 pr-4 py-3 rounded-xl bg-panel text-ink"
                             placeholder="Search conversations..."
-                            placeholderTextColor="#504443"
+                            placeholderTextColor={MUTED}
                             value={query}
                             onChangeText={setQuery}
                         />
@@ -102,19 +93,22 @@ export default function ChatsScreen() {
                 </View>
 
                 {loading ? (
-                    <ActivityIndicator className="mt-10" color="#CD8F62" />
+                    <ActivityIndicator className="mt-10" color={CARAMEL} />
                 ) : error ? (
                     <Text className="text-center text-red-500">{error}</Text>
                 ) : (
                     <FlatList
                         data={filteredSessions}
-                        contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 24 }}
+                        contentContainerStyle={{
+                            paddingHorizontal: LIST_CONTENT_PADDING_HORIZONTAL,
+                            paddingBottom: LIST_CONTENT_PADDING_BOTTOM,
+                        }}
                         refreshControl={
                             <RefreshControl
                                 refreshing={refreshing}
                                 onRefresh={onRefresh}
-                                tintColor="#CD8F62"
-                                colors={["#CD8F62"]}
+                                tintColor={CARAMEL}
+                                colors={[CARAMEL]}
                             />
                         }
                         keyExtractor={(item) => item.id}
@@ -129,11 +123,11 @@ export default function ChatsScreen() {
                                         horizontal
                                         showsHorizontalScrollIndicator={false}
                                         keyExtractor={(item) => item.id}
-                                        contentContainerStyle={{ gap: 16 }}
+                                        contentContainerStyle={{ gap: RECENT_LIST_GAP }}
                                         renderItem={({ item }) => (
                                             <TouchableOpacity
                                                 className="items-center"
-                                                style={{ width: 64 }}
+                                                style={{ width: RECENT_AVATAR_WRAPPER_WIDTH }}
                                                 onPress={() =>
                                                     router.push(
                                                         `/(authorized)/(chats)/message?id=${item.id}`,
@@ -176,21 +170,17 @@ export default function ChatsScreen() {
                         }
                         renderItem={({ item }) => {
                             const isActive = item.status === "ACTIVE";
+                            const secondsLeft = item.expiresAt
+                                ? Math.floor(
+                                      (new Date(item.expiresAt).getTime() - Date.now()) / 1000,
+                                  )
+                                : null;
                             return (
                                 <TouchableOpacity
                                     className={`flex-row items-center gap-4 p-4 rounded-2xl mb-2 ${
                                         isActive ? "bg-white" : ""
                                     }`}
-                                    style={
-                                        isActive
-                                            ? {
-                                                  shadowColor: "#4A2C2A",
-                                                  shadowOpacity: 0.08,
-                                                  shadowRadius: 30,
-                                                  shadowOffset: { width: 0, height: 10 },
-                                              }
-                                            : undefined
-                                    }
+                                    style={isActive ? CARD_SHADOW : undefined}
                                     onPress={() =>
                                         router.push(`/(authorized)/(chats)/message?id=${item.id}`)
                                     }
@@ -203,7 +193,7 @@ export default function ChatsScreen() {
                                         </View>
                                         {isActive && (
                                             <View className="absolute -bottom-1 -right-1 w-6 h-6 bg-espresso rounded-full items-center justify-center border-2 border-cream">
-                                                <Coffee color="white" size={12} />
+                                                <Coffee color="white" size={CHAT_BADGE_ICON_SIZE} />
                                             </View>
                                         )}
                                     </View>
@@ -216,8 +206,10 @@ export default function ChatsScreen() {
                                                 {item.partner.firstName} {item.partner.lastName}
                                             </Text>
                                             <Text className="text-xs text-muted ml-2">
-                                                {item.expiresAt
-                                                    ? formatTimeLeft(item.expiresAt)
+                                                {secondsLeft !== null
+                                                    ? secondsLeft <= 0
+                                                        ? "Expired"
+                                                        : `${formatCountdown(secondsLeft)} left`
                                                     : item.status === "PENDING"
                                                       ? "Say hi!"
                                                       : item.status}

@@ -3,7 +3,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { ArrowLeft, Calendar, Camera, Check, Eye, EyeOff, Lock, Mail } from "lucide-react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
     Text,
@@ -19,6 +19,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { MultiSelectChips } from "@/components/MultiSelectChips";
 import { RadioGroup } from "@/components/RadioGroup";
+import { IMAGE_BORDER, INK, MUTED } from "@/constants/colors";
+import { CARD_SHADOW, INPUT_ICON_LEFT, INPUT_ICON_RIGHT } from "@/constants/styles";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocale } from "@/hooks/useLocale";
 import { createProfileSchema } from "@/schemas/create-profile";
@@ -28,6 +30,7 @@ import { ApiError } from "@/utils/api";
 import { Interest } from "@/utils/models";
 
 const BIO_MAX_LENGTH = 500;
+const CONTENT_PADDING = 20;
 
 export default function CreateProfileScreen() {
     const { register: registerUser } = useAuth();
@@ -43,9 +46,7 @@ export default function CreateProfileScreen() {
     useEffect(() => {
         ProfileService.getInterests()
             .then(setInterests)
-            .catch(() => {
-                // Non-critical — the picker just stays empty if this fails.
-            });
+            .catch(() => {});
     }, []);
 
     const {
@@ -57,11 +58,14 @@ export default function CreateProfileScreen() {
         reValidateMode: "onChange",
     });
 
-    const GENDER_OPTIONS = [
-        { value: "MALE" as const, label: t.createProfile.male },
-        { value: "FEMALE" as const, label: t.createProfile.female },
-        { value: "OTHER" as const, label: t.createProfile.other },
-    ];
+    const GENDER_OPTIONS = useMemo(
+        () => [
+            { value: "MALE" as const, label: t.createProfile.male },
+            { value: "FEMALE" as const, label: t.createProfile.female },
+            { value: "OTHER" as const, label: t.createProfile.other },
+        ],
+        [t],
+    );
 
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -96,17 +100,11 @@ export default function CreateProfileScreen() {
                 gender: data.gender,
                 bio: data.bio,
             });
-            // Profile picture upload happens separately via POST /profiles/me/image
-            // once the profile screen is wired up — not part of registration itself.
             if (selectedInterestIds.length > 0) {
                 try {
                     await ProfileService.updateMe({ interestIds: selectedInterestIds });
-                } catch {
-                    // Non-critical — the account was created successfully either way.
-                }
+                } catch {}
             }
-            // Successful registration flips `isAuth`; the root layout's route guard
-            // handles navigating away from this screen.
         } catch (err) {
             const message = err instanceof ApiError ? err.message : t.common.genericError;
             Alert.alert(t.createProfile.registrationFailedTitle, message);
@@ -117,39 +115,30 @@ export default function CreateProfileScreen() {
 
     return (
         <SafeAreaView className="flex-1 bg-cream">
-            <View
-                className="flex-row items-center justify-between px-2 h-16"
-                style={{
-                    shadowColor: "#4A2C2A",
-                    shadowOpacity: 0.08,
-                    shadowRadius: 30,
-                    shadowOffset: { width: 0, height: 10 },
-                }}
-            >
+            <View className="flex-row items-center justify-between px-2 h-16" style={CARD_SHADOW}>
                 <TouchableOpacity
                     className="w-10 h-10 rounded-full items-center justify-center"
                     onPress={() => router.back()}
                 >
-                    <ArrowLeft color="#321716" size={22} />
+                    <ArrowLeft color={INK} size={22} />
                 </TouchableOpacity>
                 <Text className="text-lg font-bold text-ink">{t.createProfile.title}</Text>
                 <View className="w-10" />
             </View>
 
-            <ScrollView contentContainerStyle={{ padding: 20, flexGrow: 1 }}>
-                {/* Profile Image */}
+            <ScrollView contentContainerStyle={{ padding: CONTENT_PADDING, flexGrow: 1 }}>
                 <TouchableOpacity onPress={pickImage} className="items-center mb-6">
                     <View className="relative">
                         {imageUri ? (
                             <Image
                                 source={{ uri: imageUri }}
                                 className="w-32 h-32 rounded-full border-4"
-                                style={{ borderColor: "#F5ECEB" }}
+                                style={{ borderColor: IMAGE_BORDER }}
                             />
                         ) : (
                             <View
                                 className="w-32 h-32 bg-panel rounded-full items-center justify-center border-4"
-                                style={{ borderColor: "#F5ECEB" }}
+                                style={{ borderColor: IMAGE_BORDER }}
                             >
                                 <Text className="text-muted">{t.createProfile.pickImage}</Text>
                             </View>
@@ -160,7 +149,6 @@ export default function CreateProfileScreen() {
                     </View>
                 </TouchableOpacity>
 
-                {/* First/Last name */}
                 <View className="flex-row gap-4 mb-4">
                     {(
                         [
@@ -195,7 +183,6 @@ export default function CreateProfileScreen() {
                     ))}
                 </View>
 
-                {/* Email */}
                 <Controller
                     control={control}
                     name="email"
@@ -205,11 +192,7 @@ export default function CreateProfileScreen() {
                                 {t.createProfile.email}
                             </Text>
                             <View className="relative justify-center">
-                                <Mail
-                                    color="#504443"
-                                    size={18}
-                                    style={{ position: "absolute", left: 16, zIndex: 1 }}
-                                />
+                                <Mail color={MUTED} size={18} style={INPUT_ICON_LEFT} />
                                 <TextInput
                                     className="border border-dot rounded-xl pl-11 pr-4 py-3 bg-panel text-ink"
                                     onBlur={onBlur}
@@ -228,7 +211,6 @@ export default function CreateProfileScreen() {
                     )}
                 />
 
-                {/* Password */}
                 <Controller
                     control={control}
                     name="password"
@@ -238,11 +220,7 @@ export default function CreateProfileScreen() {
                                 {t.createProfile.password}
                             </Text>
                             <View className="relative justify-center">
-                                <Lock
-                                    color="#504443"
-                                    size={18}
-                                    style={{ position: "absolute", left: 16, zIndex: 1 }}
-                                />
+                                <Lock color={MUTED} size={18} style={INPUT_ICON_LEFT} />
                                 <TextInput
                                     className="border border-dot rounded-xl pl-11 pr-11 py-3 bg-panel text-ink"
                                     onBlur={onBlur}
@@ -251,13 +229,13 @@ export default function CreateProfileScreen() {
                                     secureTextEntry={!showPassword}
                                 />
                                 <TouchableOpacity
-                                    style={{ position: "absolute", right: 16, zIndex: 1 }}
+                                    style={INPUT_ICON_RIGHT}
                                     onPress={() => setShowPassword((prev) => !prev)}
                                 >
                                     {showPassword ? (
-                                        <EyeOff color="#504443" size={18} />
+                                        <EyeOff color={MUTED} size={18} />
                                     ) : (
-                                        <Eye color="#504443" size={18} />
+                                        <Eye color={MUTED} size={18} />
                                     )}
                                 </TouchableOpacity>
                             </View>
@@ -270,7 +248,6 @@ export default function CreateProfileScreen() {
                     )}
                 />
 
-                {/* Birthdate */}
                 <Controller
                     control={control}
                     name="birthDate"
@@ -286,7 +263,7 @@ export default function CreateProfileScreen() {
                                 <Text className="text-ink">
                                     {value ? value.toDateString() : t.createProfile.selectDate}
                                 </Text>
-                                <Calendar color="#504443" size={18} />
+                                <Calendar color={MUTED} size={18} />
                             </TouchableOpacity>
                             {showDatePicker && (
                                 <DateTimePicker
@@ -310,7 +287,6 @@ export default function CreateProfileScreen() {
                     )}
                 />
 
-                {/* Gender */}
                 <Text className="text-xs font-semibold text-muted uppercase tracking-widest mb-2">
                     {t.createProfile.gender}
                 </Text>
@@ -331,7 +307,6 @@ export default function CreateProfileScreen() {
                     <Text className="text-red-500 text-sm mb-2">{errors.gender.message}</Text>
                 )}
 
-                {/* Bio */}
                 <Controller
                     control={control}
                     name="bio"
@@ -348,7 +323,7 @@ export default function CreateProfileScreen() {
                             <TextInput
                                 className="border border-dot rounded-xl px-4 py-3 bg-panel text-ink h-24"
                                 placeholder={t.createProfile.bioPlaceholder}
-                                placeholderTextColor="#504443"
+                                placeholderTextColor={MUTED}
                                 multiline
                                 maxLength={BIO_MAX_LENGTH}
                                 onChangeText={onChange}
@@ -361,7 +336,6 @@ export default function CreateProfileScreen() {
                     )}
                 />
 
-                {/* Interests */}
                 {interests.length > 0 && (
                     <View className="mb-4">
                         <Text className="text-xs font-semibold text-muted uppercase tracking-widest mb-2">
@@ -378,7 +352,6 @@ export default function CreateProfileScreen() {
                     </View>
                 )}
 
-                {/* Terms */}
                 <TouchableOpacity
                     className="flex-row items-center mb-6"
                     onPress={() => setAgree(!agree)}
@@ -393,7 +366,6 @@ export default function CreateProfileScreen() {
                     <Text className="text-muted">{t.createProfile.agreeTerms}</Text>
                 </TouchableOpacity>
 
-                {/* Log in link */}
                 <View className="flex-row justify-center mb-4">
                     <Text className="text-muted">{t.createProfile.alreadyHaveAccount}</Text>
                     <TouchableOpacity onPress={() => router.push("/(unauthorized)/login")}>
@@ -402,7 +374,6 @@ export default function CreateProfileScreen() {
                 </View>
             </ScrollView>
 
-            {/* Sticky Bottom Button */}
             <View className="p-4">
                 <TouchableOpacity
                     className="bg-caramel rounded-xl py-4"

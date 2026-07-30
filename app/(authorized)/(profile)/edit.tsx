@@ -18,10 +18,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { MultiSelectChips } from "@/components/MultiSelectChips";
 import { RadioGroup } from "@/components/RadioGroup";
+import { CARAMEL, IMAGE_BORDER } from "@/constants/colors";
+import { CARD_SHADOW } from "@/constants/styles";
 import { editProfileSchema } from "@/schemas/edit-profile";
 import { ProfileService } from "@/services/profile";
 import { EditProfileFormData } from "@/types/edit-profile";
 import { ApiError } from "@/utils/api";
+import { inferMimeType } from "@/utils/file";
 import { Interest } from "@/utils/models";
 
 const GENDER_OPTIONS = [
@@ -29,6 +32,7 @@ const GENDER_OPTIONS = [
     { value: "FEMALE" as const, label: "Female" },
     { value: "OTHER" as const, label: "Other" },
 ];
+const CONTENT_PADDING = 20;
 
 export default function EditProfileScreen() {
     const [loading, setLoading] = useState(true);
@@ -78,9 +82,6 @@ export default function EditProfileScreen() {
                 }
             });
 
-        // The interest catalog is a nice-to-have for this screen — if it's
-        // unavailable, the picker just stays empty instead of blocking the
-        // rest of the (already-fetched) profile from loading.
         ProfileService.getInterests()
             .then((allInterests) => {
                 if (!cancelled) {
@@ -113,17 +114,10 @@ export default function EditProfileScreen() {
             if (imageChanged) {
                 if (imageUri) {
                     const fileName = imageUri.split("/").pop() ?? "profile.jpg";
-                    const extension = fileName.split(".").pop()?.toLowerCase();
-                    const mimeType =
-                        extension === "png"
-                            ? "image/png"
-                            : extension === "webp"
-                              ? "image/webp"
-                              : "image/jpeg";
                     await ProfileService.uploadImage({
                         uri: imageUri,
                         name: fileName,
-                        type: mimeType,
+                        type: inferMimeType(fileName),
                     });
                 } else {
                     await ProfileService.deleteImage();
@@ -153,31 +147,26 @@ export default function EditProfileScreen() {
     if (loading) {
         return (
             <View className="flex-1 items-center justify-center bg-cream">
-                <ActivityIndicator color="#CD8F62" size="large" />
+                <ActivityIndicator color={CARAMEL} size="large" />
             </View>
         );
     }
 
     return (
-        <ScrollView className="flex-1 bg-cream" contentContainerStyle={{ padding: 20 }}>
+        <ScrollView
+            className="flex-1 bg-cream"
+            contentContainerStyle={{ padding: CONTENT_PADDING }}
+        >
             <SafeAreaView edges={["bottom"]}>
                 <Text className="text-2xl font-bold mb-6 text-center text-ink">Edit Profile</Text>
 
-                <View
-                    className="bg-white rounded-2xl p-6 mb-6"
-                    style={{
-                        shadowColor: "#4A2C2A",
-                        shadowOpacity: 0.08,
-                        shadowRadius: 30,
-                        shadowOffset: { width: 0, height: 10 },
-                    }}
-                >
+                <View className="bg-white rounded-2xl p-6 mb-6" style={CARD_SHADOW}>
                     <TouchableOpacity onPress={pickImage} className="items-center mb-6">
                         {imageUri ? (
                             <Image
                                 source={{ uri: imageUri }}
                                 className="w-28 h-28 rounded-full border-4"
-                                style={{ borderColor: "#F5ECEB" }}
+                                style={{ borderColor: IMAGE_BORDER }}
                             />
                         ) : (
                             <View className="w-28 h-28 bg-panel rounded-full items-center justify-center">

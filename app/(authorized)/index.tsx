@@ -9,6 +9,8 @@ import Toast from "react-native-toast-message";
 import { RenderProfile } from "@/components/Card";
 import { ConfirmModal } from "@/components/ConfirmModal";
 import { SwipeLabel } from "@/components/SwipeLabel";
+import { INK, MUTED } from "@/constants/colors";
+import { TAB_BAR_HEIGHT } from "@/constants/layout";
 import { useAuth } from "@/hooks/useAuth";
 import { usePresenceFeed } from "@/hooks/usePresenceFeed";
 import { useVenue } from "@/hooks/useVenue";
@@ -18,10 +20,22 @@ import { ApiError } from "@/utils/api";
 import { FeedProfile, MatchFoundPayload } from "@/utils/models";
 
 const BUTTON_ROW_HEIGHT = 120;
-// The tab bar's own content height (see (authorized)/_layout.tsx) — react-navigation
-// adds the bottom safe-area inset on top of this, so the real space it consumes
-// is this plus insets.bottom.
-const TAB_BAR_HEIGHT = 78;
+const HEADER_CONTENT_HEIGHT = 88;
+const HEADER_PADDING_TOP_EXTRA = 12;
+const CARD_VERTICAL_MARGIN_EXTRA = 12;
+const AVATAR_SIZE = 40;
+const AVATAR_BORDER_RADIUS = 20;
+const MATCH_TOAST_VISIBILITY_MS = 6000;
+const SWIPER_STACK_SIZE = 3;
+const SWIPER_STACK_SCALE = 8;
+const SWIPER_STACK_SEPARATION = 16;
+const SWIPER_CARD_HORIZONTAL_MARGIN = 16;
+const SWIPE_ANIMATION_DURATION_MS = 220;
+const SWIPE_SPRING = { friction: 10, tension: 90 };
+const OVERLAY_PADDING_TOP = 48;
+const OVERLAY_PADDING_SIDE = 24;
+const PASS_ICON_SIZE = 30;
+const LIKE_ICON_SIZE = 34;
 
 export default function HomeScreen() {
     const { user } = useAuth();
@@ -32,16 +46,12 @@ export default function HomeScreen() {
     const [leaving, setLeaving] = useState(false);
     const [showLeaveModal, setShowLeaveModal] = useState(false);
 
-    // Pushed to BOTH matched users the instant a mutual like completes —
-    // including whoever's own like just triggered it — so this is the only
-    // place the match toast is shown (not the POST /interactions/like
-    // response, which never reaches the other, non-acting side).
     const handleMatchFound = (payload: MatchFoundPayload) => {
         Toast.show({
             type: "success",
             text1: "It's a match! 🎉",
             text2: `You and ${payload.partner.firstName} both liked each other — tap to chat`,
-            visibilityTime: 6000,
+            visibilityTime: MATCH_TOAST_VISIBILITY_MS,
             onPress: () => {
                 Toast.hide();
                 router.push(`/(authorized)/(chats)/message?id=${payload.chatSessionId}`);
@@ -51,9 +61,6 @@ export default function HomeScreen() {
 
     const { profiles, error } = usePresenceFeed(venue?.id ?? null, handleMatchFound);
 
-    // The Swiper indexes cards by position, but `profiles` is a live socket feed
-    // that can mutate (joins/leaves) mid-deck. Mirror it into an append-only local
-    // snapshot so card indices stay stable for whoever is mid-swipe.
     const [deck, setDeck] = useState<FeedProfile[]>([]);
     useEffect(() => {
         setDeck((prev) => {
@@ -63,13 +70,8 @@ export default function HomeScreen() {
         });
     }, [profiles]);
 
-    // The header is rendered as an absolute overlay (not a normal flex sibling)
-    // so the Swiper's immediate parent is the full screen area react-navigation
-    // hands this tab — deck-swiper sizes its cards from the raw window height,
-    // and cardVerticalMargin is the only thing standing between that and the
-    // tab bar swallowing the bottom of the deck.
-    const HEADER_HEIGHT = insets.top + 88;
-    const cardVerticalMargin = (TAB_BAR_HEIGHT + insets.bottom) / 2 + 12;
+    const HEADER_HEIGHT = insets.top + HEADER_CONTENT_HEIGHT;
+    const cardVerticalMargin = (TAB_BAR_HEIGHT + insets.bottom) / 2 + CARD_VERTICAL_MARGIN_EXTRA;
 
     const handleLike = async (target: FeedProfile) => {
         if (!venue) {
@@ -127,7 +129,7 @@ export default function HomeScreen() {
         <View className="flex-1 bg-cream relative">
             <View
                 className="absolute top-0 left-0 right-0 z-10 bg-cream px-5 pb-2"
-                style={{ height: HEADER_HEIGHT, paddingTop: insets.top + 12 }}
+                style={{ height: HEADER_HEIGHT, paddingTop: insets.top + HEADER_PADDING_TOP_EXTRA }}
             >
                 <View className="flex-row items-center justify-between">
                     <TouchableOpacity onPress={() => router.push("/(authorized)/(profile)")}>
@@ -137,19 +139,23 @@ export default function HomeScreen() {
                                     ? { uri: user.profileImageUrl }
                                     : require("../../assets/images/test.jpeg")
                             }
-                            style={{ width: 40, height: 40, borderRadius: 20 }}
+                            style={{
+                                width: AVATAR_SIZE,
+                                height: AVATAR_SIZE,
+                                borderRadius: AVATAR_BORDER_RADIUS,
+                            }}
                         />
                     </TouchableOpacity>
                     <Text className="text-ink text-2xl font-bold">Social Coffee</Text>
                     <TouchableOpacity
                         onPress={() => router.push("/(authorized)/(profile)/preferences")}
                     >
-                        <SlidersHorizontal color="#321716" size={24} />
+                        <SlidersHorizontal color={INK} size={24} />
                     </TouchableOpacity>
                 </View>
 
                 <View className="flex-row items-center justify-center mt-1">
-                    <MapPin color="#504443" size={14} />
+                    <MapPin color={MUTED} size={14} />
                     <Text className="text-muted text-xs font-medium ml-1">{venue.name}</Text>
                     <Text className="text-muted text-xs mx-1.5">·</Text>
                     <TouchableOpacity onPress={() => setShowLeaveModal(true)} disabled={leaving}>
@@ -191,15 +197,6 @@ export default function HomeScreen() {
                 <Swiper
                     ref={swiperRef}
                     cards={deck}
-                    // Remount whenever the deck grows. The Swiper tracks its own
-                    // `swipedAllCards`/`firstCardIndex` state internally and only
-                    // reads `cardIndex` in its constructor — so when you swipe the
-                    // last card it latches "all swiped" and renders nothing, and if
-                    // someone new joins a moment later our `deck` grows and we keep
-                    // it mounted while it stays latched: a blank area with the
-                    // buttons still showing, until the next tap forces its state
-                    // forward. Remounting resets that state, and `cardIndex` below
-                    // makes the fresh instance resume at the right card.
                     key={deck.length}
                     cardIndex={swipedCount}
                     renderCard={(item) =>
@@ -209,37 +206,17 @@ export default function HomeScreen() {
                     onSwiped={() => setSwipedCount((count) => count + 1)}
                     onSwipedRight={(cardIndex) => handleLike(deck[cardIndex])}
                     backgroundColor="transparent"
-                    stackSize={3}
-                    stackScale={8}
-                    stackSeparation={16}
+                    stackSize={SWIPER_STACK_SIZE}
+                    stackScale={SWIPER_STACK_SCALE}
+                    stackSeparation={SWIPER_STACK_SEPARATION}
                     cardVerticalMargin={cardVerticalMargin}
-                    cardHorizontalMargin={16}
+                    cardHorizontalMargin={SWIPER_CARD_HORIZONTAL_MARGIN}
                     marginTop={HEADER_HEIGHT}
                     marginBottom={BUTTON_ROW_HEIGHT}
                     verticalSwipe={false}
                     disableTopSwipe
                     disableBottomSwipe
-                    // Deliberately NOT using animateCardOpacity: the top
-                    // card's opacity is driven by the gesture's pan value,
-                    // and when a swipe's internal pan-reset races a parent
-                    // re-render (our onSwiped state update, or a live feed
-                    // update swapping the cards prop) the next card can get
-                    // stuck fully transparent until the following swipe —
-                    // the "invisible 3rd/4th card" bug. animateOverlayLabelsOpacity
-                    // is unrelated: it fades the drag-feedback badge below via its
-                    // own interpolation of the pan value, and (unlike the card's
-                    // opacity) the badge unmounts outright whenever the drag resets,
-                    // so it can't get stuck invisible the same way.
                     animateOverlayLabelsOpacity
-                    // Each badge is anchored to the corner NEAREST the drag direction
-                    // (NOPE top-right while dragging left, LIKE top-left while dragging
-                    // right) rather than the far corner. The overlay is a child of the
-                    // same transformed view as the card, so it translates along with
-                    // it — anchoring to the far corner made the badge drift toward
-                    // (and past) the screen edge by the time the drag distance was
-                    // large enough for it to reach full opacity, confirmed visually
-                    // via Playwright: at the library's own fade-in threshold the badge
-                    // was already clipped off-screen.
                     overlayLabels={{
                         left: {
                             element: <SwipeLabel kind="pass" />,
@@ -247,8 +224,8 @@ export default function HomeScreen() {
                                 wrapper: {
                                     alignItems: "flex-end",
                                     justifyContent: "flex-start",
-                                    paddingTop: 48,
-                                    paddingRight: 24,
+                                    paddingTop: OVERLAY_PADDING_TOP,
+                                    paddingRight: OVERLAY_PADDING_SIDE,
                                 },
                             },
                         },
@@ -258,17 +235,17 @@ export default function HomeScreen() {
                                 wrapper: {
                                     alignItems: "flex-start",
                                     justifyContent: "flex-start",
-                                    paddingTop: 48,
-                                    paddingLeft: 24,
+                                    paddingTop: OVERLAY_PADDING_TOP,
+                                    paddingLeft: OVERLAY_PADDING_SIDE,
                                 },
                             },
                         },
                     }}
-                    swipeAnimationDuration={220}
-                    stackAnimationFriction={10}
-                    stackAnimationTension={90}
-                    topCardResetAnimationFriction={10}
-                    topCardResetAnimationTension={90}
+                    swipeAnimationDuration={SWIPE_ANIMATION_DURATION_MS}
+                    stackAnimationFriction={SWIPE_SPRING.friction}
+                    stackAnimationTension={SWIPE_SPRING.tension}
+                    topCardResetAnimationFriction={SWIPE_SPRING.friction}
+                    topCardResetAnimationTension={SWIPE_SPRING.tension}
                 />
             )}
 
@@ -281,13 +258,13 @@ export default function HomeScreen() {
                         className="w-16 h-16 rounded-full bg-white border border-dot items-center justify-center shadow"
                         onPress={() => swiperRef.current?.swipeLeft()}
                     >
-                        <X color="#504443" size={30} />
+                        <X color={MUTED} size={PASS_ICON_SIZE} />
                     </TouchableOpacity>
                     <TouchableOpacity
                         className="w-20 h-20 rounded-full bg-primary items-center justify-center shadow-lg"
                         onPress={() => swiperRef.current?.swipeRight()}
                     >
-                        <Heart color="white" fill="white" size={34} />
+                        <Heart color="white" fill="white" size={LIKE_ICON_SIZE} />
                     </TouchableOpacity>
                 </View>
             )}

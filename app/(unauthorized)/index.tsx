@@ -4,6 +4,7 @@ import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { INK } from "@/constants/colors";
 import { useLocale } from "@/hooks/useLocale";
 
 export default function WelcomeScreen() {
@@ -13,7 +14,7 @@ export default function WelcomeScreen() {
         <SafeAreaView className="flex-1 bg-cream">
             <View className="flex-1 px-6 justify-between pb-8">
                 <View className="items-center mt-4">
-                    <Coffee color="#321716" size={28} />
+                    <Coffee color={INK} size={28} />
                     <Text className="text-2xl font-bold text-ink mt-1">Social Coffee</Text>
                     <Text className="text-muted text-center text-base mt-6 leading-6">
                         {t.welcome.subtitle}

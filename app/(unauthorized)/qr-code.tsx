@@ -5,6 +5,7 @@ import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import QRScanner from "@/components/QRScanner";
+import { CARAMEL } from "@/constants/colors";
 import { useVenue } from "@/hooks/useVenue";
 import { VenueService } from "@/services/venue";
 import { QrCodeScreenState } from "@/types/qr-code";
@@ -64,7 +65,7 @@ export default function QrCodeScanScreen() {
 
                     {state === "checking-in" && (
                         <View className="flex-1 items-center justify-center bg-cream">
-                            <ActivityIndicator color="#CD8F62" size="large" />
+                            <ActivityIndicator color={CARAMEL} size="large" />
                             <Text className="text-ink mt-3">Checking in…</Text>
                         </View>
                     )}

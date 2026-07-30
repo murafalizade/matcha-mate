@@ -18,7 +18,10 @@ import { useOnboarding } from "@/hooks/useOnboarding";
 import { OnboardingSlide } from "@/types/onboarding";
 
 const { width, height } = Dimensions.get("window");
-const ILLUSTRATION_HEIGHT = height * 0.55;
+const ILLUSTRATION_HEIGHT_RATIO = 0.55;
+const ILLUSTRATION_HEIGHT = height * ILLUSTRATION_HEIGHT_RATIO;
+const CONTENT_SHEET_CORNER_RADIUS = 32;
+const CONTENT_MAX_WIDTH = 280;
 
 export default function OnboardingScreen() {
     const { t } = useLocale();
@@ -70,10 +73,6 @@ export default function OnboardingScreen() {
                 </TouchableOpacity>
             </SafeAreaView>
 
-            {/* Illustration carousel — top ~55%. Height is set on this
-                wrapper, not the ScrollView itself — ScrollView doesn't
-                reliably respect an explicit `height` in its own style on
-                web, sizing to its content instead. */}
             <View style={{ height: ILLUSTRATION_HEIGHT }}>
                 <ScrollView
                     ref={scrollRef}
@@ -99,10 +98,13 @@ export default function OnboardingScreen() {
                 </ScrollView>
             </View>
 
-            {/* Content sheet — overlaps the illustration with a rounded top edge */}
             <View
-                className="flex-1 bg-cream rounded-t-[32px] px-6 pt-8 pb-8 justify-between"
-                style={{ marginTop: -32 }}
+                className="flex-1 bg-cream px-6 pt-8 pb-8 justify-between"
+                style={{
+                    marginTop: -CONTENT_SHEET_CORNER_RADIUS,
+                    borderTopLeftRadius: CONTENT_SHEET_CORNER_RADIUS,
+                    borderTopRightRadius: CONTENT_SHEET_CORNER_RADIUS,
+                }}
             >
                 <View className="items-center">
                     <Text className="text-2xl font-bold text-ink text-center mb-2">
@@ -110,7 +112,7 @@ export default function OnboardingScreen() {
                     </Text>
                     <Text
                         className="text-muted text-center text-base leading-6"
-                        style={{ maxWidth: 280 }}
+                        style={{ maxWidth: CONTENT_MAX_WIDTH }}
                     >
                         {slides[index].body}
                     </Text>
