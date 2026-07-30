@@ -1,8 +1,7 @@
 import * as yup from "yup";
 
-// Mirrors the backend's password/name/bio rules (see auth/constants/validation)
-// so the client rejects the same input the server would, instead of a round-trip 400.
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+export const PASSWORD_REGEX =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const NAME_REGEX = /^[a-zA-Z\s'-]+$/;
 
 export const createProfileSchema = yup.object({

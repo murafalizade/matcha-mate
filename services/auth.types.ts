@@ -10,7 +10,7 @@ export interface RegisterPayload {
     lastName: string;
     email: string;
     password: string;
-    birthDate: string; // ISO date string, e.g. "1995-06-15"
+    birthDate: string;
     gender: Gender;
     bio: string;
 }
@@ -18,4 +18,16 @@ export interface RegisterPayload {
 export interface LoginPayload {
     email: string;
     password: string;
+}
+
+export interface ForgotPasswordPayload {
+    email: string;
+}
+
+export interface ForgotPasswordResponse {
+    resetToken?: string;
+}
+
+export interface ResetPasswordPayload {
+    newPassword: string;
 }
