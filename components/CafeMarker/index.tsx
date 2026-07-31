@@ -21,7 +21,7 @@ const LABEL_FONT_SIZE = 12;
 
 export function CafeMarker({ name, selected }: CafeMarkerProps) {
     return (
-        <View style={{ alignItems: "center", width: MARKER_CONTAINER_WIDTH }}>
+        <View collapsable={false} style={{ alignItems: "center", width: MARKER_CONTAINER_WIDTH }}>
             <View
                 style={{
                     width: PIN_SIZE,
