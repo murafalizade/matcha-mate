@@ -10,6 +10,7 @@ import { useVenue } from "@/hooks/useVenue";
 import { VenueService } from "@/services/venue";
 import { QrCodeScreenState } from "@/types/qr-code";
 import { ApiError } from "@/utils/api";
+import { getAccurateLocation } from "@/utils/location";
 
 export default function QrCodeScanScreen() {
     const { setCheckedInVenue } = useVenue();
@@ -25,7 +26,7 @@ export default function QrCodeScanScreen() {
                 throw new Error("Location permission is required to check in.");
             }
 
-            const position = await Location.getCurrentPositionAsync({});
+            const position = await getAccurateLocation();
             const venue = await VenueService.checkIn(venueId, {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
