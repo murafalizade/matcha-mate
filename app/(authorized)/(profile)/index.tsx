@@ -1,9 +1,10 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import { useCallback, useState } from "react";
-import { View, Text, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { Avatar } from "@/components/Avatar";
 import { LegalLinks } from "@/components/LegalLinks";
 import { CARAMEL, IMAGE_BORDER } from "@/constants/colors";
 import { CARD_SHADOW } from "@/constants/styles";
@@ -14,6 +15,8 @@ import { calculateAge, humanizeEnum } from "@/utils/format";
 import { Profile } from "@/utils/models";
 
 const PROFILE_CONTENT_PADDING = 20;
+const PROFILE_AVATAR_SIZE = 96;
+const PROFILE_AVATAR_BORDER_WIDTH = 4;
 
 export default function ProfileScreen() {
     const { logout } = useAuth();
@@ -73,15 +76,15 @@ export default function ProfileScreen() {
         >
             <SafeAreaView>
                 <View className="items-center mb-6">
-                    <Image
-                        source={
-                            profile.profileImageUrl
-                                ? { uri: profile.profileImageUrl }
-                                : require("../../../assets/images/test.jpeg")
-                        }
-                        className="w-24 h-24 rounded-full mb-3 border-4"
-                        style={{ borderColor: IMAGE_BORDER }}
-                    />
+                    <View className="mb-3">
+                        <Avatar
+                            uri={profile.profileImageUrl}
+                            name={profile.firstName}
+                            size={PROFILE_AVATAR_SIZE}
+                            borderWidth={PROFILE_AVATAR_BORDER_WIDTH}
+                            borderColor={IMAGE_BORDER}
+                        />
+                    </View>
                     <Text className="text-xl font-bold text-ink">
                         {profile.firstName} {profile.lastName}
                     </Text>

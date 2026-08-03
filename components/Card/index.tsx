@@ -10,6 +10,7 @@ import { calculateAge, humanizeEnum } from "@/utils/format";
 const GRADIENT_COLORS = ["transparent", "rgba(0,0,0,0.65)"] as const;
 const GRADIENT_HEIGHT = "55%";
 const GRADIENT_PADDING = 20;
+const FALLBACK_INITIAL_SIZE = 96;
 
 export const RenderProfile = ({ item, venueName }: RenderProfileProps) => {
     const age = calculateAge(item.birthDate);
@@ -17,15 +18,22 @@ export const RenderProfile = ({ item, venueName }: RenderProfileProps) => {
     return (
         <View className="flex-1 bg-white rounded-3xl overflow-hidden shadow-lg">
             <View className="flex-1">
-                <Image
-                    source={
-                        item.profileImageUrl
-                            ? { uri: item.profileImageUrl }
-                            : require("../../assets/images/test.jpeg")
-                    }
-                    className="w-full h-full"
-                    resizeMode="cover"
-                />
+                {item.profileImageUrl ? (
+                    <Image
+                        source={{ uri: item.profileImageUrl }}
+                        className="w-full h-full"
+                        resizeMode="cover"
+                    />
+                ) : (
+                    <View className="w-full h-full bg-panel items-center justify-center">
+                        <Text
+                            className="text-ink font-bold"
+                            style={{ fontSize: FALLBACK_INITIAL_SIZE }}
+                        >
+                            {item.firstName.charAt(0).toUpperCase()}
+                        </Text>
+                    </View>
+                )}
 
                 <LinearGradient
                     colors={GRADIENT_COLORS}

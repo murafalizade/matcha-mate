@@ -1,11 +1,12 @@
 import { router } from "expo-router";
 import { Heart, MapPin, SlidersHorizontal, X } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, Image, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 import Swiper from "react-native-deck-swiper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
+import { Avatar } from "@/components/Avatar";
 import { RenderProfile } from "@/components/Card";
 import { ConfirmModal } from "@/components/ConfirmModal";
 import { SwipeLabel } from "@/components/SwipeLabel";
@@ -24,7 +25,6 @@ const HEADER_CONTENT_HEIGHT = 88;
 const HEADER_PADDING_TOP_EXTRA = 12;
 const CARD_VERTICAL_MARGIN_EXTRA = 12;
 const AVATAR_SIZE = 40;
-const AVATAR_BORDER_RADIUS = 20;
 const MATCH_TOAST_VISIBILITY_MS = 6000;
 const SWIPER_STACK_SIZE = 3;
 const SWIPER_STACK_SCALE = 8;
@@ -133,17 +133,10 @@ export default function HomeScreen() {
             >
                 <View className="flex-row items-center justify-between">
                     <TouchableOpacity onPress={() => router.push("/(authorized)/(profile)")}>
-                        <Image
-                            source={
-                                user?.profileImageUrl
-                                    ? { uri: user.profileImageUrl }
-                                    : require("../../assets/images/test.jpeg")
-                            }
-                            style={{
-                                width: AVATAR_SIZE,
-                                height: AVATAR_SIZE,
-                                borderRadius: AVATAR_BORDER_RADIUS,
-                            }}
+                        <Avatar
+                            uri={user?.profileImageUrl ?? null}
+                            name={user?.firstName ?? ""}
+                            size={AVATAR_SIZE}
                         />
                     </TouchableOpacity>
                     <Text className="text-ink text-2xl font-bold">Social Coffee</Text>
