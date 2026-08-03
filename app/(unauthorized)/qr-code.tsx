@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { PreferenceQuickEdit } from "@/components/PreferenceQuickEdit";
 import QRScanner from "@/components/QRScanner";
 import { CARAMEL } from "@/constants/colors";
 import { useVenue } from "@/hooks/useVenue";
@@ -54,6 +55,8 @@ export default function QrCodeScanScreen() {
                 <Text className="text-muted text-center mb-4">
                     Scan the QR code at the coffee shop to connect with people nearby.
                 </Text>
+
+                {state === "scanning" && <PreferenceQuickEdit />}
 
                 <View className="flex-1 w-full rounded-2xl overflow-hidden">
                     {state === "scanning" && (
