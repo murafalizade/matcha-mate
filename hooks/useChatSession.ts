@@ -13,6 +13,7 @@ export function useChatSession(chatSessionId: string | null): UseChatSessionResu
     const [connected, setConnected] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [endedReason, setEndedReason] = useState<EndReason | null>(null);
+    const [endedBy, setEndedBy] = useState<string | null>(null);
     const [minutesLeft, setMinutesLeft] = useState<number | null>(null);
     const socketRef = useRef<Socket | null>(null);
 
@@ -102,8 +103,9 @@ export function useChatSession(chatSessionId: string | null): UseChatSessionResu
                 setMinutesLeft(payload.minutesLeft);
             }
         });
-        socket.on("chat_ended", () => {
+        socket.on("chat_ended", (payload: { endedBy?: string }) => {
             if (!cancelled) {
+                setEndedBy(payload?.endedBy ?? null);
                 setEndedReason("chat_ended");
             }
         });
@@ -155,6 +157,7 @@ export function useChatSession(chatSessionId: string | null): UseChatSessionResu
         connected,
         error,
         endedReason,
+        endedBy,
         minutesLeft,
         sendMessage,
         setTyping,

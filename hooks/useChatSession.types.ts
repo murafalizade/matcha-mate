@@ -9,6 +9,7 @@ export interface UseChatSessionResult {
     connected: boolean;
     error: string | null;
     endedReason: EndReason | null;
+    endedBy: string | null;
     minutesLeft: number | null;
     sendMessage: (content: string) => void;
     setTyping: (isTyping: boolean) => void;

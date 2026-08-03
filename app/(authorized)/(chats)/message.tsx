@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { ExpireModal } from "@/components/ExpireModal";
+import { ChatEndKind } from "@/components/ExpireModal/types";
 import { INK, MUTED } from "@/constants/colors";
 import { useAuth } from "@/hooks/useAuth";
 import { useChatSession } from "@/hooks/useChatSession";
@@ -34,6 +35,7 @@ export default function MessageScreen() {
         partnerTyping,
         error,
         endedReason,
+        endedBy,
         sendMessage,
         setTyping,
         endChat,
@@ -62,6 +64,15 @@ export default function MessageScreen() {
     }, [session]);
 
     const ended = endedReason !== null || timeLeft === 0;
+
+    const endKind: ChatEndKind =
+        endedReason === "partner_left"
+            ? "partner-left"
+            : endedReason === "chat_ended"
+              ? endedBy === user?.id
+                  ? "you-ended"
+                  : "partner-ended"
+              : "expired";
 
     const handleChangeText = (text: string) => {
         setInput(text);
@@ -173,7 +184,7 @@ export default function MessageScreen() {
                 </View>
             </KeyboardAvoidingView>
 
-            <ExpireModal showModal={ended} />
+            <ExpireModal showModal={ended} kind={endKind} />
         </SafeAreaView>
     );
 }
