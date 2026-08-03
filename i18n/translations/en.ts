@@ -61,6 +61,11 @@ export const en: Translations = {
         agreementRequiredTitle: "Agreement Required",
         agreementRequiredBody: "You must agree to the Terms of Service.",
         registrationFailedTitle: "Registration failed",
+        photoRequiredTitle: "Photo Required",
+        photoRequiredBody: "Please add a profile photo so people can recognize you at the venue.",
+        photoUploadFailedTitle: "Photo upload failed",
+        photoUploadFailedBody:
+            "Your account was created, but the photo didn't upload. You can add it from Edit Profile.",
     },
     forgotPassword: {
         title: "Forgot Password",

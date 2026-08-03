@@ -28,6 +28,7 @@ import { createProfileSchema } from "@/schemas/create-profile";
 import { ProfileService } from "@/services/profile";
 import { CreateProfileFormData } from "@/types/create-profile";
 import { ApiError } from "@/utils/api";
+import { inferMimeType } from "@/utils/file";
 import { Interest } from "@/utils/models";
 
 const BIO_MAX_LENGTH = 500;
@@ -82,6 +83,11 @@ export default function CreateProfileScreen() {
     };
 
     const onSubmit = async (data: CreateProfileFormData) => {
+        if (!imageUri) {
+            Alert.alert(t.createProfile.photoRequiredTitle, t.createProfile.photoRequiredBody);
+            return;
+        }
+
         if (!agree) {
             Alert.alert(
                 t.createProfile.agreementRequiredTitle,
@@ -101,6 +107,21 @@ export default function CreateProfileScreen() {
                 gender: data.gender,
                 bio: data.bio,
             });
+
+            const fileName = imageUri.split("/").pop() ?? "profile.jpg";
+            try {
+                await ProfileService.uploadImage({
+                    uri: imageUri,
+                    name: fileName,
+                    type: inferMimeType(fileName),
+                });
+            } catch {
+                Alert.alert(
+                    t.createProfile.photoUploadFailedTitle,
+                    t.createProfile.photoUploadFailedBody,
+                );
+            }
+
             if (selectedInterestIds.length > 0) {
                 try {
                     await ProfileService.updateMe({ interestIds: selectedInterestIds });

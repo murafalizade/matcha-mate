@@ -63,6 +63,11 @@ export const tr: Translations = {
         agreementRequiredTitle: "Onay Gerekli",
         agreementRequiredBody: "Kullanım Şartları'nı kabul etmelisin.",
         registrationFailedTitle: "Kayıt başarısız oldu",
+        photoRequiredTitle: "Fotoğraf Gerekli",
+        photoRequiredBody: "Mekanda tanınabilmen için lütfen bir profil fotoğrafı ekle.",
+        photoUploadFailedTitle: "Fotoğraf yüklenemedi",
+        photoUploadFailedBody:
+            "Hesabın oluşturuldu ama fotoğraf yüklenemedi. Profili Düzenle bölümünden ekleyebilirsin.",
     },
     forgotPassword: {
         title: "Şifremi Unuttum",

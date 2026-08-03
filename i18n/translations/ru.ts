@@ -63,6 +63,11 @@ export const ru: Translations = {
         agreementRequiredTitle: "Требуется согласие",
         agreementRequiredBody: "Вы должны согласиться с Условиями использования.",
         registrationFailedTitle: "Не удалось зарегистрироваться",
+        photoRequiredTitle: "Нужно фото",
+        photoRequiredBody: "Добавьте фото профиля, чтобы вас могли узнать в заведении.",
+        photoUploadFailedTitle: "Не удалось загрузить фото",
+        photoUploadFailedBody:
+            "Аккаунт создан, но фото не загрузилось. Вы можете добавить его в разделе «Редактировать профиль».",
     },
     forgotPassword: {
         title: "Забыли пароль",

@@ -57,6 +57,10 @@ export interface Translations {
         agreementRequiredTitle: string;
         agreementRequiredBody: string;
         registrationFailedTitle: string;
+        photoRequiredTitle: string;
+        photoRequiredBody: string;
+        photoUploadFailedTitle: string;
+        photoUploadFailedBody: string;
     };
     forgotPassword: {
         title: string;
